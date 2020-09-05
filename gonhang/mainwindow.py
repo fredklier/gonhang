@@ -12,7 +12,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def __init__(self):
         super(MainWindow, self).__init__()
-        coloredlogs.install()
+        # coloredlogs.install()
         self.logger.info('Start MainWindow')
         self.setWindowTitle(StringUtil.getRandomString(30))
         self.logger.info(f'Current title: {self.windowTitle()}')
