@@ -14,11 +14,13 @@ class MainWindow(QtWidgets.QMainWindow):
         super(MainWindow, self).__init__()
         coloredlogs.install()
         self.logger.info('Start MainWindow')
-        self.getWindowCurrentId('teste')
-        self.myWindowId = self.getWindowCurrentId('gonhang – mainwindow.py')
-        self.logger.info(f'Current window ID: [{self.myWindowId}]')
-        self.setWindowInEveryWorkspaces(self.myWindowId)
-        self.logger.info(f'Now, window Id: {self.myWindowId} is present in every workspaces...')
+        self.setWindowTitle(StringUtil.getRandomString(30))
+        self.logger.info(f'Current title: {self.windowTitle()}')
+
+        # self.myWindowId = self.getWindowCurrentId(self.windowTitle())
+        # self.logger.info(f'Current window ID: [{self.myWindowId}]')
+        # self.setWindowInEveryWorkspaces(self.myWindowId)
+        # self.logger.info(f'Now, window Id: {self.myWindowId} is present in every workspaces...')
 
     def getWindowCurrentId(self, windowTitle):
         # wmctrl -i -r 0x07a00006 -b add,sticky
@@ -35,4 +37,3 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def setWindowInEveryWorkspaces(self, windowId):
         subprocess.getoutput(f'{self.wmctrlBin} -i -r {self.myWindowId} -b add,sticky')
-

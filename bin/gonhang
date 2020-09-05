@@ -4,7 +4,7 @@ import coloredlogs
 import logging
 import os
 from PyQt5.QtWidgets import QApplication
-import gonhang.mainwindow as mw
+import gonhang.mainwindow
 
 if __name__ == '__main__':
     os.environ['QT_LOGGING_RULES'] = "qt5ct.debug=false"
@@ -12,7 +12,8 @@ if __name__ == '__main__':
     coloredlogs.install()
     logger.info('Starting...')
     app = QApplication(sys.argv)
-    window = mw.MainWindow()
+    window = gonhang.mainwindow.MainWindow()
+
     window.show()
     app.exec_()
 
