@@ -9,21 +9,19 @@ import time
 class MainWindow(QtWidgets.QMainWindow):
     logger = logging.getLogger(__name__)
     wmctrlBin = subprocess.getoutput('which wmctrl')
+    myCurrentId = ''
 
     def __init__(self):
         super(MainWindow, self).__init__()
         # coloredlogs.install()
         self.logger.info('Start MainWindow')
         self.setWindowTitle(StringUtil.getRandomString(30))
-        self.logger.info(f'Current title: {self.windowTitle()}')
 
-        # self.myWindowId = self.getWindowCurrentId(self.windowTitle())
-        # self.logger.info(f'Current window ID: [{self.myWindowId}]')
-        # self.setWindowInEveryWorkspaces(self.myWindowId)
-        # self.logger.info(f'Now, window Id: {self.myWindowId} is present in every workspaces...')
+        # time.sleep(5)
+        # self.myCurrentId = self.getWindowCurrentId(self.windowTitle())
+        # self.logger.info(f'My Current Id: [{self.myCurrentId}]')
 
     def getWindowCurrentId(self, windowTitle):
-        # wmctrl -i -r 0x07a00006 -b add,sticky
         self.logger.info(f'wmctrl binary found in : {self.wmctrlBin}')
         windowsList = subprocess.getoutput(f'{self.wmctrlBin} -l')
         windowsList = windowsList.split('\n')
@@ -36,4 +34,7 @@ class MainWindow(QtWidgets.QMainWindow):
         return currentID
 
     def setWindowInEveryWorkspaces(self, windowId):
-        subprocess.getoutput(f'{self.wmctrlBin} -i -r {self.myWindowId} -b add,sticky')
+        # wmctrl -i -r 0x07a00006 -b add,sticky
+        cmd = f'{self.wmctrlBin} -i -r {self.myCurrentId} -b add,sticky'
+        output = subprocess.getoutput(cmd)
+        self.logger.info(f'Output from command [{cmd}] is: {output}')

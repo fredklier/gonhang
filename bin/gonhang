@@ -5,6 +5,8 @@ import logging
 import os
 from PyQt5.QtWidgets import QApplication
 import gonhang.mainwindow
+import time
+
 
 if __name__ == '__main__':
     os.environ['QT_LOGGING_RULES'] = "qt5ct.debug=false"
@@ -13,8 +15,12 @@ if __name__ == '__main__':
     logger.info('Starting...')
     app = QApplication(sys.argv)
     window = gonhang.mainwindow.MainWindow()
-
     window.show()
+    time.sleep(1/50)
+    logger.info(f'Current title: {window.windowTitle()}')
+    window.myCurrentId = window.getWindowCurrentId(window.windowTitle())
+    logger.info(f'Current Window ID is: [{window.myCurrentId}]')
+    logger.info(f'Updating Window with id: [{window.myCurrentId}] in every workspaces...')
+    # window.setWindowInEveryWorkspaces(window.windowTitle())
+
     app.exec_()
-
-
