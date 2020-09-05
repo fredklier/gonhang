@@ -1,6 +1,6 @@
 import coloredlogs
 import logging
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtCore
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -12,4 +12,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.logger.info('Start MainWindow')
         self.setFixedWidth(450)
         self.setFixedHeight(200)
+        self.setProperty('_NET_WM_DESKTOP', 0xFFFFFFFF)
+        # flags = QtCore.Qt.WindowStaysOnTopHint
+        # self.setWindowFlags(flags)
+
+
 
