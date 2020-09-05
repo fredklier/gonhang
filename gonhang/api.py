@@ -1,4 +1,6 @@
 from PyQt5 import QtWidgets
+import string
+import random
 
 
 class FileUtil:
@@ -25,3 +27,12 @@ class Alert(QtWidgets.QDialog):
         self.layout.addWidget(messageLabel)
         self.layout.addWidget(self.buttonBox)
         self.setLayout(self.layout)
+
+
+class StringUtil:
+
+    @staticmethod
+    def getRandomString(stringLenght):
+        letters = string.ascii_lowercase
+        result_str = ''.join(random.choice(letters) for i in range(stringLenght))
+        return result_str
