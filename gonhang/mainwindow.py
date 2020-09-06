@@ -3,6 +3,7 @@ import logging
 from PyQt5 import QtWidgets, QtCore, QtGui
 import subprocess
 from gonhang.api import StringUtil
+from gonhang.wizard import ChildWnd
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -12,6 +13,7 @@ class MainWindow(QtWidgets.QMainWindow):
     # -------------------------------------------------------------
     # Window Flags
     flags = QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnBottomHint | QtCore.Qt.Tool
+
     # -------------------------------------------------------------
 
     def __init__(self):
@@ -45,3 +47,13 @@ class MainWindow(QtWidgets.QMainWindow):
         action = contextMenu.exec_(self.mapToGlobal(event.pos()))
         if action == quitAction:
             sys.exit()
+        elif action == configAction:
+            self.wizardAction()
+
+    def wizardAction(self):
+        self.logger.info('Enter in wizard...')
+        wizard = ChildWnd()
+        # wizard.show()
+
+
+

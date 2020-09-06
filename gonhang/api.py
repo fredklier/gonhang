@@ -1,6 +1,7 @@
 from PyQt5 import QtWidgets
 import string
 import random
+import os
 
 
 class FileUtil:
@@ -12,6 +13,10 @@ class FileUtil:
         content = file.read()
         file.close()
         return content
+
+    @staticmethod
+    def getResourcePath():
+        return os.path.dirname(__file__)
 
 
 # Display an Alert

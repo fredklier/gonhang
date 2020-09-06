@@ -23,4 +23,4 @@ if __name__ == '__main__':
     logger.info(f'Updating Window with id: [{window.myCurrentId}] in every workspaces...')
     window.setWindowInEveryWorkspaces(window.windowTitle())
 
-    app.exec_()
+    sys.exit(app.exec_())
