@@ -124,7 +124,7 @@ class Config:
             print('Config file not found, creating....')
             self.createConfigFile()
 
-        self.globalJSON = self.loadGlobalConfig()
+        self.loadGlobalConfig()
 
     def createConfigFile(self):
         if not os.path.isdir(os.path.dirname(self.cfgFile)):
@@ -143,7 +143,7 @@ class Config:
         with open(self.cfgFile, 'r') as openfile:
             json_object = json.load(openfile)
 
-        return json_object
+        self.updateConfig(json_object)
 
     def writeGlobalConfig(self):
         # Serializing json
@@ -154,6 +154,13 @@ class Config:
     def updateConfig(self, data):
         self.globalJson.update(data)
         self.writeGlobalConfig()
+
+    def getKey(self, key):
+        try:
+            return self.globalJson[key]
+        except KeyError:
+            print(f'Key not found in {self.cfgFile}: key ====> {key}')
+            return None
 
     @staticmethod
     def getVersion():

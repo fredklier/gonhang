@@ -1,16 +1,17 @@
 import sys
-import logging
 from PyQt5 import QtWidgets, QtCore, QtGui
 import subprocess
 from gonhang.api import StringUtil
 from gonhang.wizard import GonhaNgWizard
+from gonhang.wizard import PositionPage
 from gonhang.threads import ThreadSystem
 from gonhang.displayclasses import DisplaySystem
 from gonhang.displayclasses import CommomAttributes
+from gonhang.core import Config
 
 
 class MainWindow(QtWidgets.QMainWindow):
-    logger = logging.getLogger(__name__)
+    config = Config()
     wmctrlBin = subprocess.getoutput('which wmctrl')
     myWizard = None
     # -------------------------------------------------------------
@@ -23,7 +24,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def __init__(self):
         super(MainWindow, self).__init__()
-        self.logger.info('Start MainWindow')
+        print('Start MainWindow')
         self.setWindowTitle(StringUtil.getRandomString(30))
         # -------------------------------------------------------------
         # Window Flags
@@ -41,7 +42,15 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setCentralWidget(centralWidGet)
 
     def showSections(self):
+        self.loadGlobalParams()
         self.verticalLayout.addWidget(self.displaySystem.initUi())
+
+    def loadGlobalParams(self):
+        position = self.config.getKey('Position')
+        if position is None:
+            self.refreshPosition(0)
+        else:
+            self.refreshPosition(position['index'])
 
     def startAllThreads(self):
         # Connect thread signals and start
@@ -49,7 +58,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.threadSystem.start()
 
     def getWindowCurrentId(self, windowTitle):
-        self.logger.info(f'wmctrl binary found in : {self.wmctrlBin}')
+        print(f'wmctrl binary found in : {self.wmctrlBin}')
         windowsList = subprocess.getoutput(f'{self.wmctrlBin} -l')
         windowsList = windowsList.split('\n')
         currentID = ''
@@ -80,29 +89,29 @@ class MainWindow(QtWidgets.QMainWindow):
         elif action == configAction:
             self.wizardAction()
         elif action == positionLeftAction:
-            self.moveMeToLeft()
+            self.refreshPosition(0)
         elif action == positionCenterAction:
-            self.moveMeToCenter()
+            self.refreshPosition(1)
         elif action == positionRightAction:
-            self.moveMeToRight()
+            self.refreshPosition(2)
 
     @staticmethod
     def getScreenGeometry():
         return QtWidgets.QApplication.desktop().screenGeometry()
 
-    def moveMeToLeft(self):
-        self.move(0, 0)
+    def refreshPosition(self, index):
+        x = 0
+        if index == 1:
+            x = (self.getScreenGeometry().width() - self.geometry().width()) / 2
+        elif index == 2:
+            x = (self.getScreenGeometry().width() - self.geometry().width())
 
-    def moveMeToCenter(self):
-        x = (self.getScreenGeometry().width() - self.geometry().width()) / 2
         self.move(x, 0)
-
-    def moveMeToRight(self):
-        x = (self.getScreenGeometry().width() - self.geometry().width())
-        self.move(x, 0)
+        # write to config
+        self.config.updateConfig({'Position': {'index': index, 'value': PositionPage.positions[index]}})
 
     def wizardAction(self):
-        self.logger.info('Enter in wizard...')
+        print('Enter in wizard...')
         self.myWizard = GonhaNgWizard(self)
         self.myWizard.show()
 
