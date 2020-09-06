@@ -24,6 +24,7 @@ setuptools.setup(
         'psutil',
         'humanfriendly',
         'coloredlogs',
+        'python-distro'
     ],
     include_package_data=True,
     zip_safe=False,

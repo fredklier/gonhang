@@ -4,17 +4,19 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 import subprocess
 from gonhang.api import StringUtil
 from gonhang.wizard import GonhaNgWizard
+from gonhang.threads import ThreadSystem
 
 
 class MainWindow(QtWidgets.QMainWindow):
     logger = logging.getLogger(__name__)
     wmctrlBin = subprocess.getoutput('which wmctrl')
-    myCurrentId = ''
     myWizard = None
     # -------------------------------------------------------------
     # Window Flags
     flags = QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnBottomHint | QtCore.Qt.Tool
     # -------------------------------------------------------------
+    # Threads
+    threadSystem = ThreadSystem()
 
     def __init__(self):
         super(MainWindow, self).__init__()
@@ -22,6 +24,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setWindowTitle(StringUtil.getRandomString(30))
         self.setWindowFlags(self.flags)
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
+
+    def startAllThreads(self):
+        # Connect thread signals and start
+        self.threadSystem.signal.connect(self.threadSystemReceive)
+        self.threadSystem.start()
 
     def getWindowCurrentId(self, windowTitle):
         self.logger.info(f'wmctrl binary found in : {self.wmctrlBin}')
@@ -35,10 +42,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
         return currentID
 
-    def setWindowInEveryWorkspaces(self, windowId):
+    def setWindowInEveryWorkspaces(self):
         # wmctrl -i -r 0x07a00006 -b add,sticky
-        cmd = f'{self.wmctrlBin} -i -r {self.myCurrentId} -b add,sticky'
-        output = subprocess.getoutput(cmd)
+        cmd = f'{self.wmctrlBin} -i -r {self.getWindowCurrentId(self.windowTitle())} -b add,sticky'
+        subprocess.getoutput(cmd)
 
     def contextMenuEvent(self, event: QtGui.QContextMenuEvent):
         contextMenu = QtWidgets.QMenu(self)
@@ -55,5 +62,5 @@ class MainWindow(QtWidgets.QMainWindow):
         self.myWizard = GonhaNgWizard(self)
         self.myWizard.show()
 
-
-
+    def threadSystemReceive(self, message):
+        self.logger.info(f'Receive message => {message}')
