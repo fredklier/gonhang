@@ -1,11 +1,12 @@
-from PyQt5 import QtWidgets, QtGui
+from PyQt5 import QtWidgets
 
 
-class ChildWnd(QtWidgets.QMainWindow):
-    def __init__(self):
-        super().__init__()
-        self.init_ui()
+class SecondWindow(QtWidgets.QDialog):
+    def __init__(self, *args, **kwargs):
+        super(SecondWindow, self).__init__(*args, **kwargs)
 
-    def init_ui(self):
-        self.resize(200, 100)
-        self.show()
+        self.main_layout = QtWidgets.QVBoxLayout(self)
+
+        self.hello_label = QtWidgets.QLabel('Hello I am the second window.', self)
+
+        self.main_layout.addWidget(self.hello_label)
