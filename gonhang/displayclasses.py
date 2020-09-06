@@ -2,11 +2,13 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 from gonhang import core
 import logging
 from gonhang import api
+import humanfriendly
 
 
 class CommomAttributes:
     pbDefaultHeight = 20
     tempLabelWidth = 50
+    logger = logging.getLogger(__name__)
 
     def __init__(self):
         # -------------------------------------------------------------
@@ -91,6 +93,38 @@ class CommomAttributes:
     def setLabel(label, labelcolor, font):
         label.setFont(font)
         label.setStyleSheet(labelcolor)
+
+    def analizeProgressBar(self, pb, value):
+        if value < 50:
+            pb.setStyleSheet(self.greenPBStyle)
+        elif (value >= 50) and (value < 80):
+            pb.setStyleSheet(self.yellowPBStyle)
+        elif value >= 80:
+            pb.setStyleSheet(self.redPBStyle)
+
+    def analizeFreq(self, lbl, current, maximun):
+        currentValue = float(current)
+        maxValue = float(maximun)
+        highValue = maxValue - (maxValue * 0.4)
+
+        if currentValue < highValue:
+            lbl.setStyleSheet(self.green)
+        elif (currentValue >= highValue) and (currentValue < maxValue):
+            lbl.setStyleSheet(self.yellow)
+        elif currentValue >= maxValue:
+            lbl.setStyleSheet(self.red)
+
+    def analizeValue(self, lbl, current, maximun):
+        currentValue = humanfriendly.parse_size(current)
+        maxValue = humanfriendly.parse_size(maximun)
+        highValue = maxValue - (maxValue * 0.4)
+
+        if currentValue < highValue:
+            lbl.setStyleSheet(self.green)
+        elif (currentValue >= highValue) and (currentValue < maxValue):
+            lbl.setStyleSheet(self.yellow)
+        elif currentValue >= maxValue:
+            lbl.setStyleSheet(self.red)
 
 
 class DisplaySystem:

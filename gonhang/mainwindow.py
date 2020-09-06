@@ -6,7 +6,7 @@ from gonhang.api import StringUtil
 from gonhang.wizard import GonhaNgWizard
 from gonhang.threads import ThreadSystem
 from gonhang.displayclasses import DisplaySystem
-from gonhang.core import System
+from gonhang.displayclasses import CommomAttributes
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -15,6 +15,7 @@ class MainWindow(QtWidgets.QMainWindow):
     myWizard = None
     # -------------------------------------------------------------
     # Display classes
+    common = CommomAttributes()
     displaySystem = DisplaySystem()
     # -------------------------------------------------------------
     # Window Flags
@@ -78,6 +79,47 @@ class MainWindow(QtWidgets.QMainWindow):
         self.myWizard.show()
 
     def threadSystemReceive(self, message):
-        self.logger.info('cpu model name')
-        System().getCpuModelName()
-        # self.logger.info(f'Receive message => {message}')
+        # -----------------------------------------------------------------------------------------------------
+        # System, release and node machine
+        self.displaySystem.systemWidgets['distroStr'].setText(message['distroStr'])
+        self.displaySystem.systemWidgets['release'].setText(f"Kernel {message['release']}")
+        self.displaySystem.systemWidgets['nodeMachine'].setText(f"node {message['node']} arch {message['machine']}")
+        # -----------------------------------------------------------------------------------------------------
+        # boot time
+        self.displaySystem.systemWidgets['btDays'].setText(f"{message['btDays']} ")
+        self.displaySystem.systemWidgets['btHours'].setText(f"{message['btHours']} ")
+        self.displaySystem.systemWidgets['btMinutes'].setText(f"{message['btMinutes']} ")
+        self.displaySystem.systemWidgets['btSeconds'].setText(f"{message['btSeconds']} ")
+        # -----------------------------------------------------------------------------------------------------
+        # Cpu Load workout
+        self.updateWorkOut(
+            self.displaySystem.systemWidgets['cpuProgressBar'],
+            message['cpuProgressBar'],
+            self.displaySystem.systemWidgets['cpuFreqCurrent'],
+            message['cpuFreqCurrent'],
+            message['cpuFreqMax']
+        )
+        # -----------------------------------------------------------------------------------------------------
+        # Ram Load workout
+        self.updateWorkOut(
+            self.displaySystem.systemWidgets['ramProgressBar'],
+            message['ramProgressBar'],
+            self.displaySystem.systemWidgets['ramUsed'],
+            message['ramUsed'],
+            message['ramTotal']
+        )
+        # -----------------------------------------------------------------------------------------------------
+        # swap Load workout
+        self.updateWorkOut(
+            self.displaySystem.systemWidgets['swapProgressBar'],
+            message['swapProgressBar'],
+            self.displaySystem.systemWidgets['swapUsed'],
+            f"{message['swapUsed']}",
+            message['swapTotal']
+        )
+
+    def updateWorkOut(self, pb, pbValue, labelUsed, labelUsedValue, labelTotal):
+        pb.setValue(pbValue)
+        self.common.analizeProgressBar(pb, pbValue)
+        labelUsed.setText(labelUsedValue)
+        self.common.analizeValue(labelUsed, labelUsedValue, labelTotal)
