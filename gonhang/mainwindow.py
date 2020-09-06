@@ -11,11 +11,9 @@ class MainWindow(QtWidgets.QMainWindow):
     wmctrlBin = subprocess.getoutput('which wmctrl')
     myCurrentId = ''
     myWizard = None
-
     # -------------------------------------------------------------
     # Window Flags
     flags = QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnBottomHint | QtCore.Qt.Tool
-
     # -------------------------------------------------------------
 
     def __init__(self):
