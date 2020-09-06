@@ -3,13 +3,14 @@ import logging
 from PyQt5 import QtWidgets, QtCore, QtGui
 import subprocess
 from gonhang.api import StringUtil
-from gonhang.wizard import SecondWindow
+from gonhang.wizard import GonhaNgWizard
 
 
 class MainWindow(QtWidgets.QMainWindow):
     logger = logging.getLogger(__name__)
     wmctrlBin = subprocess.getoutput('which wmctrl')
     myCurrentId = ''
+    myWizard = None
 
     # -------------------------------------------------------------
     # Window Flags
@@ -53,8 +54,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def wizardAction(self):
         self.logger.info('Enter in wizard...')
-        second_window = SecondWindow(self)
-        second_window.show()
+        self.myWizard = GonhaNgWizard(self)
+        self.myWizard.show()
 
 
 
