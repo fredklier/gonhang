@@ -18,9 +18,6 @@ class MainWindow(QtWidgets.QMainWindow):
     common = CommomAttributes()
     displaySystem = DisplaySystem()
     # -------------------------------------------------------------
-    # Window Flags
-    flags = QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnBottomHint | QtCore.Qt.Tool
-    # -------------------------------------------------------------
     # Threads
     threadSystem = ThreadSystem()
 
@@ -28,7 +25,13 @@ class MainWindow(QtWidgets.QMainWindow):
         super(MainWindow, self).__init__()
         self.logger.info('Start MainWindow')
         self.setWindowTitle(StringUtil.getRandomString(30))
-        self.setWindowFlags(self.flags)
+        # -------------------------------------------------------------
+        # Window Flags
+        self.windowFlags = QtCore.Qt.FramelessWindowHint
+        self.windowFlags |= QtCore.Qt.WindowStaysOnBottomHint
+        self.windowFlags |= QtCore.Qt.Tool
+        self.setWindowFlags(self.windowFlags)
+        # -------------------------------------------------------------
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
         # Central Widget and Global vertical Layout
         centralWidGet = QtWidgets.QWidget(self)

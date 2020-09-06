@@ -22,9 +22,7 @@ setuptools.setup(
     install_requires=[
         'PyQt5',
         'psutil',
-        'humanfriendly',
-        'coloredlogs',
-        'python-distro'
+        'humanfriendly'
     ],
     include_package_data=True,
     zip_safe=False,

@@ -5,8 +5,9 @@ import psutil
 import humanfriendly
 import time
 import subprocess
-import logging
 from gonhang import api
+from pathlib import Path
+import json
 
 
 class PlatFormUtil:
@@ -45,7 +46,6 @@ class System:
     message = dict()
     distroUtil = DistroUtil()
     platformUtil = PlatFormUtil()
-    logger = logging.getLogger(__name__)
 
     def getMessage(self):
         self.message.clear()
@@ -112,3 +112,32 @@ class System:
                 break
 
         return modelName
+
+
+class Config:
+    cfgFile = f'{Path.home()}/.config/gonha/config.json'
+    globalJSON = dict()
+    myExtIp = subprocess.getoutput('curl -s ifconfig.me')
+
+    def getConfig(self, key):
+        with open(self.cfgFile, 'r') as openfile:
+            json_object = json.load(openfile)
+
+        return json_object[key]
+
+    def writeConfig(self):
+        if not os.path.isdir(os.path.dirname(self.cfgFile)):
+            os.makedirs(os.path.dirname(self.cfgFile))
+
+        # Serializing json
+        json_object = json.dumps(self.globalJSON, indent=4)
+        with open(self.cfgFile, 'w') as outfile:
+            outfile.write(json_object)
+
+    def updateConfig(self, data):
+        print(data)
+        self.globalJSON.update(data)
+
+    @staticmethod
+    def getVersion():
+        return '1.8.5'

@@ -1,10 +1,8 @@
 from PyQt5 import QtWidgets, QtGui
 from gonhang.api import FileUtil
-import logging
 
 
 class GonhaNgWizard(QtWidgets.QWizard):
-    logger = logging.getLogger(__name__)
 
     def __init__(self, parent=None):
         super(GonhaNgWizard, self).__init__(parent)
@@ -13,8 +11,9 @@ class GonhaNgWizard(QtWidgets.QWizard):
         self.setWindowTitle('GonhaNG Wizard Welcome')
         self.resize(640, 480)
         self.setWizardStyle(QtWidgets.QWizard.MacStyle)
-        self.logger.info(f'Resource path: {FileUtil.getResourcePath()}')
-        self.setPixmap(QtWidgets.QWizard.BackgroundPixmap, QtGui.QPixmap(f'{FileUtil.getResourcePath()}/images/logo.png'))
+        print(f'Resource path: {FileUtil.getResourcePath()}')
+        self.setPixmap(QtWidgets.QWizard.BackgroundPixmap,
+                       QtGui.QPixmap(f'{FileUtil.getResourcePath()}/images/logo.png'))
 
 
 class PositionPage(QtWidgets.QWizardPage):
@@ -22,10 +21,18 @@ class PositionPage(QtWidgets.QWizardPage):
         super(PositionPage, self).__init__(parent)
         self.setTitle('Position')
         self.setSubTitle('What position on the screen do you want?')
-
         layout = QtWidgets.QVBoxLayout()
-        # layout.addWidget(self.positionQuestionLabel)
+        self.optionsList = QtWidgets.QListWidget()
+        self.optionsList.insertItem(0, 'Left')
+        self.optionsList.insertItem(1, 'Center')
+        self.optionsList.insertItem(2, 'Right')
+        self.optionsList.clicked.connect(self.positionClicked)
+        layout.addWidget(self.optionsList)
         self.setLayout(layout)
+
+    @staticmethod
+    def positionClicked():
+        print('clicou em position')
 
 
 class Page2(QtWidgets.QWizardPage):

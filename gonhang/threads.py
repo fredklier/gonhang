@@ -1,11 +1,9 @@
 from PyQt5 import QtCore
-import logging
 from gonhang.core import System
 
 
 # thread fast
 class ThreadSystem(QtCore.QThread):
-    logger = logging.getLogger(__name__)
     signal = QtCore.pyqtSignal(dict, name='ThreadFastFinish')
     system = System()
 

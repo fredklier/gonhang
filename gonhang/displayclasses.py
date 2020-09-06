@@ -1,6 +1,5 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 from gonhang import core
-import logging
 from gonhang import api
 import humanfriendly
 
@@ -8,7 +7,6 @@ import humanfriendly
 class CommomAttributes:
     pbDefaultHeight = 20
     tempLabelWidth = 50
-    logger = logging.getLogger(__name__)
 
     def __init__(self):
         # -------------------------------------------------------------
@@ -131,7 +129,6 @@ class DisplaySystem:
     commom = CommomAttributes()
     systemWidgets = dict()
     system = core.System()
-    logger = logging.getLogger(__name__)
 
     def initUi(self):
         pbDefaultWidth = 180
