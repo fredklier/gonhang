@@ -6,6 +6,7 @@ from gonhang.api import StringUtil
 from gonhang.wizard import GonhaNgWizard
 from gonhang.threads import ThreadSystem
 from gonhang.displayclasses import DisplaySystem
+from gonhang.core import System
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -77,4 +78,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.myWizard.show()
 
     def threadSystemReceive(self, message):
-        self.logger.info(f'Receive message => {message}')
+        self.logger.info('cpu model name')
+        System().getCpuModelName()
+        # self.logger.info(f'Receive message => {message}')

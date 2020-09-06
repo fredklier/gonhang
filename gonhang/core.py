@@ -4,6 +4,9 @@ import distro
 import psutil
 import humanfriendly
 import time
+import subprocess
+import logging
+from gonhang import api
 
 
 class PlatFormUtil:
@@ -42,6 +45,7 @@ class System:
     message = dict()
     distroUtil = DistroUtil()
     platformUtil = PlatFormUtil()
+    logger = logging.getLogger(__name__)
 
     def getMessage(self):
         self.message.clear()
@@ -93,3 +97,18 @@ class System:
         bootTime %= 60
         seconds = bootTime
         return [int(days), int(hours), int(minutes), int(seconds)]
+
+    @staticmethod
+    def getCpuModelName():
+        output = subprocess.getoutput('cat /proc/cpuinfo')
+        # regex = re.compile(r'[\t]')
+        # output = regex.sub('', output)
+        modelName = ''
+        output = api.StringUtil.removeString(r'[\t]', output)
+        lines = output.split('\n')
+        for line in lines:
+            if 'model name:' in line:
+                modelName = api.StringUtil.removeString(r'model name: ', line)
+                break
+
+        return modelName

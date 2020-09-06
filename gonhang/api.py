@@ -2,6 +2,7 @@ from PyQt5 import QtWidgets
 import string
 import random
 import os
+import re
 
 
 class FileUtil:
@@ -35,6 +36,11 @@ class Alert(QtWidgets.QDialog):
 
 
 class StringUtil:
+
+    @staticmethod
+    def removeString(regPattern, stringToUpdate):
+        regex = re.compile(regPattern)
+        return regex.sub('', stringToUpdate)
 
     @staticmethod
     def getRandomString(stringLenght):
