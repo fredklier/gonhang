@@ -58,7 +58,6 @@ class MainWindow(QtWidgets.QMainWindow):
         return currentID
 
     def setWindowInEveryWorkspaces(self):
-        # wmctrl -i -r 0x07a00006 -b add,sticky
         cmd = f'{self.wmctrlBin} -i -r {self.getWindowCurrentId(self.windowTitle())} -b add,sticky'
         subprocess.getoutput(cmd)
 
