@@ -115,28 +115,45 @@ class System:
 
 
 class Config:
-    cfgFile = f'{Path.home()}/.config/gonha/config.json'
-    globalJSON = dict()
-    myExtIp = subprocess.getoutput('curl -s ifconfig.me')
+    globalJson = dict()
+    # Config file
+    cfgFile = f'{Path.home()}/.config/gonhang/config.json'
 
-    def getConfig(self, key):
-        with open(self.cfgFile, 'r') as openfile:
-            json_object = json.load(openfile)
+    def __init__(self):
+        if not self.cfgFileExists():
+            print('Config file not found, creating....')
+            self.createConfigFile()
 
-        return json_object[key]
+        self.globalJSON = self.loadGlobalConfig()
 
-    def writeConfig(self):
+    def createConfigFile(self):
         if not os.path.isdir(os.path.dirname(self.cfgFile)):
             os.makedirs(os.path.dirname(self.cfgFile))
 
+        self.writeGlobalConfig()
+
+    def cfgFileExists(self):
+        if os.path.isfile(self.cfgFile):
+            return True
+        else:
+            return False
+
+    def loadGlobalConfig(self):
+        self.globalJson.clear()
+        with open(self.cfgFile, 'r') as openfile:
+            json_object = json.load(openfile)
+
+        return json_object
+
+    def writeGlobalConfig(self):
         # Serializing json
-        json_object = json.dumps(self.globalJSON, indent=4)
+        json_object = json.dumps(self.globalJson, indent=4)
         with open(self.cfgFile, 'w') as outfile:
             outfile.write(json_object)
 
     def updateConfig(self, data):
-        print(data)
-        self.globalJSON.update(data)
+        self.globalJson.update(data)
+        self.writeGlobalConfig()
 
     @staticmethod
     def getVersion():

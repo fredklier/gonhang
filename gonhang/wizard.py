@@ -1,5 +1,6 @@
 from PyQt5 import QtWidgets, QtGui
 from gonhang.api import FileUtil
+from gonhang.core import Config
 
 
 class GonhaNgWizard(QtWidgets.QWizard):
@@ -17,22 +18,32 @@ class GonhaNgWizard(QtWidgets.QWizard):
 
 
 class PositionPage(QtWidgets.QWizardPage):
+    config = Config()
+    positions = ['Left', 'Center', 'Right']
+
     def __init__(self, parent=None):
         super(PositionPage, self).__init__(parent)
         self.setTitle('Position')
         self.setSubTitle('What position on the screen do you want?')
         layout = QtWidgets.QVBoxLayout()
         self.optionsList = QtWidgets.QListWidget()
-        self.optionsList.insertItem(0, 'Left')
-        self.optionsList.insertItem(1, 'Center')
-        self.optionsList.insertItem(2, 'Right')
+        for index, position in enumerate(self.positions):
+            self.optionsList.insertItem(index, position)
+
         self.optionsList.clicked.connect(self.positionClicked)
         layout.addWidget(self.optionsList)
         self.setLayout(layout)
 
-    @staticmethod
-    def positionClicked():
-        print('clicou em position')
+    def positionClicked(self):
+        self.config.updateConfig(
+            {
+                'Position':
+                {
+                    'index': self.optionsList.currentRow(),
+                    'value': self.positions[self.optionsList.currentRow()]
+                }
+            }
+        )
 
 
 class Page2(QtWidgets.QWizardPage):
