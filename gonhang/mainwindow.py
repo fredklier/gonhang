@@ -65,13 +65,38 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def contextMenuEvent(self, event: QtGui.QContextMenuEvent):
         contextMenu = QtWidgets.QMenu(self)
-        configAction = contextMenu.addAction('&Config')
-        quitAction = contextMenu.addAction('&Quit')
+        positionMenu = contextMenu.addMenu('Position')
+        positionLeftAction = positionMenu.addAction('Left')
+        positionCenterAction = positionMenu.addAction('Center')
+        positionRightAction = positionMenu.addAction('Right')
+        configAction = contextMenu.addAction('Config')
+        quitAction = contextMenu.addAction('Quit')
         action = contextMenu.exec_(self.mapToGlobal(event.pos()))
         if action == quitAction:
             sys.exit()
         elif action == configAction:
             self.wizardAction()
+        elif action == positionLeftAction:
+            self.moveMeToLeft()
+        elif action == positionCenterAction:
+            self.moveMeToCenter()
+        elif action == positionRightAction:
+            self.moveMeToRight()
+
+    @staticmethod
+    def getScreenGeometry():
+        return QtWidgets.QApplication.desktop().screenGeometry()
+
+    def moveMeToLeft(self):
+        self.move(0, 0)
+
+    def moveMeToCenter(self):
+        x = (self.getScreenGeometry().width() - self.geometry().width()) / 2
+        self.move(x, 0)
+
+    def moveMeToRight(self):
+        x = (self.getScreenGeometry().width() - self.geometry().width())
+        self.move(x, 0)
 
     def wizardAction(self):
         self.logger.info('Enter in wizard...')
