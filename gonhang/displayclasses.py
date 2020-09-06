@@ -137,7 +137,6 @@ class DisplaySystem:
         pbDefaultWidth = 180
         iconDefaultWidth = 80
         message = self.system.getMessage()
-        self.logger.info(message)
         systemGroupBox = self.commom.getDefaultGb('system')
 
         verticalLayout = QtWidgets.QVBoxLayout()

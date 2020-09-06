@@ -36,7 +36,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.verticalLayout.setAlignment(QtCore.Qt.AlignTop)
         centralWidGet.setLayout(self.verticalLayout)
         self.setCentralWidget(centralWidGet)
-        # --------------------------------------------------------------
 
     def showSections(self):
         self.verticalLayout.addWidget(self.displaySystem.initUi())
@@ -64,6 +63,8 @@ class MainWindow(QtWidgets.QMainWindow):
         subprocess.getoutput(cmd)
 
     def contextMenuEvent(self, event: QtGui.QContextMenuEvent):
+        # -------------------------------------------------------------
+        # Main Menu
         contextMenu = QtWidgets.QMenu(self)
         positionMenu = contextMenu.addMenu('Position')
         positionLeftAction = positionMenu.addAction('Left')
