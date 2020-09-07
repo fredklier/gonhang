@@ -11,9 +11,10 @@ class AboutBox(QtWidgets.QDialog):
 
     def __init__(self, *args, **kwargs):
         super(AboutBox, self).__init__(*args, **kwargs)
-        self.setFixedWidth(400)
+        self.setFixedWidth(480)
         self.centerMe()
         self.setWindowTitle(f'GonhaNG - Next Generation - {self.config.getVersion()}')
+        alignCenter = QtCore.Qt.AlignHCenter
         self.okButton = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok)
         self.okButton.accepted.connect(self.hideMe)
         self.layout = QtWidgets.QVBoxLayout()
@@ -22,20 +23,29 @@ class AboutBox(QtWidgets.QDialog):
         self.logoLabel = QtWidgets.QLabel()
         self.logoLabel.setPixmap(QtGui.QPixmap(f'{FileUtil.getResourcePath()}/images/logoaboutbox.png'))
         self.layout.addWidget(self.logoLabel)
-        self.logoLabel.setAlignment(QtCore.Qt.AlignHCenter)
+        self.logoLabel.setAlignment(alignCenter)
         # ------------------------------------------------------------------------------------------
         # text about box
-        gonhaNgLabel = QtWidgets.QLabel('GonhaNG - Next Generation')
-        gonhaNgLabel.setAlignment(QtCore.Qt.AlignHCenter)
+        gonhaNgLabel = QtWidgets.QLabel('<strong>GonhaNG - Next Generation</strong>')
+        gonhaNgLabel.setTextFormat(QtCore.Qt.RichText)
+        gonhaNgLabel.setAlignment(alignCenter)
         self.layout.addWidget(gonhaNgLabel)
-        versionLabel = QtWidgets.QLabel(f'Version - {self.config.getVersion()}')
-        versionLabel.setAlignment(QtCore.Qt.AlignHCenter)
+        versionLabel = QtWidgets.QLabel(f'Version <strong>{self.config.getVersion()}</strong>')
+        versionLabel.setTextFormat(QtCore.Qt.RichText)
+        versionLabel.setAlignment(alignCenter)
         self.layout.addWidget(versionLabel)
-        textAboutLabel = QtWidgets.QLabel('This program comes with absolutely no warranty')
-        textAboutLabel.setAlignment(QtCore.Qt.AlignHCenter)
+        # warrantyText
+        textAboutLabel = QtWidgets.QLabel('This program comes with absolutely <strong>no warranty</strong>')
+        textAboutLabel.setTextFormat(QtCore.Qt.RichText)
+        textAboutLabel.setAlignment(alignCenter)
         self.layout.addWidget(textAboutLabel)
+        urlLink = '<a href=\"https://github.com/fredcox/gonhang/blob/master/LICENSE\">https://github.com/fredcox/gonhang/blob/master/LICENSE</a>'
+        urlLabel = QtWidgets.QLabel(urlLink)
+        urlLabel.setAlignment(alignCenter)
+        urlLabel.setOpenExternalLinks(True)
+        self.layout.addWidget(urlLabel)
 
-        self.layout.addWidget(self.okButton)
+        self.layout.addWidget(self.okButton, alignment=QtCore.Qt.AlignHCenter)
         self.setLayout(self.layout)
 
     def centerMe(self):
