@@ -27,7 +27,15 @@ class GonhaNgWizard(QtWidgets.QWizard):
 
 class CpuTempPage(QtWidgets.QWizardPage):
     config = Config()
-    cpuTempOption = config.getKey('cpuTempOption')
+    cpuTempOption = dict(
+        {
+            'cpuTempOption': {
+                'index': 0,
+                'subIndex': 0,
+                'enabled': False
+            }
+        }
+    )
 
     def __init__(self, parent=None):
         super(CpuTempPage, self).__init__(parent)
@@ -54,26 +62,23 @@ class CpuTempPage(QtWidgets.QWizardPage):
         self.setLayout(self.vLayout)
 
     def optionsClick(self):
-        index = self.optionsList.currentRow()
-        subIndex = self.optionsList.currentItem().text().split('|')
-        # print(f'index = {index} subIndex = {subIndex}')
-        self.updateCpuTempOption(index, int(subIndex[1]), enabled=False)
-        self.config.updateConfig(self.cpuTempOption)
-
+        rowList = self.optionsList.currentItem().text().split('|')
+        self.updateCpuTempOption(rowList[0], int(rowList[1]), enabled=False)
         print(self.cpuTempOption)
 
-        # self.updateTemp(index, subIndex, True)
-
     def updateCpuTempOption(self, index, subIndex, enabled):
+        self.cpuTempOption.clear()
         self.cpuTempOption.update(
             {
                 'cpuTempOption': {
                     'index': index,
                     'subIndex': subIndex,
-                    'enable': enabled
+                    'enabled': enabled
                 }
             }
         )
+        self.config.updateConfig(self.cpuTempOption)
+        print(self.cpuTempOption)
 
     def displayAvailableTemps(self):
         cpuSensors = psutil.sensors_temperatures()
@@ -85,11 +90,27 @@ class CpuTempPage(QtWidgets.QWizardPage):
                 )
 
         # Verify if exists key in config
-        if self.cpuTempOption is None:
+        cpuTempOptionConfig = self.config.getKey('cpuTempOption')
+        print(f'cpuTempOptionConfig: {cpuTempOptionConfig}')
+        if cpuTempOptionConfig is None:
             self.updateCpuTempOption(0, 0, False)
-            # self.config.updateConfig(self.cpuTempOption)
+        else:
+            self.updateCpuTempOption(
+                cpuTempOptionConfig['index'],
+                cpuTempOptionConfig['subIndex'],
+                cpuTempOptionConfig['enabled']
+            )
 
-        print(self.cpuTempOption)
+        self.displayCorrectRow()
+
+    def displayCorrectRow(self):
+        rowCount = self.optionsList.count()
+        for i in range(rowCount):
+            rowText = self.optionsList.item(i).text()
+            rowList = rowText.split('|')
+            print(f"Testing rowlist[0] = {rowList[0]} rowlist[1] = {rowList[1]} self.cpuTempOption['cpuTempOption']['index'] = {self.cpuTempOption['cpuTempOption']['index']} = {self.cpuTempOption['cpuTempOption']['subIndex'] }")
+            if self.cpuTempOption['cpuTempOption']['index'] == int(rowList[0]) and self.cpuTempOption['cpuTempOption']['subIndex'] == int(rowList[1]):
+                print(f'Current Config Row: {self.optionsList.item(i).text()}')
 
 
 class Page2(QtWidgets.QWizardPage):
