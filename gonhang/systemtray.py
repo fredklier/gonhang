@@ -1,6 +1,5 @@
-from PyQt5 import QtCore, QtWidgets
-from gonhang.wizard import GonhaNgWizard
-
+from PyQt5 import QtCore, QtWidgets, QtGui
+from gonhang.api import FileUtil
 
 class SystemTrayIcon(QtWidgets.QSystemTrayIcon):
 
@@ -15,7 +14,7 @@ class SystemTrayIcon(QtWidgets.QSystemTrayIcon):
         positionCenterAction.triggered.connect(self.moveMeToCenter)
         positionRightAction = positionMenu.addAction('Right')
         positionRightAction.triggered.connect(self.moveMeToRight)
-        configAction = menu.addAction('Config')
+        configAction = menu.addAction(QtGui.QIcon(f'{FileUtil.getResourcePath()}/images/gear.png'), 'Config')
         configAction.triggered.connect(self.wizardAction)
         exitAction = menu.addAction("Exit")
         exitAction.triggered.connect(self.exit)
