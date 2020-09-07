@@ -13,7 +13,6 @@ class GonhaNgWizard(QtWidgets.QWizard):
         self.setWindowTitle('GonhaNG Wizard Welcome')
         self.resize(640, 480)
         self.setWizardStyle(QtWidgets.QWizard.MacStyle)
-        print(f'Resource path: {FileUtil.getResourcePath()}')
         self.setPixmap(QtWidgets.QWizard.BackgroundPixmap,
                        QtGui.QPixmap(f'{FileUtil.getResourcePath()}/images/logo.png'))
         self.centerMe()
@@ -64,7 +63,7 @@ class CpuTempPage(QtWidgets.QWizardPage):
     def optionsClick(self):
         rowList = self.optionsList.currentItem().text().split('|')
         self.updateCpuTempOption(rowList[0], int(rowList[1]), enabled=False)
-        print(self.cpuTempOption)
+        # print(self.cpuTempOption)
 
     def updateCpuTempOption(self, index, subIndex, enabled):
         self.cpuTempOption.clear()
@@ -78,7 +77,7 @@ class CpuTempPage(QtWidgets.QWizardPage):
             }
         )
         self.config.updateConfig(self.cpuTempOption)
-        print(self.cpuTempOption)
+        # print(self.cpuTempOption)
 
     def displayAvailableTemps(self):
         cpuSensors = psutil.sensors_temperatures()
@@ -91,7 +90,7 @@ class CpuTempPage(QtWidgets.QWizardPage):
 
         # Verify if exists key in config
         cpuTempOptionConfig = self.config.getKey('cpuTempOption')
-        print(f'cpuTempOptionConfig: {cpuTempOptionConfig}')
+        # print(f'cpuTempOptionConfig: {cpuTempOptionConfig}')
         if cpuTempOptionConfig is None:
             self.updateCpuTempOption(0, 0, False)
         else:
@@ -105,12 +104,13 @@ class CpuTempPage(QtWidgets.QWizardPage):
 
     def displayCorrectRow(self):
         rowCount = self.optionsList.count()
+        currentIndex = self.cpuTempOption['cpuTempOption']['index']
+        currentSubIndex = self.cpuTempOption['cpuTempOption']['subIndex']
         for i in range(rowCount):
             rowText = self.optionsList.item(i).text()
             rowList = rowText.split('|')
-            print(f"Testing rowlist[0] = {rowList[0]} rowlist[1] = {rowList[1]} self.cpuTempOption['cpuTempOption']['index'] = {self.cpuTempOption['cpuTempOption']['index']} = {self.cpuTempOption['cpuTempOption']['subIndex'] }")
-            if self.cpuTempOption['cpuTempOption']['index'] == int(rowList[0]) and self.cpuTempOption['cpuTempOption']['subIndex'] == int(rowList[1]):
-                print(f'Current Config Row: {self.optionsList.item(i).text()}')
+            if str(currentIndex) == str(rowList[0]) and str(currentSubIndex) == str(rowList[1]):
+                self.optionsList.setCurrentRow(i)
 
 
 class Page2(QtWidgets.QWizardPage):
