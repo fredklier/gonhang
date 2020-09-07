@@ -156,6 +156,12 @@ class MainWindow(QtWidgets.QMainWindow):
             message['swapTotal']
         )
 
+        # ------------------------------------------------------------------------------------------------------
+        # Verify if can display cpuTemp
+        cpuTempOption = self.config.getKey('cpuTempOption')
+        if not (cpuTempOption is None):
+            self.displaySystem.showWidgetByDefault()
+
     def updateWorkOut(self, pb, pbValue, labelUsed, labelUsedValue, labelTotal):
         pb.setValue(pbValue)
         self.common.analizeProgressBar(pb, pbValue)

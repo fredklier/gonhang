@@ -450,13 +450,25 @@ class DisplaySystem:
         verticalLayout.addLayout(gridLayout)
 
         # --------------------------------------------------------------------------------------------------
+        systemGroupBox.setLayout(verticalLayout)
+        self.hideWidgetByDefault()
+
+        return systemGroupBox
+
+    def hideWidgetByDefault(self):
+        # --------------------------------------------------------------------------------------------------
         # Hide by default
         self.systemWidgets['cpuTempIcon'].hide()
         self.systemWidgets['tempProgressBar'].hide()
         self.systemWidgets['cpuCurrentTempLabel'].hide()
         self.systemWidgets['cpuTempSeparatorLabel'].hide()
         self.systemWidgets['cpuTempMaxLabel'].hide()
-        # --------------------------------------------------------------------------------------------------
-        systemGroupBox.setLayout(verticalLayout)
 
-        return systemGroupBox
+    def showWidgetByDefault(self):
+        # --------------------------------------------------------------------------------------------------
+        # Hide by default
+        self.systemWidgets['cpuTempIcon'].show()
+        self.systemWidgets['tempProgressBar'].show()
+        self.systemWidgets['cpuCurrentTempLabel'].show()
+        self.systemWidgets['cpuTempSeparatorLabel'].show()
+        self.systemWidgets['cpuTempMaxLabel'].show()
