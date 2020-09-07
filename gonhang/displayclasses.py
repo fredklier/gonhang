@@ -9,8 +9,8 @@ from gonhang.api import FileUtil
 class AboutBox(QtWidgets.QDialog):
     config = Config()
 
-    def __init__(self, *args, **kwargs):
-        super(AboutBox, self).__init__(*args, **kwargs)
+    def __init__(self, parent=None):
+        super(AboutBox, self).__init__(parent)
         self.setFixedWidth(480)
         self.centerMe()
         self.setWindowTitle(f'GonhaNG - Next Generation - {self.config.getVersion()}')
@@ -44,6 +44,8 @@ class AboutBox(QtWidgets.QDialog):
         urlLabel.setAlignment(alignCenter)
         urlLabel.setOpenExternalLinks(True)
         self.layout.addWidget(urlLabel)
+
+        self.layout.addSpacing(30)
 
         self.layout.addWidget(self.okButton, alignment=QtCore.Qt.AlignHCenter)
         self.setLayout(self.layout)

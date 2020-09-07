@@ -57,13 +57,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.aboutBox = AboutBox(self)
 
     def showAboutBox(self):
-        self.aboutBox.exec_()
+        # self.aboutBox.exec_()
+        self.aboutBox.show()
 
     def showSections(self):
         self.loadGlobalParams()
-        label = QtWidgets.QLabel('teste')
-        self.common.setLabel(label, self.common.white, self.common.fontDefault)
-        self.verticalLayout.addWidget(label)
         self.verticalLayout.addWidget(self.displaySystem.initUi())
 
     def loadGlobalParams(self):
