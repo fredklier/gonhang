@@ -407,8 +407,56 @@ class DisplaySystem:
         gridLayout.addWidget(swapTotalLabel, 2, 4)
 
         verticalLayout.addLayout(gridLayout)
-        # ---------------------------------------------------------------------------
 
+        # ---------------------------------------------------------------------------
+        # cpu Temperature Load
+        cpuTempIcon = QtWidgets.QLabel()
+        cpuTempIcon.setPixmap(QtGui.QPixmap(f"{api.FileUtil.getResourcePath()}/images/temp.png"))
+        self.systemWidgets['cpuTempIcon'] = cpuTempIcon
+
+        gridLayout.addWidget(cpuTempIcon, 3, 0)
+
+        tempProgressBar = QtWidgets.QProgressBar()
+        tempProgressBar.setFixedHeight(self.commom.pbDefaultHeight)
+        tempProgressBar.setFixedWidth(pbDefaultWidth)
+        tempProgressBar.setFont(self.commom.fontDefault)
+        tempProgressBar.setStyleSheet(self.commom.greenPBStyle)
+        self.systemWidgets['tempProgressBar'] = tempProgressBar
+        tempProgressBar.setValue(30)
+
+        gridLayout.addWidget(tempProgressBar, 3, 1)
+
+        cpuCurrentTempLabel = QtWidgets.QLabel('30.0 °C')
+        self.commom.setLabel(cpuCurrentTempLabel, self.commom.white, self.commom.fontDefault)
+        self.systemWidgets['cpuCurrentTempLabel'] = cpuCurrentTempLabel
+        cpuCurrentTempLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+
+        gridLayout.addWidget(cpuCurrentTempLabel, 3, 2)
+
+        cpuTempSeparatorLabel = QtWidgets.QLabel('/')
+        self.commom.setLabel(cpuTempSeparatorLabel, self.commom.white, self.commom.fontDefault)
+        cpuTempSeparatorLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+        self.systemWidgets['cpuTempSeparatorLabel'] = cpuTempSeparatorLabel
+
+        gridLayout.addWidget(cpuTempSeparatorLabel, 3, 3)
+
+        cpuTempMaxLabel = QtWidgets.QLabel('100.0 °C')
+        self.commom.setLabel(cpuTempMaxLabel, self.commom.red, self.commom.fontDefault)
+        cpuTempMaxLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+        self.systemWidgets['cpuTempMaxLabel'] = cpuTempMaxLabel
+
+        gridLayout.addWidget(cpuTempMaxLabel, 3, 4)
+
+        verticalLayout.addLayout(gridLayout)
+
+        # --------------------------------------------------------------------------------------------------
+        # Hide by default
+        self.systemWidgets['cpuTempIcon'].hide()
+        self.systemWidgets['tempProgressBar'].hide()
+        self.systemWidgets['cpuCurrentTempLabel'].hide()
+        self.systemWidgets['cpuTempSeparatorLabel'].hide()
+        self.systemWidgets['cpuTempMaxLabel'].hide()
+        # --------------------------------------------------------------------------------------------------
         systemGroupBox.setLayout(verticalLayout)
 
         return systemGroupBox

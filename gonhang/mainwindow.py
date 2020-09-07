@@ -77,7 +77,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.threadSystem.start()
 
     def getWindowCurrentId(self, windowTitle):
-        print(f'wmctrl binary found in : {self.wmctrlBin}')
         windowsList = subprocess.getoutput(f'{self.wmctrlBin} -l')
         windowsList = windowsList.split('\n')
         currentID = ''
