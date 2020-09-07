@@ -3,7 +3,7 @@ import gonhang.api as api
 
 setuptools.setup(
     name='gonhang',
-    version='0.0.0',
+    version='0.0.1',
     author="Fred Cox",
     author_email="fredcox@gmail.com",
     description='gonhang - The Next Generation Light-Weight System Monitor for Linux',

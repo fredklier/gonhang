@@ -13,7 +13,7 @@ class AboutBox(QtWidgets.QDialog):
         super(AboutBox, self).__init__(*args, **kwargs)
         self.setFixedWidth(400)
         self.centerMe()
-        self.setWindowTitle(f'GonhaNG - {self.config.getVersion()}')
+        self.setWindowTitle(f'GonhaNG - Next Generation - {self.config.getVersion()}')
         self.okButton = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok)
         self.okButton.accepted.connect(self.hideMe)
         self.layout = QtWidgets.QVBoxLayout()
@@ -22,7 +22,18 @@ class AboutBox(QtWidgets.QDialog):
         self.logoLabel = QtWidgets.QLabel()
         self.logoLabel.setPixmap(QtGui.QPixmap(f'{FileUtil.getResourcePath()}/images/logoaboutbox.png'))
         self.layout.addWidget(self.logoLabel)
+        self.logoLabel.setAlignment(QtCore.Qt.AlignHCenter)
         # ------------------------------------------------------------------------------------------
+        # text about box
+        gonhaNgLabel = QtWidgets.QLabel('GonhaNG - Next Generation')
+        gonhaNgLabel.setAlignment(QtCore.Qt.AlignHCenter)
+        self.layout.addWidget(gonhaNgLabel)
+        versionLabel = QtWidgets.QLabel(f'Version - {self.config.getVersion()}')
+        versionLabel.setAlignment(QtCore.Qt.AlignHCenter)
+        self.layout.addWidget(versionLabel)
+        textAboutLabel = QtWidgets.QLabel('This program comes with absolutely no warranty')
+        textAboutLabel.setAlignment(QtCore.Qt.AlignHCenter)
+        self.layout.addWidget(textAboutLabel)
 
         self.layout.addWidget(self.okButton)
         self.setLayout(self.layout)

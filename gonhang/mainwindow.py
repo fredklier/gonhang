@@ -17,8 +17,8 @@ class MainWindow(QtWidgets.QMainWindow):
     myWizard = None
     # -------------------------------------------------------------
     # Display classes
-    # common = CommomAttributes()
-    # displaySystem = DisplaySystem()
+    common = CommomAttributes()
+    displaySystem = DisplaySystem()
     # -------------------------------------------------------------
     # Threads
     threadSystem = ThreadSystem()
@@ -44,7 +44,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.systemTrayMenu = SystemTrayIcon(QtGui.QIcon(f'{FileUtil.getResourcePath()}/images/icon.png'), self)
         self.systemTrayMenu.show()
-        # self.aboutBox = AboutBox(self)
+        self.aboutBox = AboutBox(self)
 
     def showAboutBox(self):
         self.aboutBox.exec_()
