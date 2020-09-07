@@ -10,6 +10,7 @@ from gonhang.displayclasses import CommomAttributes
 from gonhang.core import Config
 from gonhang.systemtray import SystemTrayIcon
 from gonhang.api import FileUtil
+from gonhang.displayclasses import AboutBox
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -44,6 +45,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setCentralWidget(centralWidGet)
         self.systemTrayMenu = SystemTrayIcon(QtGui.QIcon(f'{FileUtil.getResourcePath()}/images/icon.png'), self)
         self.systemTrayMenu.show()
+        self.aboutBox = AboutBox(self)
+
+    def showAboutBox(self):
+        self.aboutBox.exec_()
 
     def showSections(self):
         self.loadGlobalParams()
@@ -76,28 +81,6 @@ class MainWindow(QtWidgets.QMainWindow):
     def setWindowInEveryWorkspaces(self):
         cmd = f'{self.wmctrlBin} -i -r {self.getWindowCurrentId(self.windowTitle())} -b add,sticky'
         subprocess.getoutput(cmd)
-
-    def contextMenuEvent(self, event: QtGui.QContextMenuEvent):
-        # -------------------------------------------------------------
-        # Main Menu
-        contextMenu = QtWidgets.QMenu(self)
-        positionMenu = contextMenu.addMenu('Position')
-        positionLeftAction = positionMenu.addAction('Left')
-        positionCenterAction = positionMenu.addAction('Center')
-        positionRightAction = positionMenu.addAction('Right')
-        configAction = contextMenu.addAction('Config')
-        quitAction = contextMenu.addAction('Quit')
-        action = contextMenu.exec_(self.mapToGlobal(event.pos()))
-        if action == quitAction:
-            sys.exit()
-        elif action == configAction:
-            self.wizardAction()
-        elif action == positionLeftAction:
-            self.refreshPosition(0)
-        elif action == positionCenterAction:
-            self.refreshPosition(1)
-        elif action == positionRightAction:
-            self.refreshPosition(2)
 
     @staticmethod
     def getScreenGeometry():

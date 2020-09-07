@@ -2,6 +2,39 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 from gonhang import core
 from gonhang import api
 import humanfriendly
+from gonhang.core import Config
+from gonhang.api import FileUtil
+
+
+class AboutBox(QtWidgets.QDialog):
+    config = Config()
+
+    def __init__(self, *args, **kwargs):
+        super(AboutBox, self).__init__(*args, **kwargs)
+        self.setFixedWidth(400)
+        self.centerMe()
+        self.setWindowTitle(f'GonhaNG - {self.config.getVersion()}')
+        self.okButton = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok)
+        self.okButton.accepted.connect(self.hideMe)
+        self.layout = QtWidgets.QVBoxLayout()
+        # ------------------------------------------------------------------------------------------
+        # Logo
+        self.logoLabel = QtWidgets.QLabel()
+        self.logoLabel.setPixmap(QtGui.QPixmap(f'{FileUtil.getResourcePath()}/images/logoaboutbox.png'))
+        self.layout.addWidget(self.logoLabel)
+        # ------------------------------------------------------------------------------------------
+
+        self.layout.addWidget(self.okButton)
+        self.setLayout(self.layout)
+
+    def centerMe(self):
+        screenGeo = QtWidgets.QApplication.desktop().screenGeometry()
+        x = (screenGeo.width() - self.width()) / 2
+        y = (screenGeo.height() - self.height()) / 2
+        self.move(x, 100)
+
+    def hideMe(self):
+        self.hide()
 
 
 class CommomAttributes:

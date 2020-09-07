@@ -15,6 +15,13 @@ class GonhaNgWizard(QtWidgets.QWizard):
         print(f'Resource path: {FileUtil.getResourcePath()}')
         self.setPixmap(QtWidgets.QWizard.BackgroundPixmap,
                        QtGui.QPixmap(f'{FileUtil.getResourcePath()}/images/logo.png'))
+        self.centerMe()
+
+    def centerMe(self):
+        screenGeo = QtWidgets.QApplication.desktop().screenGeometry()
+        x = (screenGeo.width() - self.width()) / 2
+        y = (screenGeo.height() - self.height()) / 2
+        self.move(x, 100)
 
 
 class PositionPage(QtWidgets.QWizardPage):
@@ -38,10 +45,10 @@ class PositionPage(QtWidgets.QWizardPage):
         self.config.updateConfig(
             {
                 'Position':
-                {
-                    'index': self.optionsList.currentRow(),
-                    'value': self.positions[self.optionsList.currentRow()]
-                }
+                    {
+                        'index': self.optionsList.currentRow(),
+                        'value': self.positions[self.optionsList.currentRow()]
+                    }
             }
         )
 

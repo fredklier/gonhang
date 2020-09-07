@@ -1,5 +1,7 @@
 from PyQt5 import QtCore, QtWidgets, QtGui
 from gonhang.api import FileUtil
+from gonhang.displayclasses import AboutBox
+
 
 class SystemTrayIcon(QtWidgets.QSystemTrayIcon):
 
@@ -16,8 +18,13 @@ class SystemTrayIcon(QtWidgets.QSystemTrayIcon):
         positionRightAction.triggered.connect(self.moveMeToRight)
         configAction = menu.addAction(QtGui.QIcon(f'{FileUtil.getResourcePath()}/images/gear.png'), 'Config')
         configAction.triggered.connect(self.wizardAction)
-        exitAction = menu.addAction("Exit")
+        aboutAction = menu.addAction(QtGui.QIcon(f'{FileUtil.getResourcePath()}/images/about.png'), 'About')
+        aboutAction.triggered.connect(self.aboutAction)
+        exitAction = menu.addAction(QtGui.QIcon(f'{FileUtil.getResourcePath()}/images/exit.png'), 'Exit')
         exitAction.triggered.connect(self.exit)
+
+    def aboutAction(self):
+        self.parent().showAboutBox()
 
     def moveMeToLeft(self):
         self.parent().refreshPosition(0)
