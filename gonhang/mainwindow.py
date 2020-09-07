@@ -1,4 +1,3 @@
-import sys
 from PyQt5 import QtWidgets, QtCore, QtGui
 import subprocess
 from gonhang.api import StringUtil
@@ -18,8 +17,8 @@ class MainWindow(QtWidgets.QMainWindow):
     myWizard = None
     # -------------------------------------------------------------
     # Display classes
-    common = CommomAttributes()
-    displaySystem = DisplaySystem()
+    # common = CommomAttributes()
+    # displaySystem = DisplaySystem()
     # -------------------------------------------------------------
     # Threads
     threadSystem = ThreadSystem()
@@ -37,14 +36,15 @@ class MainWindow(QtWidgets.QMainWindow):
         # -------------------------------------------------------------
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
         # Central Widget and Global vertical Layout
-        centralWidGet = QtWidgets.QWidget(self)
+        centralWidget = QtWidgets.QWidget(self)
         self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setAlignment(QtCore.Qt.AlignTop)
-        centralWidGet.setLayout(self.verticalLayout)
-        self.setCentralWidget(centralWidGet)
+        centralWidget.setLayout(self.verticalLayout)
+        self.setCentralWidget(centralWidget)
+
         self.systemTrayMenu = SystemTrayIcon(QtGui.QIcon(f'{FileUtil.getResourcePath()}/images/icon.png'), self)
         self.systemTrayMenu.show()
-        self.aboutBox = AboutBox(self)
+        # self.aboutBox = AboutBox(self)
 
     def showAboutBox(self):
         self.aboutBox.exec_()
