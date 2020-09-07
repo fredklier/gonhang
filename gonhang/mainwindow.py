@@ -9,12 +9,15 @@ from gonhang.core import Config
 from gonhang.systemtray import SystemTrayIcon
 from gonhang.api import FileUtil
 from gonhang.displayclasses import AboutBox
+import sys
+import time
 
 
 class MainWindow(QtWidgets.QMainWindow):
     config = Config()
     wmctrlBin = subprocess.getoutput('which wmctrl')
     myWizard = None
+    app = QtWidgets.QApplication(sys.argv)
     # -------------------------------------------------------------
     # Display classes
     common = CommomAttributes()
@@ -41,6 +44,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.verticalLayout.setAlignment(QtCore.Qt.AlignTop)
         centralWidget.setLayout(self.verticalLayout)
         self.setCentralWidget(centralWidget)
+        # -----------------------------------------------------------------------------
+        # Show Sections and initialize services
+        self.showSections()
+        self.show()
+        time.sleep(1/50)
+        self.setWindowInEveryWorkspaces()
+        # -----------------------------------------------------------------------------
 
         self.systemTrayMenu = SystemTrayIcon(QtGui.QIcon(f'{FileUtil.getResourcePath()}/images/icon.png'), self)
         self.systemTrayMenu.show()
@@ -51,6 +61,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def showSections(self):
         self.loadGlobalParams()
+        label = QtWidgets.QLabel('teste')
+        self.common.setLabel(label, self.common.white, self.common.fontDefault)
+        self.verticalLayout.addWidget(label)
         self.verticalLayout.addWidget(self.displaySystem.initUi())
 
     def loadGlobalParams(self):

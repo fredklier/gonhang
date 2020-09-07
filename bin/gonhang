@@ -1,21 +1,10 @@
 #!/usr/bin/python3
-import sys
-from PyQt5.QtWidgets import QApplication
 import gonhang.mainwindow
-import time
-
+import sys
 
 if __name__ == '__main__':
     # os.environ['QT_LOGGING_RULES'] = "qt5ct.debug=false"
-    print('Starting...')
-    app = QApplication(sys.argv)
     window = gonhang.mainwindow.MainWindow()
-    window.show()
-    time.sleep(1/50)
-    print(f'Current title: {window.windowTitle()}')
-    window.setWindowInEveryWorkspaces()
-    print('Show all sections...')
-    window.showSections()
-    print('Starting all threads...')
-    window.startAllThreads()
-    app.exec_()
+    app = window.app
+    sys.exit(app.exec_())
+

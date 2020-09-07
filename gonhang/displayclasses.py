@@ -51,7 +51,7 @@ class AboutBox(QtWidgets.QDialog):
     def centerMe(self):
         screenGeo = QtWidgets.QApplication.desktop().screenGeometry()
         x = (screenGeo.width() - self.width()) / 2
-        y = (screenGeo.height() - self.height()) / 2
+        # y = (screenGeo.height() - self.height()) / 2
         self.move(x, 100)
 
     def hideMe(self):
