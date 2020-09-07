@@ -8,6 +8,8 @@ from gonhang.threads import ThreadSystem
 from gonhang.displayclasses import DisplaySystem
 from gonhang.displayclasses import CommomAttributes
 from gonhang.core import Config
+from gonhang.systemtray import SystemTrayIcon
+from gonhang.api import FileUtil
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -40,6 +42,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.verticalLayout.setAlignment(QtCore.Qt.AlignTop)
         centralWidGet.setLayout(self.verticalLayout)
         self.setCentralWidget(centralWidGet)
+        self.systemTrayMenu = SystemTrayIcon(QtGui.QIcon(f'{FileUtil.getResourcePath()}/images/icon.png'), self)
+        self.systemTrayMenu.show()
 
     def showSections(self):
         self.loadGlobalParams()
