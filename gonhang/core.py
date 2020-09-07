@@ -1,6 +1,5 @@
 import platform
 import os
-import distro
 import psutil
 import humanfriendly
 import time
@@ -8,6 +7,7 @@ import subprocess
 from gonhang import api
 from pathlib import Path
 import json
+import distro
 
 
 class PlatFormUtil:

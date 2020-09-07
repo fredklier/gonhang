@@ -1,13 +1,14 @@
 from PyQt5 import QtWidgets, QtGui
 from gonhang.api import FileUtil
 from gonhang.core import Config
+import psutil
 
 
 class GonhaNgWizard(QtWidgets.QWizard):
 
     def __init__(self, parent=None):
         super(GonhaNgWizard, self).__init__(parent)
-        self.addPage(PositionPage(self))
+        self.addPage(CpuTempPage(self))
         self.addPage(Page2(self))
         self.setWindowTitle('GonhaNG Wizard Welcome')
         self.resize(640, 480)
@@ -24,33 +25,71 @@ class GonhaNgWizard(QtWidgets.QWizard):
         self.move(x, 100)
 
 
-class PositionPage(QtWidgets.QWizardPage):
+class CpuTempPage(QtWidgets.QWizardPage):
     config = Config()
-    positions = ['Left', 'Center', 'Right']
+    cpuTempOption = config.getKey('cpuTempOption')
 
     def __init__(self, parent=None):
-        super(PositionPage, self).__init__(parent)
-        self.setTitle('Position')
-        self.setSubTitle('What position on the screen do you want?')
-        layout = QtWidgets.QVBoxLayout()
+        super(CpuTempPage, self).__init__(parent)
+        self.setTitle('CPU Temperature')
+        self.setSubTitle('What is the temperature label of your CPU?')
+        self.vLayout = QtWidgets.QVBoxLayout()
+        self.hint = 'GonhaNG measures the average temperature of all the cpu cores installed in your system.\nIn general this value corresponds to Tdie'
+        self.hintLabel = QtWidgets.QLabel(self.hint)
+        self.vLayout.addWidget(self.hintLabel)
+
+        # self.groupBoxEnabled = QtWidgets.QGroupBox('Enable or Disable? ')
+        # self.gbLayout = QtWidgets.QVBoxLayout()
+        # self.rbEnable = QtWidgets.QRadioButton('Enable')
+        # self.gbLayout.addWidget(self.rbEnabled)
+
+        # self.groupBoxEnabled.setLayout(self.gbLayout)
+
+        # layout.addWidget(self.groupBoxEnabled)
+
         self.optionsList = QtWidgets.QListWidget()
-        for index, position in enumerate(self.positions):
-            self.optionsList.insertItem(index, position)
+        self.displayAvailableTemps()
+        self.optionsList.clicked.connect(self.optionsClick)
+        self.vLayout.addWidget(self.optionsList)
+        self.setLayout(self.vLayout)
 
-        self.optionsList.clicked.connect(self.positionClicked)
-        layout.addWidget(self.optionsList)
-        self.setLayout(layout)
+    def optionsClick(self):
+        index = self.optionsList.currentRow()
+        subIndex = self.optionsList.currentItem().text().split('|')
+        # print(f'index = {index} subIndex = {subIndex}')
+        self.updateCpuTempOption(index, int(subIndex[1]), enabled=False)
+        self.config.updateConfig(self.cpuTempOption)
 
-    def positionClicked(self):
-        self.config.updateConfig(
+        print(self.cpuTempOption)
+
+        # self.updateTemp(index, subIndex, True)
+
+    def updateCpuTempOption(self, index, subIndex, enabled):
+        self.cpuTempOption.update(
             {
-                'Position':
-                    {
-                        'index': self.optionsList.currentRow(),
-                        'value': self.positions[self.optionsList.currentRow()]
-                    }
+                'cpuTempOption': {
+                    'index': index,
+                    'subIndex': subIndex,
+                    'enable': enabled
+                }
             }
         )
+
+    def displayAvailableTemps(self):
+        cpuSensors = psutil.sensors_temperatures()
+        for index, sensor in enumerate(cpuSensors):
+            for subIndex, shwtemp in enumerate(cpuSensors[sensor]):
+                self.optionsList.insertItem(
+                    subIndex,
+                    '{}|{}| label: [{}] - current temp. {} °C'.format(index, subIndex, shwtemp.label, shwtemp.current)
+                )
+
+        # Verify if exists key in config
+        if self.cpuTempOption is None:
+            self.updateCpuTempOption(0, 0, False)
+            # self.config.updateConfig(self.cpuTempOption)
+
+        print(self.cpuTempOption)
 
 
 class Page2(QtWidgets.QWizardPage):

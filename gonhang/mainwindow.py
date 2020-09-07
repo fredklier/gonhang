@@ -3,7 +3,6 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 import subprocess
 from gonhang.api import StringUtil
 from gonhang.wizard import GonhaNgWizard
-from gonhang.wizard import PositionPage
 from gonhang.threads import ThreadSystem
 from gonhang.displayclasses import DisplaySystem
 from gonhang.displayclasses import CommomAttributes
@@ -87,6 +86,11 @@ class MainWindow(QtWidgets.QMainWindow):
         return QtWidgets.QApplication.desktop().screenGeometry()
 
     def refreshPosition(self, index):
+        positions = [
+            'Left',
+            'Center',
+            'Right'
+        ]
         x = 0
         if index == 1:
             x = (self.getScreenGeometry().width() - self.geometry().width()) / 2
@@ -95,7 +99,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.move(x, 0)
         # write to config
-        self.config.updateConfig({'Position': {'index': index, 'value': PositionPage.positions[index]}})
+        self.config.updateConfig({'Position': {'index': index, 'value': positions[index]}})
 
     def wizardAction(self):
         print('Enter in wizard...')

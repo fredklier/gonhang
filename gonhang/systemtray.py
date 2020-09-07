@@ -36,7 +36,6 @@ class SystemTrayIcon(QtWidgets.QSystemTrayIcon):
         self.parent().refreshPosition(2)
 
     def wizardAction(self):
-        print('Enter in wizard...')
         self.parent().wizardAction()
 
     @staticmethod
