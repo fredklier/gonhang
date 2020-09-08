@@ -187,9 +187,8 @@ class NvidiaPage(QtWidgets.QWizardPage):
         # print(self.keysSkeleton.nvidiaOption)
 
     def displayAvailablesGpus(self):
-        for gpu in self.nvidia.nvidiaEntity['gpus']:
-            # print(f"{gpu['gpu_uuid']} name: {gpu['gpu_name']}")
-            self.optionsList.addItem(f"{gpu['gpu_uuid']}| - {gpu['gpu_name']}")
+        gpu = self.nvidia.getGPUsInfo()
+        self.optionsList.addItem(f"{gpu['gpu_uuid']}| - {gpu['gpu_name']}")
 
         # Verify if exists key in config
         nvidiaOptionConfig = self.config.getKey('nvidiaOption')

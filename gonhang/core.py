@@ -182,7 +182,6 @@ class System:
 
     def isToDisplayCpuTemp(self):
         cpuTempOption = self.config.getKey('cpuTempOption')
-        isDisplay = False
         if cpuTempOption is None:
             isDisplay = False
         else:
@@ -248,16 +247,14 @@ class Nvidia:
 
     def getGPUsInfo(self):
         numGPUS = int(self.getOutputCommand('count')[0])
-        message = list()
+        message = dict()
         if numGPUS > 0:
-            for idx in range(numGPUS):
-                tempDict = dict()
-                gpu_uuid, gpu_name, display_mode, vbios_version, fan_speed, pstate, memory_total, memory_used, memory_free, temperature_gpu, power_management, power_draw, clocks_current_graphics, clocks_current_sm, clocks_current_memory, clocks_current_video, utilization_gpu = self.getOutputCommand(
-                    'gpu_uuid,gpu_name,display_mode,vbios_version,fan.speed,pstate,memory.total,memory.used,memory.free,temperature.gpu,power.management,power.draw,clocks.current.graphics,clocks.current.sm,clocks.current.memory,clocks.current.video,utilization.gpu'
-                )
+            gpu_uuid, gpu_name, display_mode, vbios_version, fan_speed, pstate, memory_total, memory_used, memory_free, temperature_gpu, power_management, power_draw, clocks_current_graphics, clocks_current_sm, clocks_current_memory, clocks_current_video, utilization_gpu = self.getOutputCommand(
+                'gpu_uuid,gpu_name,display_mode,vbios_version,fan.speed,pstate,memory.total,memory.used,memory.free,temperature.gpu,power.management,power.draw,clocks.current.graphics,clocks.current.sm,clocks.current.memory,clocks.current.video,utilization.gpu'
+            )
 
-                tempDict.update({
-                    'id': idx,
+            message.update(
+                {
                     'gpu_uuid': gpu_uuid,
                     'gpu_name': gpu_name,
                     'display_mode': display_mode,
@@ -278,8 +275,8 @@ class Nvidia:
                     'clocks_current_memory': clocks_current_memory,
                     'clocks_current_video': clocks_current_video,
                     'utilization_gpu': utilization_gpu
-                })
-                message.append(tempDict)
+                }
+            )
 
         return message
 

@@ -4,6 +4,7 @@ from gonhang.api import StringUtil
 from gonhang.wizard import GonhaNgWizard
 from gonhang.threads import ThreadSystem
 from gonhang.threads import ThreadNvidia
+from gonhang.threads import WatchDog
 from gonhang.displayclasses import DisplaySystem
 from gonhang.displayclasses import DisplayNvidia
 from gonhang.displayclasses import CommomAttributes
@@ -34,7 +35,8 @@ class MainWindow(QtWidgets.QMainWindow):
     # -------------------------------------------------------------
     # Threads
     threadSystem = ThreadSystem()
-    threadNvidia = ThreadNvidia()
+    # threadNvidia = ThreadNvidia()
+    watchDog = WatchDog()
     # --------------------------------------------------------------
     # itens hide by default
     nvidiaGroupBox = QtWidgets.QGroupBox()
@@ -82,8 +84,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.loadGlobalParams()
         self.displaySystem.initUi(self.verticalLayout)
 
-        if not self.nvidia.isToDisplayNvidia():
+        if self.nvidia.getNumberGPUs() > 0:
             self.nvidiaGroupBox = self.displayNvidia.initUi(self.verticalLayout)
+            self.nvidiaGroupBox.hide()
 
     def loadGlobalParams(self):
         position = self.config.getKey('positionOption')
@@ -98,8 +101,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.threadSystem.signal.connect(self.threadSystemReceive)
         self.threadSystem.start()
 
-        self.threadNvidia.signal.connect(self.threadNvidiaReceive)
-        self.threadNvidia.start()
+        # (self.threadNvidiaReceive)
+        # self.threadNvidia.start()
+        print('Starting WatchDog....')
+        self.watchDog.start()
         # --------------------------------------------------------------------------------------
 
     def getWindowCurrentId(self, windowTitle):
@@ -147,18 +152,22 @@ class MainWindow(QtWidgets.QMainWindow):
         self.myWizard.show()
 
     def threadNvidiaReceive(self, message):
-        for i, msg in enumerate(message):
-            self.displayNvidia.nvidiaWidgets[i]['gpu_name'].setText(msg['gpu_name'])
-            self.displayNvidia.nvidiaWidgets[i]['utilization_gpu'].setText(f"{str(msg['utilization_gpu'])}")
-            self.displayNvidia.nvidiaWidgets[i]['usedTotalMemory'].setText(
-                f"{msg['memory_used']}/{msg['memory_total']}")
-            self.displayNvidia.nvidiaWidgets[i]['power_draw'].setText(f"{msg['power_draw']}")
-            self.displayNvidia.nvidiaWidgets[i]['fan_speed'].setText(f"{msg['fan_speed']}")
-            self.displayNvidia.nvidiaWidgets[i]['temperature_gpu'].setText(
-                f"{int(msg['temperature_gpu'])} °C")
-            self.common.analizeTemp(self.displayNvidia.nvidiaWidgets[i]['temperature_gpu'], msg['temperature_gpu'],
-                                    msg['temperature_gpu_high'],
-                                    msg['temperature_gpu_critical'])
+        if self.nvidia.isToDisplayNvidia():
+            self.nvidiaGroupBox.show()
+            self.displayNvidia.nvidiaWidgets['gpu_name'].setText(message['gpu_name'])
+            self.displayNvidia.nvidiaWidgets['utilization_gpu'].setText(f"{str(message['utilization_gpu'])}")
+            self.displayNvidia.nvidiaWidgets['usedTotalMemory'].setText(f"{message['memory_used']}/{message['memory_total']}")
+            self.displayNvidia.nvidiaWidgets['power_draw'].setText(f"{message['power_draw']}")
+            self.displayNvidia.nvidiaWidgets['fan_speed'].setText(f"{message['fan_speed']}")
+            self.displayNvidia.nvidiaWidgets['temperature_gpu'].setText(f"{int(message['temperature_gpu'])} °C")
+            self.common.analizeTemp(
+                self.displayNvidia.nvidiaWidgets['temperature_gpu'],
+                message['temperature_gpu'],
+                message['temperature_gpu_high'],
+                message['temperature_gpu_critical']
+            )
+        else:
+            self.nvidiaGroupBox.hide()
 
     def threadSystemReceive(self, message):
         # -----------------------------------------------------------------------------------------------------
