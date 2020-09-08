@@ -11,6 +11,16 @@ import distro
 import socket
 
 
+class VirtualMachine:
+    @staticmethod
+    def getStatus():
+        outCmd = subprocess.getoutput('systemd-detect-virt')
+        if 'none' in outCmd:
+            return False
+        else:
+            return True
+
+
 # The Keys to store in Config
 class KeysSkeleton:
     cpuTempOption = dict(
@@ -191,16 +201,16 @@ class System:
         return self.message
 
     def isToDisplayCpuTemp(self):
+        if VirtualMachine.getStatus():
+            return False
         cpuTempOption = self.config.getKey('cpuTempOption')
         if cpuTempOption is None:
-            isDisplay = False
+            return False
         else:
             if cpuTempOption['enabled']:
-                isDisplay = True
+                return True
             else:
-                isDisplay = False
-
-        return isDisplay
+                return False
 
     @staticmethod
     def getUptime():
