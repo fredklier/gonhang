@@ -40,6 +40,15 @@ class KeysSkeleton:
         }
     )
 
+    netOption = dict(
+        {
+            'netOption': {
+                'interface':    '',
+                'enabled':      False
+            }
+        }
+    )
+
 
 class PlatFormUtil:
     plat = platform.uname()

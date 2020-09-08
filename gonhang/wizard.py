@@ -268,19 +268,18 @@ class NetPage(QtWidgets.QWizardPage):
         self.setLayout(self.vLayout)
         self.displayAvailablesInterfaces()
 
-    def updateNetOption(self, GpuId, enabled):
-        pass
-        # self.keysSkeleton.nvidiaOption.clear()
-        # self.keysSkeleton.nvidiaOption.update(
-        #     {
-        #         'nvidiaOption': {
-        #             'GpuId':    GpuId,
-        #             'enabled': enabled
-        #         }
-        #     }
-        # )
-        # self.config.updateConfig(self.keysSkeleton.nvidiaOption)
-        # print(self.keysSkeleton.nvidiaOption)
+    def updateNetOption(self, interface, enabled):
+        self.keysSkeleton.netOption.clear()
+        self.keysSkeleton.netOption.update(
+            {
+                'netOption': {
+                    'interface':    interface,
+                    'enabled':      enabled
+                }
+            }
+        )
+        self.config.updateConfig(self.keysSkeleton.netOption)
+        # print(self.keysSkeleton.netOption)
 
     def displayAvailablesInterfaces(self):
         network = psutil.net_if_addrs()
@@ -289,53 +288,45 @@ class NetPage(QtWidgets.QWizardPage):
         for interface in psutil.net_if_addrs():
             if interface != 'lo':
                 self.optionsList.addItem('{}|\tIP Address: [{}]'.format(interface, network[interface][0].address))
-                # print(f"Interface : {interface} - Ip Address: {network[interface][0]}")
-        # gpu = self.nvidia.getGPUsInfo()
-        # self.optionsList.addItem(f"{gpu['gpu_uuid']}| - {gpu['gpu_name']}")
-        #
-        # # Verify if exists key in config
-        # nvidiaOptionConfig = self.config.getKey('nvidiaOption')
-        # if nvidiaOptionConfig is None:
-        #     self.updateNvidiaOption('', False)
-        # else:
-        #     self.updateNvidiaOption(
-        #         nvidiaOptionConfig['GpuId'],
-        #         nvidiaOptionConfig['enabled']
-        #     )
-        #
-        # if not self.keysSkeleton.nvidiaOption['nvidiaOption']['enabled']:
-        #     self.optionsList.setDisabled(True)
-        # else:
-        #     self.optionsList.setEnabled(True)
-        #     self.rbEnable.setChecked(True)
-        # # print(gpuInfo)
-        #
-        # self.displayCorrectRow()
+
+        # Verify if exists key in config
+        netOptionConfig = self.config.getKey('netOption')
+        if netOptionConfig is None:
+            self.updateNetOption('', False)
+        else:
+            self.updateNetOption(
+                netOptionConfig['interface'],
+                netOptionConfig['enabled']
+            )
+
+        if not self.keysSkeleton.netOption['netOption']['enabled']:
+            self.optionsList.setDisabled(True)
+        else:
+            self.optionsList.setEnabled(True)
+            self.rbEnable.setChecked(True)
+
+        self.displayCorrectRow()
 
     def groupBoxClicked(self):
-        pass
-        # enabled = False
-        # if self.rbEnable.isChecked():
-        #     self.optionsList.setEnabled(True)
-        #     self.keysSkeleton.nvidiaOption['nvidiaOption']['enabled'] = True
-        #     enabled = True
-        # else:
-        #     self.optionsList.setDisabled(True)
-        #     self.keysSkeleton.nvidiaOption['nvidiaOption']['enabled'] = False
-        #
-        # self.updateNvidiaOption(self.keysSkeleton.nvidiaOption['nvidiaOption']['GpuId'], enabled)
+        enabled = False
+        if self.rbEnable.isChecked():
+            self.optionsList.setEnabled(True)
+            enabled = True
+        else:
+            self.optionsList.setDisabled(True)
+
+        self.keysSkeleton.netOption['netOption']['enabled'] = enabled
+        self.updateNetOption(self.keysSkeleton.netOption['netOption']['interface'], enabled)
 
     def optionsClick(self):
-        pass
-        # rowList = self.optionsList.currentItem().text().split('|')
-        # self.updateNvidiaOption(rowList[0], self.keysSkeleton.nvidiaOption['nvidiaOption']['enabled'])
+        rowList = self.optionsList.currentItem().text().split('|')
+        self.updateNetOption(rowList[0], self.keysSkeleton.netOption['netOption']['enabled'])
 
     def displayCorrectRow(self):
-        pass
-        # rowCount = self.optionsList.count()
-        # gpuId = self.keysSkeleton.nvidiaOption['nvidiaOption']['GpuId']
-        # for i in range(rowCount):
-        #     rowText = self.optionsList.item(i).text()
-        #     rowList = rowText.split('|')
-        #     if str(gpuId) == str(rowList[0]):
-        #         self.optionsList.setCurrentRow(i)
+        rowCount = self.optionsList.count()
+        interface = self.keysSkeleton.netOption['netOption']['interface']
+        for i in range(rowCount):
+            rowText = self.optionsList.item(i).text()
+            rowList = rowText.split('|')
+            if str(interface) == str(rowList[0]):
+                self.optionsList.setCurrentRow(i)
