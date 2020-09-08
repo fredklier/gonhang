@@ -117,11 +117,12 @@ class MainWindow(QtWidgets.QMainWindow):
             x = (self.getScreenGeometry().width() - self.geometry().width())
 
         self.move(x, 0)
+        # --------------------------------------------------------------------------------------------
         # write to config
         self.keySkeleton.positionOption['positionOption']['index'] = index
         self.keySkeleton.positionOption['positionOption']['value'] = positions[index]
         self.config.updateConfig(self.keySkeleton.positionOption)
-        print(self.keySkeleton.positionOption)
+        # --------------------------------------------------------------------------------------------
 
     def wizardAction(self):
         print('Enter in wizard...')
