@@ -78,8 +78,9 @@ class ThreadNet(QtCore.QThread):
             self.message['interface'] = interface,
             self.message['bytesSent'] = net_io[interface].bytes_sent,
             self.message['bytesRcv'] = net_io[interface].bytes_recv
-            self.signal.emit(self.message)
-            self.start()
+
+        self.signal.emit(self.message)
+        self.start()
 
     def clearCounters(self):
         self.counters.clear()
@@ -116,6 +117,7 @@ class WatchDog(QtCore.QThread):
     net = Net()
     displayNet = DisplayNet()
     threadNet = ThreadNet()
+    threadNetId = None
 
     def __init__(self, vLayout, parent=None):
         super(WatchDog, self).__init__(parent)
@@ -141,9 +143,9 @@ class WatchDog(QtCore.QThread):
         self.start()
 
     def threadNetReceive(self, message):
+        print(f'message threadNet => {message}')
         if self.net.isToDisplayNet():
             self.displayNet.netWidgets['netGroupBox'].show()
-            print(message)
         else:
             self.displayNet.netWidgets['netGroupBox'].hide()
 
@@ -229,7 +231,6 @@ class WatchDog(QtCore.QThread):
             self.displayNvidia.nvidiaWidgets['nvidiaGroupBox'].hide()
 
     def run(self):
-
         if not self.threadSystem.isRunning():
             self.threadSystem.start()
         # ----------------------------------------------------------------------------
@@ -240,14 +241,9 @@ class WatchDog(QtCore.QThread):
             self.threadNvidia.quit()
 
         # ----------------------------------------------------------------------------
-
-        # ----------------------------------------------------------------------------
         # Verify for net
-        if self.net.isToDisplayNet():
+        if self.threadNetId is None:
+            self.threadNetId = self.threadNet.currentThreadId()
+            print(f'Starting threadNet ID: [{self.threadNetId}]')
             self.threadNet.start()
-        else:
-            self.threadNet.quit()
-
         # ----------------------------------------------------------------------------
-
-        self.msleep(1000)  # sleep for 500ms

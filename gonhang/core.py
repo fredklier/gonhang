@@ -340,11 +340,10 @@ class Net:
 
     def isToDisplayNet(self):
         netOptionConfig = self.config.getKey('netOption')
-        isDisplay = False
         if not (netOptionConfig is None):
             if netOptionConfig['enabled'] and (netOptionConfig['interface'] != '') and self.isOnline():
-                isDisplay = True
+                return True
             else:
-                isDisplay = False
+                return False
 
-        return isDisplay
+        return False
