@@ -8,6 +8,7 @@ from gonhang import api
 from pathlib import Path
 import json
 import distro
+import socket
 
 
 # The Keys to store in Config
@@ -43,8 +44,8 @@ class KeysSkeleton:
     netOption = dict(
         {
             'netOption': {
-                'interface':    '',
-                'enabled':      False
+                'interface': '',
+                'enabled': False
             }
         }
     )
@@ -314,6 +315,36 @@ class Nvidia:
 
 
 class Net:
+    config = Config()
+    message = dict()
 
     def __init__(self):
         pass
+
+    @staticmethod
+    def getIOCounters(interface):
+        return psutil.net_io_counters(pernic=True)[interface]
+
+    def getMessage(self):
+        netOptionConfig = self.config.getKey('netOption')
+        if netOptionConfig['enabled'] and (netOptionConfig['interface'] != '') and self.isOnline():
+            return self.message
+
+    @staticmethod
+    def isOnline():
+        try:
+            socket.create_connection(("8.8.8.8", 53))
+            return True
+        except OSError:
+            return False
+
+    def isToDisplayNet(self):
+        netOptionConfig = self.config.getKey('netOption')
+        isDisplay = False
+        if not (netOptionConfig is None):
+            if netOptionConfig['enabled'] and (netOptionConfig['interface'] != '') and self.isOnline():
+                isDisplay = True
+            else:
+                isDisplay = False
+
+        return isDisplay

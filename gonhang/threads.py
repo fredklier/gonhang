@@ -1,9 +1,13 @@
 from PyQt5 import QtCore
+from gonhang.core import Config
 from gonhang.core import System
 from gonhang.core import Nvidia
+from gonhang.core import Net
 from gonhang.displayclasses import DisplaySystem
 from gonhang.displayclasses import DisplayNvidia
+from gonhang.displayclasses import DisplayNet
 from gonhang.displayclasses import CommomAttributes
+import psutil
 
 
 # ------------------------------------------------------------------------------------
@@ -43,19 +47,51 @@ class ThreadNvidia(QtCore.QThread):
 
 
 class ThreadNet(QtCore.QThread):
-    signal = QtCore.pyqtSignal(dict, name='ThreadNvidiaFinish')
+    config = Config()
+    net = Net()
+    signal = QtCore.pyqtSignal(dict, name='ThreadNetFinish')
     message = dict()
+    netOptionConfig = dict()
+    counters = dict()
 
     def __init__(self, parent=None):
         super(ThreadNet, self).__init__(parent)
         self.finished.connect(self.updateNet)
 
-    def updateNvidia(self):
-        # self.message = self.nvidia.getGPUsInfo()
-        self.signal.emit(self.message)
-        self.start()
+    def loadConfig(self):
+        self.netOptionConfig = self.config.getKey('netOption')
+
+    def updateNet(self):
+        if self.net.isToDisplayNet():
+            self.loadConfig()
+            self.message.clear()
+            interface = self.netOptionConfig['interface']
+            counter = psutil.net_io_counters(pernic=True)[interface]
+            self.counters['two']['bytes_recv'] = counter.bytes_recv
+            self.counters['two']['bytes_sent'] = counter.bytes_sent
+            downSpeed = self.counters['two']['bytes_recv'] - self.counters['one']['bytes_recv']
+            upSpeed = self.counters['two']['bytes_sent'] - self.counters['one']['bytes_sent']
+            # get io statistics since boot
+            net_io = psutil.net_io_counters(pernic=True)
+            self.message['downSpeed'] = downSpeed
+            self.message['upSpeed'] = upSpeed
+            self.message['interface'] = interface,
+            self.message['bytesSent'] = net_io[interface].bytes_sent,
+            self.message['bytesRcv'] = net_io[interface].bytes_recv
+            self.signal.emit(self.message)
+            self.start()
+
+    def clearCounters(self):
+        self.counters.clear()
+        self.counters['one'] = dict()
+        self.counters['two'] = dict()
 
     def run(self):
+        self.loadConfig()
+        self.clearCounters()
+        counter = psutil.net_io_counters(pernic=True)[self.netOptionConfig['interface']]
+        self.counters['one']['bytes_recv'] = counter.bytes_recv
+        self.counters['one']['bytes_sent'] = counter.bytes_sent
         self.msleep(1000)  # sleep for 500ms
 
 
@@ -75,22 +111,41 @@ class WatchDog(QtCore.QThread):
     displayNvidia = DisplayNvidia()
     threadNvidia = ThreadNvidia()
 
+    # -----------------------------------------------------------------
+    # net
+    net = Net()
+    displayNet = DisplayNet()
+    threadNet = ThreadNet()
+
     def __init__(self, vLayout, parent=None):
         super(WatchDog, self).__init__(parent)
         self.finished.connect(self.threadFinished)
+        # ------------------------------------------------------------------
+        # Connecting signals
         self.threadNvidia.signal.connect(self.threadNvidiaReceive)
-
         self.threadSystem.signal.connect(self.threadSystemReceive)
+        self.threadNet.signal.connect(self.threadNetReceive)
+        # ------------------------------------------------------------------
         self.verticalLayout = vLayout
 
         # display system (default section)
         self.displaySystem.initUi(self.verticalLayout)
         # display nvidia if have nvidia gpu
-        if self.nvidia.getNumberGPUs()>0:
+        if self.nvidia.getNumberGPUs() > 0:
             self.displayNvidia.initUi(self.verticalLayout)
+
+        self.displayNet.initUi(vLayout)
+        self.displayNet.netWidgets['netGroupBox'].hide()
 
     def threadFinished(self):
         self.start()
+
+    def threadNetReceive(self, message):
+        if self.net.isToDisplayNet():
+            self.displayNet.netWidgets['netGroupBox'].show()
+            print(message)
+        else:
+            self.displayNet.netWidgets['netGroupBox'].hide()
 
     def threadSystemReceive(self, message):
         # -----------------------------------------------------------------------------------------------------
@@ -185,4 +240,14 @@ class WatchDog(QtCore.QThread):
             self.threadNvidia.quit()
 
         # ----------------------------------------------------------------------------
+
+        # ----------------------------------------------------------------------------
+        # Verify for net
+        if self.net.isToDisplayNet():
+            self.threadNet.start()
+        else:
+            self.threadNet.quit()
+
+        # ----------------------------------------------------------------------------
+
         self.msleep(1000)  # sleep for 500ms

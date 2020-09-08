@@ -632,3 +632,137 @@ class DisplayNvidia:
         nvidiaGroupBox.setLayout(gridLayout)
 
         verticalLayout.addWidget(nvidiaGroupBox)
+
+
+class DisplayNet:
+    # net = Net
+    common = CommomAttributes()
+    netWidgets = dict()
+
+    def initUi(self, vLayout):
+        verticalLayout = QtWidgets.QVBoxLayout()
+        netGroupBox = self.common.getDefaultGb('net')
+        self.netWidgets['netGroupBox'] = netGroupBox
+        rateLabelWidth = 120
+        # ---------------------------------------------------
+        # Ip int Label
+        ipLayout = QtWidgets.QGridLayout()
+        intipLabel = QtWidgets.QLabel('int:')
+        self.common.setLabel(intipLabel, self.common.orange, self.common.fontDefault)
+
+        ipLayout.addWidget(intipLabel, 0, 0)
+
+        # ip int value label
+        intipValueLabel = QtWidgets.QLabel('')
+        self.common.setLabel(intipValueLabel, self.common.white, self.common.fontDefault)
+        self.netWidgets['intip'] = intipValueLabel
+
+        ipLayout.addWidget(intipValueLabel, 0, 1)
+
+        # Ext Ip
+        extipLabel = QtWidgets.QLabel('ext:')
+        self.common.setLabel(extipLabel, self.common.orange, self.common.fontDefault)
+
+        ipLayout.addWidget(extipLabel, 0, 2)
+
+        extipValueLabel = QtWidgets.QLabel('')
+        self.common.setLabel(extipValueLabel, self.common.white, self.common.fontDefault)
+        self.netWidgets['extip'] = extipValueLabel
+
+        ipLayout.addWidget(extipValueLabel, 0, 3)
+
+        verticalLayout.addLayout(ipLayout)
+
+        # -------------------------------------------------
+
+        netGridLayout = QtWidgets.QGridLayout()
+
+        netCardIcon = QtWidgets.QLabel()
+        netCardIcon.setPixmap(QtGui.QPixmap(f"{FileUtil.getResourcePath()}/images/netcard.png"))
+        netCardIcon.setFixedSize(24, 24)
+
+        netGridLayout.addWidget(netCardIcon, 0, 0)
+
+        # -------------------------------------------------
+        # interface ValueLabel
+        ifaceValueLabel = QtWidgets.QLabel('')
+        self.common.setLabel(ifaceValueLabel, self.common.white, self.common.fontDefault)
+        self.netWidgets['ifaceValueLabel'] = ifaceValueLabel
+        ifaceValueLabel.setFixedWidth(80)
+
+        netGridLayout.addWidget(ifaceValueLabel, 0, 1)
+
+        # -------------------------------------------------
+        # Download Icon
+        downloadIcon = QtWidgets.QLabel()
+        downloadIcon.setPixmap(QtGui.QPixmap(f'{FileUtil.getResourcePath()}/images/download.png'))
+        downloadIcon.setFixedSize(24, 24)
+
+        netGridLayout.addWidget(downloadIcon, 0, 2)
+
+        # ---------------------------------------------------
+        # download rate label
+        ifaceDownRateLabel = QtWidgets.QLabel('')
+        self.common.setLabel(ifaceDownRateLabel, self.common.white, self.common.fontDefault)
+        self.netWidgets['ifaceDownRateLabel'] = ifaceDownRateLabel
+        ifaceDownRateLabel.setFixedWidth(rateLabelWidth)
+        ifaceDownRateLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+
+        netGridLayout.addWidget(ifaceDownRateLabel, 0, 3)
+        # ---------------------------------------------------
+
+        # -------------------------------------------------
+        # Upload Icon
+        uploadIcon = QtWidgets.QLabel()
+        uploadIcon.setPixmap(QtGui.QPixmap(f'{FileUtil.getResourcePath()}/images/upload.png'))
+        uploadIcon.setFixedSize(24, 24)
+
+        netGridLayout.addWidget(uploadIcon, 0, 4)
+        # -------------------------------------------------
+
+        # ---------------------------------------------------
+        # upload rate label
+        ifaceUpRateLabel = QtWidgets.QLabel('')
+        self.common.setLabel(ifaceUpRateLabel, self.common.white, self.common.fontDefault)
+        self.netWidgets['ifaceUpRateLabel'] = ifaceUpRateLabel
+        ifaceUpRateLabel.setFixedWidth(rateLabelWidth)
+        ifaceUpRateLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+
+        netGridLayout.addWidget(ifaceUpRateLabel, 0, 5)
+
+        verticalLayout.addLayout(netGridLayout)
+
+        # ---------------------------------------------------
+
+        # Total in
+
+        bytesLayout = QtWidgets.QGridLayout()
+
+        bytesRcvLabel = QtWidgets.QLabel('total in:')
+        self.common.setLabel(bytesRcvLabel, self.common.orange, self.common.fontDefault)
+
+        bytesLayout.addWidget(bytesRcvLabel, 0, 0)
+
+        bytesRcvValueLabel = QtWidgets.QLabel('')
+        self.common.setLabel(bytesRcvValueLabel, self.common.white, self.common.fontDefault)
+        self.netWidgets['bytesRcvValueLabel'] = bytesRcvValueLabel
+
+        bytesLayout.addWidget(bytesRcvValueLabel, 0, 1)
+
+        # Total out
+        bytesSentLabel = QtWidgets.QLabel('total out:')
+        self.common.setLabel(bytesSentLabel, self.common.orange, self.common.fontDefault)
+
+        bytesLayout.addWidget(bytesSentLabel, 0, 2)
+
+        bytesSentValueLabel = QtWidgets.QLabel('')
+        self.common.setLabel(bytesSentValueLabel, self.common.white, self.common.fontDefault)
+        self.netWidgets['bytesSentValueLabel'] = bytesSentValueLabel
+
+        bytesLayout.addWidget(bytesSentValueLabel, 0, 3)
+
+        verticalLayout.addLayout(bytesLayout)
+
+        netGroupBox.setLayout(verticalLayout)
+
+        vLayout.addWidget(netGroupBox)
