@@ -210,3 +210,75 @@ class System:
                 break
 
         return modelName
+
+
+class Nvidia:
+    smiCommand = 'nvidia-smi'
+    # , nounits
+    smiSuffixCommand = '--format=csv,noheader'
+    smiStatus = subprocess.getstatusoutput(smiCommand)[0]
+    nvidiaEntity = dict()
+
+    def __init__(self):
+        if self.getSmiStatus():
+            count, DriverVersion = self.getOutputCommand('count,driver_version')
+            self.nvidiaEntity.update(
+                {
+                    'count': int(count),
+                    'driver_version': DriverVersion,
+                    'gpus': self.getGPUsInfo()
+                }
+            )
+
+    def getNumberGPUs(self):
+        if self.getSmiStatus():
+            return int(self.getOutputCommand('count')[0])
+        else:
+            return 0
+
+    def getGPUsInfo(self):
+        numGPUS = int(self.getOutputCommand('count')[0])
+        message = list()
+        if numGPUS > 0:
+            for idx in range(numGPUS):
+                tempDict = dict()
+                gpu_uuid, gpu_name, display_mode, vbios_version, fan_speed, pstate, memory_total, memory_used, memory_free, temperature_gpu, power_management, power_draw, clocks_current_graphics, clocks_current_sm, clocks_current_memory, clocks_current_video, utilization_gpu = self.getOutputCommand(
+                    'gpu_uuid,gpu_name,display_mode,vbios_version,fan.speed,pstate,memory.total,memory.used,memory.free,temperature.gpu,power.management,power.draw,clocks.current.graphics,clocks.current.sm,clocks.current.memory,clocks.current.video,utilization.gpu'
+                )
+
+                tempDict.update({
+                    'id': idx,
+                    'gpu_uuid': gpu_uuid,
+                    'gpu_name': gpu_name,
+                    'display_mode': display_mode,
+                    'vbios_version': vbios_version,
+                    'fan_speed': fan_speed,
+                    'pstate': pstate,
+                    'memory_total': memory_total,
+                    'memory_used': memory_used,
+                    'memory_free': memory_free,
+                    'temperature_gpu': float(temperature_gpu),
+                    'temperature_gpu_high': 70.0,
+                    'temperature_gpu_critical': 85.0,  # 40% above
+                    'temperature_scale': 'C',
+                    'power_management': power_management,
+                    'power_draw': power_draw,
+                    'clocks_current_graphics': clocks_current_graphics,
+                    'clocks_current_sm': clocks_current_sm,
+                    'clocks_current_memory': clocks_current_memory,
+                    'clocks_current_video': clocks_current_video,
+                    'utilization_gpu': utilization_gpu
+                })
+                message.append(tempDict)
+
+        return message
+
+    def getOutputCommand(self, queryList):
+        return subprocess.getoutput(f"{self.smiCommand} --id=0 --query-gpu={queryList} {self.smiSuffixCommand}").split(
+            ',')
+
+    def getSmiStatus(self):
+        if self.smiStatus == 0:
+            return True
+        else:
+            return False

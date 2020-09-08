@@ -2,15 +2,18 @@ from PyQt5 import QtWidgets, QtGui, QtCore
 from gonhang.api import FileUtil
 from gonhang.core import Config
 from gonhang.core import KeysSkeleton
+from gonhang.core import Nvidia
 import psutil
 
 
 class GonhaNgWizard(QtWidgets.QWizard):
+    nvidia = Nvidia()
 
     def __init__(self, parent=None):
         super(GonhaNgWizard, self).__init__(parent)
         self.addPage(CpuTempPage(self))
-        self.addPage(Page2(self))
+        if self.nvidia.getNumberGPUs() > 0:
+            self.addPage(NvidiaPage(self))
         self.setWindowTitle('GonhaNG Wizard Welcome')
         self.resize(640, 480)
         self.setWizardStyle(QtWidgets.QWizard.MacStyle)
@@ -32,7 +35,6 @@ class CpuTempPage(QtWidgets.QWizardPage):
     def __init__(self, parent=None):
         super(CpuTempPage, self).__init__(parent)
         self.setTitle('CPU Temperature')
-        self.setSubTitle('What is the temperature label of your CPU?')
         self.vLayout = QtWidgets.QVBoxLayout()
         self.hint = 'GonhaNG measures the <strong>average</strong> temperature of <strong>all cpu cores</strong> installed in your system.\nIn general this value corresponds to <strong>Tdie</strong>'
         self.hintLabel = QtWidgets.QLabel(self.hint)
@@ -54,6 +56,9 @@ class CpuTempPage(QtWidgets.QWizardPage):
         self.groupBoxEnabled.setLayout(self.gbLayout)
 
         self.vLayout.addWidget(self.groupBoxEnabled)
+
+        self.questionLabel = QtWidgets.QLabel('What is the temperature label of your CPU?')
+        self.vLayout.addWidget(self.questionLabel)
 
         self.optionsList = QtWidgets.QListWidget()
         self.displayAvailableTemps()
@@ -79,7 +84,8 @@ class CpuTempPage(QtWidgets.QWizardPage):
 
     def optionsClick(self):
         rowList = self.optionsList.currentItem().text().split('|')
-        self.updateCpuTempOption(rowList[0], int(rowList[1]), self.keysSkeleton.cpuTempOption['cpuTempOption']['enabled'])
+        self.updateCpuTempOption(rowList[0], int(rowList[1]),
+                                 self.keysSkeleton.cpuTempOption['cpuTempOption']['enabled'])
 
     def updateCpuTempOption(self, index, subIndex, enabled):
         self.keysSkeleton.cpuTempOption.clear()
@@ -135,16 +141,36 @@ class CpuTempPage(QtWidgets.QWizardPage):
                 self.optionsList.setCurrentRow(i)
 
 
-class Page2(QtWidgets.QWizardPage):
-    def __init__(self, parent=None):
-        super(Page2, self).__init__(parent)
-        self.label1 = QtWidgets.QLabel()
-        self.label2 = QtWidgets.QLabel()
-        layout = QtWidgets.QVBoxLayout()
-        layout.addWidget(self.label1)
-        layout.addWidget(self.label2)
-        self.setLayout(layout)
+class NvidiaPage(QtWidgets.QWizardPage):
+    nvidia = Nvidia()
 
-    def initializePage(self):
-        self.label1.setText("Example text")
-        self.label2.setText("Example text")
+    def __init__(self, parent=None):
+        super(NvidiaPage, self).__init__(parent)
+        self.setTitle('Nvidia GPU')
+        self.vLayout = QtWidgets.QVBoxLayout()
+        self.groupBoxEnabled = QtWidgets.QGroupBox('Enable or Disable Nvidia GPU Monitor? ')
+        self.gbLayout = QtWidgets.QVBoxLayout()
+        self.rbEnable = QtWidgets.QRadioButton('Enabled')
+        # self.rbEnable.clicked.connect(self.groupBoxClicked)
+        self.gbLayout.addWidget(self.rbEnable)
+        self.rbDisable = QtWidgets.QRadioButton('Disabled')
+        # self.rbDisable.clicked.connect(self.groupBoxClicked)
+        self.rbDisable.setChecked(True)
+        self.gbLayout.addWidget(self.rbDisable)
+
+        self.groupBoxEnabled.setLayout(self.gbLayout)
+
+        self.vLayout.addWidget(self.groupBoxEnabled)
+
+        self.questionLabel = QtWidgets.QLabel('Please select the nvidia gpu you want to monitor.')
+        self.vLayout.addWidget(self.questionLabel)
+
+        self.optionsList = QtWidgets.QListWidget()
+        # self.optionsList.clicked.connect(self.optionsClick)
+        self.vLayout.addWidget(self.optionsList)
+        self.setLayout(self.vLayout)
+        self.displayAvailablesGpus()
+
+    def displayAvailablesGpus(self):
+        gpuInfo = self.nvidia.getGPUsInfo()
+        print(gpuInfo)
