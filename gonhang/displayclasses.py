@@ -655,7 +655,7 @@ class DisplayNet:
         # ip int value label
         intipValueLabel = QtWidgets.QLabel('')
         self.common.setLabel(intipValueLabel, self.common.white, self.common.fontDefault)
-        self.netWidgets['intip'] = intipValueLabel
+        self.netWidgets['intipLabel'] = intipValueLabel
 
         ipLayout.addWidget(intipValueLabel, 0, 1)
 
@@ -667,7 +667,7 @@ class DisplayNet:
 
         extipValueLabel = QtWidgets.QLabel('')
         self.common.setLabel(extipValueLabel, self.common.white, self.common.fontDefault)
-        self.netWidgets['extip'] = extipValueLabel
+        self.netWidgets['extipLabel'] = extipValueLabel
 
         ipLayout.addWidget(extipValueLabel, 0, 3)
 

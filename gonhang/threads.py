@@ -8,6 +8,8 @@ from gonhang.displayclasses import DisplayNvidia
 from gonhang.displayclasses import DisplayNet
 from gonhang.displayclasses import CommomAttributes
 import psutil
+import subprocess
+import humanfriendly
 
 
 # ------------------------------------------------------------------------------------
@@ -53,6 +55,7 @@ class ThreadNet(QtCore.QThread):
     message = dict()
     netOptionConfig = dict()
     counters = dict()
+    myExtIp = subprocess.getoutput('curl -s ifconfig.me')
 
     def __init__(self, parent=None):
         super(ThreadNet, self).__init__(parent)
@@ -73,11 +76,14 @@ class ThreadNet(QtCore.QThread):
             upSpeed = self.counters['two']['bytes_sent'] - self.counters['one']['bytes_sent']
             # get io statistics since boot
             net_io = psutil.net_io_counters(pernic=True)
-            self.message['downSpeed'] = downSpeed
-            self.message['upSpeed'] = upSpeed
-            self.message['interface'] = interface,
-            self.message['bytesSent'] = net_io[interface].bytes_sent,
-            self.message['bytesRcv'] = net_io[interface].bytes_recv
+            network = psutil.net_if_addrs()
+            self.message['intipLabel'] = network[interface][0].address
+            self.message['extipLabel'] = self.myExtIp
+            self.message['ifaceValueLabel'] = interface
+            self.message['ifaceDownRateLabel'] = downSpeed
+            self.message['ifaceUpRateLabel'] = upSpeed
+            self.message['bytesRcvValueLabel'] = net_io[interface].bytes_sent
+            self.message['bytesSentValueLabel'] = net_io[interface].bytes_recv
 
         self.signal.emit(self.message)
         self.start()
@@ -143,9 +149,15 @@ class WatchDog(QtCore.QThread):
         self.start()
 
     def threadNetReceive(self, message):
-        print(f'message threadNet => {message}')
         if self.net.isToDisplayNet():
             self.displayNet.netWidgets['netGroupBox'].show()
+            self.displayNet.netWidgets['intipLabel'].setText(message['intipLabel'])
+            self.displayNet.netWidgets['extipLabel'].setText(message['extipLabel'])
+            self.displayNet.netWidgets['ifaceValueLabel'].setText(message['ifaceValueLabel'])
+            self.displayNet.netWidgets['ifaceDownRateLabel'].setText('{}/s'.format(humanfriendly.format_size(message['ifaceDownRateLabel'], binary=True)))
+            self.displayNet.netWidgets['ifaceUpRateLabel'].setText('{}/s'.format(humanfriendly.format_size(message['ifaceUpRateLabel'], binary=True)))
+            self.displayNet.netWidgets['bytesRcvValueLabel'].setText(humanfriendly.format_size(message['bytesRcvValueLabel'], binary=True))
+            self.displayNet.netWidgets['bytesSentValueLabel'].setText(humanfriendly.format_size(message['bytesSentValueLabel'], binary=True))
         else:
             self.displayNet.netWidgets['netGroupBox'].hide()
 

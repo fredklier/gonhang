@@ -66,9 +66,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def loadGlobalParams(self):
         position = self.config.getKey('positionOption')
+        print(f'Position is: {position}')
         if position is None:
+            print('No position, default is [Left]...')
             self.refreshPosition(0)
         else:
+            print(f"Position in config is: [{position['value']}]")
             self.refreshPosition(position['index'])
 
     def getWindowCurrentId(self, windowTitle):
