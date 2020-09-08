@@ -10,6 +10,20 @@ import json
 import distro
 
 
+# The Keys to store in Config
+class KeysSkeleton:
+    cpuTempOption = dict(
+        {
+            'cpuTempOption': {
+                'index': 0,
+                'subIndex': 0,
+                'enabled': False
+            }
+        }
+    )
+
+
+
 class PlatFormUtil:
     plat = platform.uname()
 

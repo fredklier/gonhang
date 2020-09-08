@@ -56,6 +56,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.systemTrayMenu.show()
         self.aboutBox = AboutBox(self)
 
+        # ----------------------------------------------------------------------------
+        # start the threads
+        print('Initializing Threads...')
+        self.startAllThreads()
+
     def showAboutBox(self):
         # self.aboutBox.exec_()
         self.aboutBox.show()
@@ -160,7 +165,11 @@ class MainWindow(QtWidgets.QMainWindow):
         # Verify if can display cpuTemp
         cpuTempOption = self.config.getKey('cpuTempOption')
         if not (cpuTempOption is None):
-            self.displaySystem.showWidgetByDefault()
+            if cpuTempOption['enabled']:
+                self.displaySystem.showWidgetByDefault()
+            else:
+                self.displaySystem.hideWidgetByDefault()
+        # ------------------------------------------------------------------------------------------------------
 
     def updateWorkOut(self, pb, pbValue, labelUsed, labelUsedValue, labelTotal):
         pb.setValue(pbValue)

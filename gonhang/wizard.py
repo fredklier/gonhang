@@ -1,6 +1,7 @@
 from PyQt5 import QtWidgets, QtGui, QtCore
 from gonhang.api import FileUtil
 from gonhang.core import Config
+from gonhang.core import KeysSkeleton
 import psutil
 
 
@@ -26,15 +27,7 @@ class GonhaNgWizard(QtWidgets.QWizard):
 
 class CpuTempPage(QtWidgets.QWizardPage):
     config = Config()
-    cpuTempOption = dict(
-        {
-            'cpuTempOption': {
-                'index': 0,
-                'subIndex': 0,
-                'enabled': False
-            }
-        }
-    )
+    keysSkeleton = KeysSkeleton()
 
     def __init__(self, parent=None):
         super(CpuTempPage, self).__init__(parent)
@@ -69,16 +62,16 @@ class CpuTempPage(QtWidgets.QWizardPage):
         self.setLayout(self.vLayout)
 
     def groupBoxClicked(self):
-        index = self.cpuTempOption['cpuTempOption']['index']
-        subIndex = self.cpuTempOption['cpuTempOption']['subIndex']
+        index = self.keysSkeleton.cpuTempOption['cpuTempOption']['index']
+        subIndex = self.keysSkeleton.cpuTempOption['cpuTempOption']['subIndex']
         enabled = False
         if self.rbEnable.isChecked():
             self.optionsList.setEnabled(True)
-            self.cpuTempOption['cpuTempOption']['enabled'] = True
+            self.keysSkeleton.cpuTempOption['cpuTempOption']['enabled'] = True
             enabled = True
         else:
             self.optionsList.setDisabled(True)
-            self.cpuTempOption['cpuTempOption']['enabled'] = False
+            self.keysSkeleton.cpuTempOption['cpuTempOption']['enabled'] = False
 
         self.updateCpuTempOption(index, subIndex, enabled)
 
@@ -86,11 +79,11 @@ class CpuTempPage(QtWidgets.QWizardPage):
 
     def optionsClick(self):
         rowList = self.optionsList.currentItem().text().split('|')
-        self.updateCpuTempOption(rowList[0], int(rowList[1]), self.cpuTempOption['cpuTempOption']['enabled'])
+        self.updateCpuTempOption(rowList[0], int(rowList[1]), self.keysSkeleton.cpuTempOption['cpuTempOption']['enabled'])
 
     def updateCpuTempOption(self, index, subIndex, enabled):
-        self.cpuTempOption.clear()
-        self.cpuTempOption.update(
+        self.keysSkeleton.cpuTempOption.clear()
+        self.keysSkeleton.cpuTempOption.update(
             {
                 'cpuTempOption': {
                     'index': index,
@@ -99,7 +92,7 @@ class CpuTempPage(QtWidgets.QWizardPage):
                 }
             }
         )
-        self.config.updateConfig(self.cpuTempOption)
+        self.config.updateConfig(self.keysSkeleton.cpuTempOption)
         # print(self.cpuTempOption)
 
     def displayAvailableTemps(self):
@@ -113,7 +106,6 @@ class CpuTempPage(QtWidgets.QWizardPage):
 
         # Verify if exists key in config
         cpuTempOptionConfig = self.config.getKey('cpuTempOption')
-        # print(f'cpuTempOptionConfig: {cpuTempOptionConfig}')
         if cpuTempOptionConfig is None:
             self.updateCpuTempOption(0, 0, False)
         else:
@@ -123,7 +115,7 @@ class CpuTempPage(QtWidgets.QWizardPage):
                 cpuTempOptionConfig['enabled']
             )
 
-        if not self.cpuTempOption['cpuTempOption']['enabled']:
+        if not self.keysSkeleton.cpuTempOption['cpuTempOption']['enabled']:
             self.optionsList.setDisabled(True)
         else:
             self.optionsList.setEnabled(True)
@@ -133,8 +125,8 @@ class CpuTempPage(QtWidgets.QWizardPage):
 
     def displayCorrectRow(self):
         rowCount = self.optionsList.count()
-        currentIndex = self.cpuTempOption['cpuTempOption']['index']
-        currentSubIndex = self.cpuTempOption['cpuTempOption']['subIndex']
+        currentIndex = self.keysSkeleton.cpuTempOption['cpuTempOption']['index']
+        currentSubIndex = self.keysSkeleton.cpuTempOption['cpuTempOption']['subIndex']
         # enable = self.rbEnable.q
         for i in range(rowCount):
             rowText = self.optionsList.item(i).text()
