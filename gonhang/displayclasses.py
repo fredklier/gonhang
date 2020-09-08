@@ -437,7 +437,7 @@ class DisplaySystem:
 
         gridLayout.addWidget(tempProgressBar, 3, 1)
 
-        cpuCurrentTempLabel = QtWidgets.QLabel('30.0 °C')
+        cpuCurrentTempLabel = QtWidgets.QLabel()
         self.commom.setLabel(cpuCurrentTempLabel, self.commom.white, self.commom.fontDefault)
         self.systemWidgets['cpuCurrentTempLabel'] = cpuCurrentTempLabel
         cpuCurrentTempLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
@@ -451,7 +451,7 @@ class DisplaySystem:
 
         gridLayout.addWidget(cpuTempSeparatorLabel, 3, 3)
 
-        cpuTempMaxLabel = QtWidgets.QLabel('100.0 °C')
+        cpuTempMaxLabel = QtWidgets.QLabel('100 °C')
         self.commom.setLabel(cpuTempMaxLabel, self.commom.red, self.commom.fontDefault)
         cpuTempMaxLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
         self.systemWidgets['cpuTempMaxLabel'] = cpuTempMaxLabel
