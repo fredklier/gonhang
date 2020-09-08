@@ -3,6 +3,7 @@ import subprocess
 from gonhang.api import StringUtil
 from gonhang.wizard import GonhaNgWizard
 from gonhang.threads import ThreadSystem
+from gonhang.threads import ThreadNvidia
 from gonhang.displayclasses import DisplaySystem
 from gonhang.displayclasses import DisplayNvidia
 from gonhang.displayclasses import CommomAttributes
@@ -31,6 +32,7 @@ class MainWindow(QtWidgets.QMainWindow):
     # -------------------------------------------------------------
     # Threads
     threadSystem = ThreadSystem()
+    threadNvidia = ThreadNvidia()
 
     def __init__(self):
         super(MainWindow, self).__init__()
@@ -89,6 +91,9 @@ class MainWindow(QtWidgets.QMainWindow):
         # Connect thread signals and start
         self.threadSystem.signal.connect(self.threadSystemReceive)
         self.threadSystem.start()
+
+        self.threadNvidia.signal.connect(self.threadNvidiaReceive)
+        self.threadNvidia.start()
         # --------------------------------------------------------------------------------------
 
     def getWindowCurrentId(self, windowTitle):
@@ -134,6 +139,19 @@ class MainWindow(QtWidgets.QMainWindow):
         print('Enter in wizard...')
         self.myWizard = GonhaNgWizard(self)
         self.myWizard.show()
+
+    def threadNvidiaReceive(self, message):
+        for i, msg in enumerate(message):
+            self.displayNvidia.nvidiaWidgets[i]['gpu_name'].setText(msg['gpu_name'])
+            self.displayNvidia.nvidiaWidgets[i]['utilization_gpu'].setText(f"{str(msg['utilization_gpu'])}")
+            self.displayNvidia.nvidiaWidgets[i]['usedTotalMemory'].setText(f"{msg['memory_used']}/{msg['memory_total']}")
+            self.displayNvidia.nvidiaWidgets[i]['power_draw'].setText(f"{msg['power_draw']}")
+            self.displayNvidia.nvidiaWidgets[i]['fan_speed'].setText(f"{msg['fan_speed']}")
+            self.displayNvidia.nvidiaWidgets[i]['temperature_gpu'].setText(
+                f"{int(msg['temperature_gpu'])} °C")
+            self.common.analizeTemp(self.displayNvidia.nvidiaWidgets[i]['temperature_gpu'], msg['temperature_gpu'],
+                             msg['temperature_gpu_high'],
+                             msg['temperature_gpu_critical'])
 
     def threadSystemReceive(self, message):
         # -----------------------------------------------------------------------------------------------------
