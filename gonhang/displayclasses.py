@@ -192,6 +192,15 @@ class CommomAttributes:
         elif (current < criticalValue) and (current >= highValue):
             label.setStyleSheet(colorWarning)
 
+    @staticmethod
+    def displayRow(optionsList, value):
+        rowCount = optionsList.count()
+        for i in range(rowCount):
+            rowText = optionsList.item(i).text()
+            rowList = rowText.split('|')
+            if str(value) == str(rowList[0]):
+                optionsList.setCurrentRow(i)
+
 
 class DisplaySystem:
     commom = CommomAttributes()

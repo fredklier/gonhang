@@ -3,6 +3,7 @@ from gonhang.api import FileUtil
 from gonhang.core import Config
 from gonhang.core import KeysSkeleton
 from gonhang.core import Nvidia
+from gonhang.displayclasses import CommomAttributes
 import psutil
 
 
@@ -146,6 +147,7 @@ class NvidiaPage(QtWidgets.QWizardPage):
     nvidia = Nvidia()
     keysSkeleton = KeysSkeleton()
     config = Config()
+    common = CommomAttributes()
 
     def __init__(self, parent=None):
         super(NvidiaPage, self).__init__(parent)
@@ -208,7 +210,7 @@ class NvidiaPage(QtWidgets.QWizardPage):
             self.rbEnable.setChecked(True)
         # print(gpuInfo)
 
-        self.displayCorrectRow()
+        self.common.displayRow(self.optionsList, self.keysSkeleton.nvidiaOption['nvidiaOption']['GpuId'])
 
     def groupBoxClicked(self):
         enabled = False
@@ -226,20 +228,12 @@ class NvidiaPage(QtWidgets.QWizardPage):
         rowList = self.optionsList.currentItem().text().split('|')
         self.updateNvidiaOption(rowList[0], self.keysSkeleton.nvidiaOption['nvidiaOption']['enabled'])
 
-    def displayCorrectRow(self):
-        rowCount = self.optionsList.count()
-        gpuId = self.keysSkeleton.nvidiaOption['nvidiaOption']['GpuId']
-        for i in range(rowCount):
-            rowText = self.optionsList.item(i).text()
-            rowList = rowText.split('|')
-            if str(gpuId) == str(rowList[0]):
-                self.optionsList.setCurrentRow(i)
-
 
 class NetPage(QtWidgets.QWizardPage):
     nvidia = Nvidia()
     keysSkeleton = KeysSkeleton()
     config = Config()
+    common = CommomAttributes()
 
     def __init__(self, parent=None):
         super(NetPage, self).__init__(parent)
@@ -273,8 +267,8 @@ class NetPage(QtWidgets.QWizardPage):
         self.keysSkeleton.netOption.update(
             {
                 'netOption': {
-                    'interface':    interface,
-                    'enabled':      enabled
+                    'interface': interface,
+                    'enabled': enabled
                 }
             }
         )
@@ -305,7 +299,7 @@ class NetPage(QtWidgets.QWizardPage):
             self.optionsList.setEnabled(True)
             self.rbEnable.setChecked(True)
 
-        self.displayCorrectRow()
+        self.common.displayRow(self.optionsList, self.keysSkeleton.netOption['netOption']['interface'])
 
     def groupBoxClicked(self):
         enabled = False
@@ -321,12 +315,3 @@ class NetPage(QtWidgets.QWizardPage):
     def optionsClick(self):
         rowList = self.optionsList.currentItem().text().split('|')
         self.updateNetOption(rowList[0], self.keysSkeleton.netOption['netOption']['enabled'])
-
-    def displayCorrectRow(self):
-        rowCount = self.optionsList.count()
-        interface = self.keysSkeleton.netOption['netOption']['interface']
-        for i in range(rowCount):
-            rowText = self.optionsList.item(i).text()
-            rowList = rowText.split('|')
-            if str(interface) == str(rowList[0]):
-                self.optionsList.setCurrentRow(i)
