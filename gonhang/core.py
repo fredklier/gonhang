@@ -302,3 +302,9 @@ class Nvidia:
                 isDisplay = False
 
         return isDisplay
+
+
+class Net:
+
+    def __init__(self):
+        pass

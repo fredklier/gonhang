@@ -42,6 +42,23 @@ class ThreadNvidia(QtCore.QThread):
         self.msleep(500)  # sleep for 500ms
 
 
+class ThreadNet(QtCore.QThread):
+    signal = QtCore.pyqtSignal(dict, name='ThreadNvidiaFinish')
+    message = dict()
+
+    def __init__(self, parent=None):
+        super(ThreadNet, self).__init__(parent)
+        self.finished.connect(self.updateNet)
+
+    def updateNvidia(self):
+        # self.message = self.nvidia.getGPUsInfo()
+        self.signal.emit(self.message)
+        self.start()
+
+    def run(self):
+        self.msleep(1000)  # sleep for 500ms
+
+
 # ------------------------------------------------------------------------------------
 # WatchDog
 # One thread to manager another threads

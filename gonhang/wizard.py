@@ -12,6 +12,7 @@ class GonhaNgWizard(QtWidgets.QWizard):
     def __init__(self, parent=None):
         super(GonhaNgWizard, self).__init__(parent)
         self.addPage(CpuTempPage(self))
+        self.addPage(NetPage(self))
         if self.nvidia.getNumberGPUs() > 0:
             self.addPage(NvidiaPage(self))
         self.setWindowTitle('GonhaNG Wizard Welcome')
@@ -178,7 +179,7 @@ class NvidiaPage(QtWidgets.QWizardPage):
         self.keysSkeleton.nvidiaOption.update(
             {
                 'nvidiaOption': {
-                    'GpuId':    GpuId,
+                    'GpuId': GpuId,
                     'enabled': enabled
                 }
             }
@@ -233,3 +234,108 @@ class NvidiaPage(QtWidgets.QWizardPage):
             rowList = rowText.split('|')
             if str(gpuId) == str(rowList[0]):
                 self.optionsList.setCurrentRow(i)
+
+
+class NetPage(QtWidgets.QWizardPage):
+    nvidia = Nvidia()
+    keysSkeleton = KeysSkeleton()
+    config = Config()
+
+    def __init__(self, parent=None):
+        super(NetPage, self).__init__(parent)
+        self.setTitle('Network Interface')
+        self.vLayout = QtWidgets.QVBoxLayout()
+        self.groupBoxEnabled = QtWidgets.QGroupBox('Enable or Disable Network Interface Monitor? ')
+        self.gbLayout = QtWidgets.QVBoxLayout()
+        self.rbEnable = QtWidgets.QRadioButton('Enabled')
+        self.rbEnable.clicked.connect(self.groupBoxClicked)
+        self.gbLayout.addWidget(self.rbEnable)
+        self.rbDisable = QtWidgets.QRadioButton('Disabled')
+        self.rbDisable.clicked.connect(self.groupBoxClicked)
+        self.rbDisable.setChecked(True)
+        self.gbLayout.addWidget(self.rbDisable)
+
+        self.groupBoxEnabled.setLayout(self.gbLayout)
+
+        self.vLayout.addWidget(self.groupBoxEnabled)
+
+        self.questionLabel = QtWidgets.QLabel('Please select the network interface you want to monitor.')
+        self.vLayout.addWidget(self.questionLabel)
+
+        self.optionsList = QtWidgets.QListWidget()
+        self.optionsList.clicked.connect(self.optionsClick)
+        self.vLayout.addWidget(self.optionsList)
+        self.setLayout(self.vLayout)
+        self.displayAvailablesInterfaces()
+
+    def updateNetOption(self, GpuId, enabled):
+        pass
+        # self.keysSkeleton.nvidiaOption.clear()
+        # self.keysSkeleton.nvidiaOption.update(
+        #     {
+        #         'nvidiaOption': {
+        #             'GpuId':    GpuId,
+        #             'enabled': enabled
+        #         }
+        #     }
+        # )
+        # self.config.updateConfig(self.keysSkeleton.nvidiaOption)
+        # print(self.keysSkeleton.nvidiaOption)
+
+    def displayAvailablesInterfaces(self):
+        network = psutil.net_if_addrs()
+        # print(network['enp6s0'][0].address)
+        # print(f"{type(network['enp6s0'][0])}")
+        for interface in psutil.net_if_addrs():
+            if interface != 'lo':
+                self.optionsList.addItem('{}|\tIP Address: [{}]'.format(interface, network[interface][0].address))
+                # print(f"Interface : {interface} - Ip Address: {network[interface][0]}")
+        # gpu = self.nvidia.getGPUsInfo()
+        # self.optionsList.addItem(f"{gpu['gpu_uuid']}| - {gpu['gpu_name']}")
+        #
+        # # Verify if exists key in config
+        # nvidiaOptionConfig = self.config.getKey('nvidiaOption')
+        # if nvidiaOptionConfig is None:
+        #     self.updateNvidiaOption('', False)
+        # else:
+        #     self.updateNvidiaOption(
+        #         nvidiaOptionConfig['GpuId'],
+        #         nvidiaOptionConfig['enabled']
+        #     )
+        #
+        # if not self.keysSkeleton.nvidiaOption['nvidiaOption']['enabled']:
+        #     self.optionsList.setDisabled(True)
+        # else:
+        #     self.optionsList.setEnabled(True)
+        #     self.rbEnable.setChecked(True)
+        # # print(gpuInfo)
+        #
+        # self.displayCorrectRow()
+
+    def groupBoxClicked(self):
+        pass
+        # enabled = False
+        # if self.rbEnable.isChecked():
+        #     self.optionsList.setEnabled(True)
+        #     self.keysSkeleton.nvidiaOption['nvidiaOption']['enabled'] = True
+        #     enabled = True
+        # else:
+        #     self.optionsList.setDisabled(True)
+        #     self.keysSkeleton.nvidiaOption['nvidiaOption']['enabled'] = False
+        #
+        # self.updateNvidiaOption(self.keysSkeleton.nvidiaOption['nvidiaOption']['GpuId'], enabled)
+
+    def optionsClick(self):
+        pass
+        # rowList = self.optionsList.currentItem().text().split('|')
+        # self.updateNvidiaOption(rowList[0], self.keysSkeleton.nvidiaOption['nvidiaOption']['enabled'])
+
+    def displayCorrectRow(self):
+        pass
+        # rowCount = self.optionsList.count()
+        # gpuId = self.keysSkeleton.nvidiaOption['nvidiaOption']['GpuId']
+        # for i in range(rowCount):
+        #     rowText = self.optionsList.item(i).text()
+        #     rowList = rowText.split('|')
+        #     if str(gpuId) == str(rowList[0]):
+        #         self.optionsList.setCurrentRow(i)
