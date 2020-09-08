@@ -143,6 +143,8 @@ class CpuTempPage(QtWidgets.QWizardPage):
 
 class NvidiaPage(QtWidgets.QWizardPage):
     nvidia = Nvidia()
+    keysSkeleton = KeysSkeleton()
+    config = Config()
 
     def __init__(self, parent=None):
         super(NvidiaPage, self).__init__(parent)
@@ -151,10 +153,10 @@ class NvidiaPage(QtWidgets.QWizardPage):
         self.groupBoxEnabled = QtWidgets.QGroupBox('Enable or Disable Nvidia GPU Monitor? ')
         self.gbLayout = QtWidgets.QVBoxLayout()
         self.rbEnable = QtWidgets.QRadioButton('Enabled')
-        # self.rbEnable.clicked.connect(self.groupBoxClicked)
+        self.rbEnable.clicked.connect(self.groupBoxClicked)
         self.gbLayout.addWidget(self.rbEnable)
         self.rbDisable = QtWidgets.QRadioButton('Disabled')
-        # self.rbDisable.clicked.connect(self.groupBoxClicked)
+        self.rbDisable.clicked.connect(self.groupBoxClicked)
         self.rbDisable.setChecked(True)
         self.gbLayout.addWidget(self.rbDisable)
 
@@ -166,11 +168,69 @@ class NvidiaPage(QtWidgets.QWizardPage):
         self.vLayout.addWidget(self.questionLabel)
 
         self.optionsList = QtWidgets.QListWidget()
-        # self.optionsList.clicked.connect(self.optionsClick)
+        self.optionsList.clicked.connect(self.optionsClick)
         self.vLayout.addWidget(self.optionsList)
         self.setLayout(self.vLayout)
         self.displayAvailablesGpus()
 
+    def updateNvidiaOption(self, GpuId, enabled):
+        self.keysSkeleton.nvidiaOption.clear()
+        self.keysSkeleton.nvidiaOption.update(
+            {
+                'nvidiaOption': {
+                    'GpuId':    GpuId,
+                    'enabled': enabled
+                }
+            }
+        )
+        self.config.updateConfig(self.keysSkeleton.nvidiaOption)
+        # print(self.keysSkeleton.nvidiaOption)
+
     def displayAvailablesGpus(self):
-        gpuInfo = self.nvidia.getGPUsInfo()
-        print(gpuInfo)
+        for gpu in self.nvidia.nvidiaEntity['gpus']:
+            print(f"{gpu['gpu_uuid']} name: {gpu['gpu_name']}")
+            self.optionsList.addItem(f"{gpu['gpu_uuid']}| - {gpu['gpu_name']}")
+
+        # Verify if exists key in config
+        nvidiaOptionConfig = self.config.getKey('nvidiaOption')
+        if nvidiaOptionConfig is None:
+            self.updateNvidiaOption('', False)
+        else:
+            self.updateNvidiaOption(
+                nvidiaOptionConfig['GpuId'],
+                nvidiaOptionConfig['enabled']
+            )
+
+        if not self.keysSkeleton.nvidiaOption['nvidiaOption']['enabled']:
+            self.optionsList.setDisabled(True)
+        else:
+            self.optionsList.setEnabled(True)
+            self.rbEnable.setChecked(True)
+        # print(gpuInfo)
+
+        self.displayCorrectRow()
+
+    def groupBoxClicked(self):
+        enabled = False
+        if self.rbEnable.isChecked():
+            self.optionsList.setEnabled(True)
+            self.keysSkeleton.nvidiaOption['nvidiaOption']['enabled'] = True
+            enabled = True
+        else:
+            self.optionsList.setDisabled(True)
+            self.keysSkeleton.nvidiaOption['nvidiaOption']['enabled'] = False
+
+        self.updateNvidiaOption(self.keysSkeleton.nvidiaOption['nvidiaOption']['GpuId'], enabled)
+
+    def optionsClick(self):
+        rowList = self.optionsList.currentItem().text().split('|')
+        self.updateNvidiaOption(rowList[0], self.keysSkeleton.nvidiaOption['nvidiaOption']['enabled'])
+
+    def displayCorrectRow(self):
+        rowCount = self.optionsList.count()
+        gpuId = self.keysSkeleton.nvidiaOption['nvidiaOption']['GpuId']
+        for i in range(rowCount):
+            rowText = self.optionsList.item(i).text()
+            rowList = rowText.split('|')
+            if str(gpuId) == str(rowList[0]):
+                self.optionsList.setCurrentRow(i)

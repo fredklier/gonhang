@@ -31,6 +31,15 @@ class KeysSkeleton:
         }
     )
 
+    nvidiaOption = dict(
+        {
+            'nvidiaOption': {
+                'GpuId':    '',
+                'enabled':  False
+            }
+        }
+    )
+
 
 class PlatFormUtil:
     plat = platform.uname()
