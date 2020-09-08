@@ -11,6 +11,7 @@ from gonhang.core import Config
 from gonhang.systemtray import SystemTrayIcon
 from gonhang.api import FileUtil
 from gonhang.core import System
+from gonhang.core import Nvidia
 from gonhang.core import KeysSkeleton
 from gonhang.displayclasses import AboutBox
 import sys
@@ -20,6 +21,7 @@ import time
 class MainWindow(QtWidgets.QMainWindow):
     config = Config()
     system = System()
+    nvidia = Nvidia()
     wmctrlBin = subprocess.getoutput('which wmctrl')
     myWizard = None
     app = QtWidgets.QApplication(sys.argv)
@@ -33,6 +35,9 @@ class MainWindow(QtWidgets.QMainWindow):
     # Threads
     threadSystem = ThreadSystem()
     threadNvidia = ThreadNvidia()
+    # --------------------------------------------------------------
+    # itens hide by default
+    nvidiaGroupBox = QtWidgets.QGroupBox()
 
     def __init__(self):
         super(MainWindow, self).__init__()
@@ -75,9 +80,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def showSections(self):
         self.loadGlobalParams()
-        # self.verticalLayout.addWidget(self.displaySystem.initUi())
         self.displaySystem.initUi(self.verticalLayout)
-        self.displayNvidia.initUi(self.verticalLayout)
+
+        if not self.nvidia.isToDisplayNvidia():
+            self.nvidiaGroupBox = self.displayNvidia.initUi(self.verticalLayout)
 
     def loadGlobalParams(self):
         position = self.config.getKey('positionOption')
@@ -144,14 +150,15 @@ class MainWindow(QtWidgets.QMainWindow):
         for i, msg in enumerate(message):
             self.displayNvidia.nvidiaWidgets[i]['gpu_name'].setText(msg['gpu_name'])
             self.displayNvidia.nvidiaWidgets[i]['utilization_gpu'].setText(f"{str(msg['utilization_gpu'])}")
-            self.displayNvidia.nvidiaWidgets[i]['usedTotalMemory'].setText(f"{msg['memory_used']}/{msg['memory_total']}")
+            self.displayNvidia.nvidiaWidgets[i]['usedTotalMemory'].setText(
+                f"{msg['memory_used']}/{msg['memory_total']}")
             self.displayNvidia.nvidiaWidgets[i]['power_draw'].setText(f"{msg['power_draw']}")
             self.displayNvidia.nvidiaWidgets[i]['fan_speed'].setText(f"{msg['fan_speed']}")
             self.displayNvidia.nvidiaWidgets[i]['temperature_gpu'].setText(
                 f"{int(msg['temperature_gpu'])} °C")
             self.common.analizeTemp(self.displayNvidia.nvidiaWidgets[i]['temperature_gpu'], msg['temperature_gpu'],
-                             msg['temperature_gpu_high'],
-                             msg['temperature_gpu_critical'])
+                                    msg['temperature_gpu_high'],
+                                    msg['temperature_gpu_critical'])
 
     def threadSystemReceive(self, message):
         # -----------------------------------------------------------------------------------------------------
@@ -170,7 +177,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.displaySystem.systemWidgets['cpuProgressBar'].setValue(message['cpuProgressBar'])
         self.common.analizeProgressBar(self.displaySystem.systemWidgets['cpuProgressBar'], message['cpuProgressBar'])
         self.displaySystem.systemWidgets['cpuFreqCurrent'].setText(f"{message['cpuFreqCurrent']} MHz")
-        self.common.analizeValue(self.displaySystem.systemWidgets['cpuFreqCurrent'], message['cpuFreqCurrent'], message['cpuFreqMax'])
+        self.common.analizeValue(self.displaySystem.systemWidgets['cpuFreqCurrent'], message['cpuFreqCurrent'],
+                                 message['cpuFreqMax'])
         # -----------------------------------------------------------------------------------------------------
         # Ram Load workout
         self.updateWorkOut(
@@ -195,7 +203,8 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.system.isToDisplayCpuTemp():
             self.displaySystem.showWidgetByDefault()
             self.displaySystem.systemWidgets['cpuTempProgressBar'].setValue(message['cpuTempProgressBar'])
-            self.common.analizeProgressBar(self.displaySystem.systemWidgets['cpuTempProgressBar'], message['cpuTempProgressBar'])
+            self.common.analizeProgressBar(self.displaySystem.systemWidgets['cpuTempProgressBar'],
+                                           message['cpuTempProgressBar'])
             self.displaySystem.systemWidgets['cpuCurrentTempLabel'].setText(f"{message['cpuCurrentTempLabel']} °C")
             self.common.analizeTemp(
                 self.displaySystem.systemWidgets['cpuCurrentTempLabel'],
@@ -212,4 +221,3 @@ class MainWindow(QtWidgets.QMainWindow):
         self.common.analizeProgressBar(pb, pbValue)
         labelUsed.setText(labelUsedValue)
         self.common.analizeValue(labelUsed, labelUsedValue, labelTotal)
-

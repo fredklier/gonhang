@@ -634,3 +634,5 @@ class DisplayNvidia:
         nvidiaGroupBox.setLayout(gridLayout)
 
         verticalLayout.addWidget(nvidiaGroupBox)
+
+        return nvidiaGroupBox

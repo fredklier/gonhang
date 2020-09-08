@@ -34,8 +34,8 @@ class KeysSkeleton:
     nvidiaOption = dict(
         {
             'nvidiaOption': {
-                'GpuId':    '',
-                'enabled':  False
+                'GpuId': '',
+                'enabled': False
             }
         }
     )
@@ -222,6 +222,7 @@ class System:
 
 
 class Nvidia:
+    config = Config()
     smiCommand = 'nvidia-smi'
     # , nounits
     smiSuffixCommand = '--format=csv,noheader'
@@ -291,3 +292,16 @@ class Nvidia:
             return True
         else:
             return False
+
+    def isToDisplayNvidia(self):
+        nvidiaOptionConfig = self.config.getKey('nvidiaOption')
+        isDisplay = False
+        if nvidiaOptionConfig is None:
+            isDisplay = False
+        else:
+            if nvidiaOptionConfig['enabled'] and nvidiaOptionConfig['GpuId'] != '':
+                isDisplay = True
+            else:
+                isDisplay = False
+
+        return isDisplay
