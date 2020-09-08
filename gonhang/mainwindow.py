@@ -88,7 +88,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # --------------------------------------------------------------------------------------
         # Connect thread signals and start
         self.threadSystem.signal.connect(self.threadSystemReceive)
-        # self.threadSystem.start()
+        self.threadSystem.start()
         # --------------------------------------------------------------------------------------
 
     def getWindowCurrentId(self, windowTitle):
@@ -149,13 +149,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.displaySystem.systemWidgets['btSeconds'].setText(f"{message['btSeconds']} ")
         # -----------------------------------------------------------------------------------------------------
         # Cpu Load workout
-        self.updateWorkOut(
-            self.displaySystem.systemWidgets['cpuProgressBar'],
-            message['cpuProgressBar'],
-            self.displaySystem.systemWidgets['cpuFreqCurrent'],
-            message['cpuFreqCurrent'],
-            message['cpuFreqMax']
-        )
+        self.displaySystem.systemWidgets['cpuProgressBar'].setValue(message['cpuProgressBar'])
+        self.common.analizeProgressBar(self.displaySystem.systemWidgets['cpuProgressBar'], message['cpuProgressBar'])
+        self.displaySystem.systemWidgets['cpuFreqCurrent'].setText(f"{message['cpuFreqCurrent']} MHz")
+        self.common.analizeValue(self.displaySystem.systemWidgets['cpuFreqCurrent'], message['cpuFreqCurrent'], message['cpuFreqMax'])
         # -----------------------------------------------------------------------------------------------------
         # Ram Load workout
         self.updateWorkOut(
@@ -197,3 +194,4 @@ class MainWindow(QtWidgets.QMainWindow):
         self.common.analizeProgressBar(pb, pbValue)
         labelUsed.setText(labelUsedValue)
         self.common.analizeValue(labelUsed, labelUsedValue, labelTotal)
+

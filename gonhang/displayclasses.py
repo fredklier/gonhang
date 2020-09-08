@@ -204,8 +204,8 @@ class DisplaySystem:
         message = self.system.getMessage()
         systemGroupBox = self.commom.getDefaultGb('system')
 
-        verticalLayout = QtWidgets.QVBoxLayout()
-        verticalLayout.setSpacing(0)
+        localVLayout = QtWidgets.QVBoxLayout()
+        localVLayout.setSpacing(0)
 
         distroGridLayout = QtWidgets.QGridLayout()
         distroGridLayout.setAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignHCenter)
@@ -241,12 +241,11 @@ class DisplaySystem:
         self.systemWidgets['nodeMachine'] = machineLabel
 
         distroGridLayout.addWidget(machineLabel, 2, 1)
-        # ---------------------------------------------------------------------------
-        verticalLayout.addLayout(distroGridLayout)
-        # ---------------------------------------------------------------------------
+
+        localVLayout.addLayout(distroGridLayout)
         # ---------------------------------------------------------------------------
         # boot time label
-        verticalLayout.addLayout(distroGridLayout)
+        # verticalLayout.addLayout(distroGridLayout)
 
         bootAndCpuModelLayout = QtWidgets.QVBoxLayout()
         bootAndCpuModelLayout.setSpacing(0)
@@ -293,7 +292,7 @@ class DisplaySystem:
 
         bootAndCpuModelLayout.addLayout(btHLayout)
 
-        verticalLayout.addLayout(bootAndCpuModelLayout)
+        # verticalLayout.addLayout(bootAndCpuModelLayout)
         # ---------------------------------------------------------------------------
         # CPU info
         cpuBrandLabel = QtWidgets.QLabel(self.system.getCpuModelName())
@@ -302,7 +301,7 @@ class DisplaySystem:
 
         bootAndCpuModelLayout.addWidget(cpuBrandLabel)
 
-        verticalLayout.addLayout(bootAndCpuModelLayout)
+        # verticalLayout.addLayout(bootAndCpuModelLayout)
         # ---------------------------------------------------------------------------
         # Cpu load
 
@@ -418,7 +417,7 @@ class DisplaySystem:
 
         gridLayout.addWidget(swapTotalLabel, 2, 4)
 
-        verticalLayout.addLayout(gridLayout)
+        # verticalLayout.addLayout(gridLayout)
 
         # ---------------------------------------------------------------------------
         # cpu Temperature Load
@@ -459,7 +458,11 @@ class DisplaySystem:
 
         gridLayout.addWidget(cpuTempMaxLabel, 3, 4)
 
-        vLayout.addLayout(gridLayout)
+        # vLayout.addLayout(gridLayout)
+
+        localVLayout.addLayout(gridLayout)
+
+        systemGroupBox.setLayout(localVLayout)
 
         vLayout.addWidget(systemGroupBox)
         # --------------------------------------------------------------------------------------------------
