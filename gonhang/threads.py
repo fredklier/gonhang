@@ -58,11 +58,19 @@ class WatchDog(QtCore.QThread):
     displayNvidia = DisplayNvidia()
     threadNvidia = ThreadNvidia()
 
-    def __init__(self, parent=None):
+    def __init__(self, vLayout, parent=None):
         super(WatchDog, self).__init__(parent)
         self.finished.connect(self.threadFinished)
         self.threadNvidia.signal.connect(self.threadNvidiaReceive)
+
         self.threadSystem.signal.connect(self.threadSystemReceive)
+        self.verticalLayout = vLayout
+
+        # display system (default section)
+        self.displaySystem.initUi(self.verticalLayout)
+        # display nvidia if have nvidia gpu
+        if self.nvidia.getNumberGPUs()>0:
+            self.displayNvidia.initUi(self.verticalLayout)
 
     def threadFinished(self):
         self.start()
@@ -134,7 +142,8 @@ class WatchDog(QtCore.QThread):
             self.displayNvidia.nvidiaWidgets['nvidiaGroupBox'].show()
             self.displayNvidia.nvidiaWidgets['gpu_name'].setText(message['gpu_name'])
             self.displayNvidia.nvidiaWidgets['utilization_gpu'].setText(f"{str(message['utilization_gpu'])}")
-            self.displayNvidia.nvidiaWidgets['usedTotalMemory'].setText(f"{message['memory_used']}/{message['memory_total']}")
+            self.displayNvidia.nvidiaWidgets['usedTotalMemory'].setText(
+                f"{message['memory_used']}/{message['memory_total']}")
             self.displayNvidia.nvidiaWidgets['power_draw'].setText(f"{message['power_draw']}")
             self.displayNvidia.nvidiaWidgets['fan_speed'].setText(f"{message['fan_speed']}")
             self.displayNvidia.nvidiaWidgets['temperature_gpu'].setText(f"{int(message['temperature_gpu'])} °C")
@@ -153,7 +162,7 @@ class WatchDog(QtCore.QThread):
             self.threadSystem.start()
         # ----------------------------------------------------------------------------
         # Verify for nvidia
-        if self.nvidia.isToDisplayNvidia() and (not self.threadNvidia.isRunning()):
+        if self.nvidia.isToDisplayNvidia() or (not self.threadNvidia.isRunning()):
             self.threadNvidia.start()
         else:
             self.threadNvidia.quit()

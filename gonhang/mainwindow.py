@@ -2,16 +2,10 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 import subprocess
 from gonhang.api import StringUtil
 from gonhang.wizard import GonhaNgWizard
-from gonhang.threads import ThreadSystem
 from gonhang.threads import WatchDog
-from gonhang.displayclasses import DisplaySystem
-from gonhang.displayclasses import DisplayNvidia
-from gonhang.displayclasses import CommomAttributes
 from gonhang.core import Config
 from gonhang.systemtray import SystemTrayIcon
 from gonhang.api import FileUtil
-from gonhang.core import System
-from gonhang.core import Nvidia
 from gonhang.core import KeysSkeleton
 from gonhang.displayclasses import AboutBox
 import sys
@@ -20,22 +14,10 @@ import time
 
 class MainWindow(QtWidgets.QMainWindow):
     config = Config()
-    system = System()
-    nvidia = Nvidia()
     wmctrlBin = subprocess.getoutput('which wmctrl')
     myWizard = None
     app = QtWidgets.QApplication(sys.argv)
     keySkeleton = KeysSkeleton()
-    # -------------------------------------------------------------
-    # Display classes
-    common = CommomAttributes()
-    displaySystem = DisplaySystem()
-    displayNvidia = DisplayNvidia()
-    # -------------------------------------------------------------
-    # Threads
-    threadSystem = ThreadSystem()
-    # threadNvidia = ThreadNvidia()
-    watchDog = WatchDog()
     # --------------------------------------------------------------
     # itens hide by default
     nvidiaGroupBox = QtWidgets.QGroupBox()
@@ -59,33 +41,28 @@ class MainWindow(QtWidgets.QMainWindow):
         centralWidget.setLayout(self.verticalLayout)
         self.setCentralWidget(centralWidget)
         # -----------------------------------------------------------------------------
-        # Show Sections and initialize services
-        self.showSections()
+        # Display window and put in every workspaces
         self.show()
         time.sleep(1 / 50)
         self.setWindowInEveryWorkspaces()
         # -----------------------------------------------------------------------------
-
+        # Display tray system
         self.systemTrayMenu = SystemTrayIcon(QtGui.QIcon(f'{FileUtil.getResourcePath()}/images/icon.png'), self)
         self.systemTrayMenu.show()
+        # -----------------------------------------------------------------------------
+        # aboutBox
         self.aboutBox = AboutBox(self)
 
         # ----------------------------------------------------------------------------
-        # start WatchDog
+        # -------------------------------------------------------------
+        # WatchDog the king off all Threads
+        self.watchDog = WatchDog(self.verticalLayout)
         print('Starting WatchDog....')
         self.watchDog.start()
 
     def showAboutBox(self):
         # self.aboutBox.exec_()
         self.aboutBox.show()
-
-    def showSections(self):
-        self.loadGlobalParams()
-        self.displaySystem.initUi(self.verticalLayout)
-
-        if self.nvidia.getNumberGPUs() > 0:
-            self.nvidiaGroupBox = self.displayNvidia.initUi(self.verticalLayout)
-            self.nvidiaGroupBox.hide()
 
     def loadGlobalParams(self):
         position = self.config.getKey('positionOption')
@@ -137,4 +114,3 @@ class MainWindow(QtWidgets.QMainWindow):
         print('Enter in wizard...')
         self.myWizard = GonhaNgWizard(self)
         self.myWizard.show()
-
