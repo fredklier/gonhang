@@ -4,6 +4,7 @@ from gonhang.api import StringUtil
 from gonhang.wizard import GonhaNgWizard
 from gonhang.threads import ThreadSystem
 from gonhang.displayclasses import DisplaySystem
+from gonhang.displayclasses import DisplayNvidia
 from gonhang.displayclasses import CommomAttributes
 from gonhang.core import Config
 from gonhang.systemtray import SystemTrayIcon
@@ -26,6 +27,7 @@ class MainWindow(QtWidgets.QMainWindow):
     # Display classes
     common = CommomAttributes()
     displaySystem = DisplaySystem()
+    displayNvidia = DisplayNvidia()
     # -------------------------------------------------------------
     # Threads
     threadSystem = ThreadSystem()
@@ -71,7 +73,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def showSections(self):
         self.loadGlobalParams()
-        self.verticalLayout.addWidget(self.displaySystem.initUi())
+        # self.verticalLayout.addWidget(self.displaySystem.initUi())
+        self.displaySystem.initUi(self.verticalLayout)
+        self.displayNvidia.initUi(self.verticalLayout)
 
     def loadGlobalParams(self):
         position = self.config.getKey('positionOption')
@@ -81,9 +85,11 @@ class MainWindow(QtWidgets.QMainWindow):
             self.refreshPosition(position['index'])
 
     def startAllThreads(self):
+        # --------------------------------------------------------------------------------------
         # Connect thread signals and start
         self.threadSystem.signal.connect(self.threadSystemReceive)
-        self.threadSystem.start()
+        # self.threadSystem.start()
+        # --------------------------------------------------------------------------------------
 
     def getWindowCurrentId(self, windowTitle):
         windowsList = subprocess.getoutput(f'{self.wmctrlBin} -l')
