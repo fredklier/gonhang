@@ -3,7 +3,6 @@ import subprocess
 from gonhang.api import StringUtil
 from gonhang.wizard import GonhaNgWizard
 from gonhang.threads import ThreadSystem
-from gonhang.threads import ThreadNvidia
 from gonhang.threads import WatchDog
 from gonhang.displayclasses import DisplaySystem
 from gonhang.displayclasses import DisplayNvidia
@@ -72,9 +71,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.aboutBox = AboutBox(self)
 
         # ----------------------------------------------------------------------------
-        # start the threads
-        print('Initializing Threads...')
-        self.startAllThreads()
+        # start WatchDog
+        print('Starting WatchDog....')
+        self.watchDog.start()
 
     def showAboutBox(self):
         # self.aboutBox.exec_()
@@ -94,18 +93,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.refreshPosition(0)
         else:
             self.refreshPosition(position['index'])
-
-    def startAllThreads(self):
-        # --------------------------------------------------------------------------------------
-        # Connect thread signals and start
-        self.threadSystem.signal.connect(self.threadSystemReceive)
-        self.threadSystem.start()
-
-        # (self.threadNvidiaReceive)
-        # self.threadNvidia.start()
-        print('Starting WatchDog....')
-        self.watchDog.start()
-        # --------------------------------------------------------------------------------------
 
     def getWindowCurrentId(self, windowTitle):
         windowsList = subprocess.getoutput(f'{self.wmctrlBin} -l')
@@ -151,82 +138,3 @@ class MainWindow(QtWidgets.QMainWindow):
         self.myWizard = GonhaNgWizard(self)
         self.myWizard.show()
 
-    def threadNvidiaReceive(self, message):
-        if self.nvidia.isToDisplayNvidia():
-            self.nvidiaGroupBox.show()
-            self.displayNvidia.nvidiaWidgets['gpu_name'].setText(message['gpu_name'])
-            self.displayNvidia.nvidiaWidgets['utilization_gpu'].setText(f"{str(message['utilization_gpu'])}")
-            self.displayNvidia.nvidiaWidgets['usedTotalMemory'].setText(f"{message['memory_used']}/{message['memory_total']}")
-            self.displayNvidia.nvidiaWidgets['power_draw'].setText(f"{message['power_draw']}")
-            self.displayNvidia.nvidiaWidgets['fan_speed'].setText(f"{message['fan_speed']}")
-            self.displayNvidia.nvidiaWidgets['temperature_gpu'].setText(f"{int(message['temperature_gpu'])} °C")
-            self.common.analizeTemp(
-                self.displayNvidia.nvidiaWidgets['temperature_gpu'],
-                message['temperature_gpu'],
-                message['temperature_gpu_high'],
-                message['temperature_gpu_critical']
-            )
-        else:
-            self.nvidiaGroupBox.hide()
-
-    def threadSystemReceive(self, message):
-        # -----------------------------------------------------------------------------------------------------
-        # System, release and node machine
-        self.displaySystem.systemWidgets['distroStr'].setText(message['distroStr'])
-        self.displaySystem.systemWidgets['release'].setText(f"Kernel {message['release']}")
-        self.displaySystem.systemWidgets['nodeMachine'].setText(f"node {message['node']} arch {message['machine']}")
-        # -----------------------------------------------------------------------------------------------------
-        # boot time
-        self.displaySystem.systemWidgets['btDays'].setText(f"{message['btDays']} ")
-        self.displaySystem.systemWidgets['btHours'].setText(f"{message['btHours']} ")
-        self.displaySystem.systemWidgets['btMinutes'].setText(f"{message['btMinutes']} ")
-        self.displaySystem.systemWidgets['btSeconds'].setText(f"{message['btSeconds']} ")
-        # -----------------------------------------------------------------------------------------------------
-        # Cpu Load workout
-        self.displaySystem.systemWidgets['cpuProgressBar'].setValue(message['cpuProgressBar'])
-        self.common.analizeProgressBar(self.displaySystem.systemWidgets['cpuProgressBar'], message['cpuProgressBar'])
-        self.displaySystem.systemWidgets['cpuFreqCurrent'].setText(f"{message['cpuFreqCurrent']} MHz")
-        self.common.analizeValue(self.displaySystem.systemWidgets['cpuFreqCurrent'], message['cpuFreqCurrent'],
-                                 message['cpuFreqMax'])
-        # -----------------------------------------------------------------------------------------------------
-        # Ram Load workout
-        self.updateWorkOut(
-            self.displaySystem.systemWidgets['ramProgressBar'],
-            message['ramProgressBar'],
-            self.displaySystem.systemWidgets['ramUsed'],
-            message['ramUsed'],
-            message['ramTotal']
-        )
-        # -----------------------------------------------------------------------------------------------------
-        # swap Load workout
-        self.updateWorkOut(
-            self.displaySystem.systemWidgets['swapProgressBar'],
-            message['swapProgressBar'],
-            self.displaySystem.systemWidgets['swapUsed'],
-            f"{message['swapUsed']}",
-            message['swapTotal']
-        )
-
-        # ------------------------------------------------------------------------------------------------------
-        # Verify if can display cpuTemp
-        if self.system.isToDisplayCpuTemp():
-            self.displaySystem.showWidgetByDefault()
-            self.displaySystem.systemWidgets['cpuTempProgressBar'].setValue(message['cpuTempProgressBar'])
-            self.common.analizeProgressBar(self.displaySystem.systemWidgets['cpuTempProgressBar'],
-                                           message['cpuTempProgressBar'])
-            self.displaySystem.systemWidgets['cpuCurrentTempLabel'].setText(f"{message['cpuCurrentTempLabel']} °C")
-            self.common.analizeTemp(
-                self.displaySystem.systemWidgets['cpuCurrentTempLabel'],
-                float(message['cpuCurrentTempLabel']),
-                75.0,
-                85.0
-            )
-        else:
-            self.displaySystem.hideWidgetByDefault()
-        # ------------------------------------------------------------------------------------------------------
-
-    def updateWorkOut(self, pb, pbValue, labelUsed, labelUsedValue, labelTotal):
-        pb.setValue(pbValue)
-        self.common.analizeProgressBar(pb, pbValue)
-        labelUsed.setText(labelUsedValue)
-        self.common.analizeValue(labelUsed, labelUsedValue, labelTotal)

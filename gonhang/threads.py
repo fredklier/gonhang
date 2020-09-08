@@ -1,6 +1,7 @@
 from PyQt5 import QtCore
 from gonhang.core import System
 from gonhang.core import Nvidia
+from gonhang.displayclasses import DisplaySystem
 from gonhang.displayclasses import DisplayNvidia
 from gonhang.displayclasses import CommomAttributes
 
@@ -45,18 +46,88 @@ class ThreadNvidia(QtCore.QThread):
 # WatchDog
 # One thread to manager another threads
 class WatchDog(QtCore.QThread):
-    nvidia = Nvidia()
-    threadNvidia = ThreadNvidia()
-    displayNvidia = DisplayNvidia()
     common = CommomAttributes()
+    # -----------------------------------------------------------------
+    # System
+    system = System()
+    displaySystem = DisplaySystem()
+    threadSystem = ThreadSystem()
+    # -----------------------------------------------------------------
+    # nvidia
+    nvidia = Nvidia()
+    displayNvidia = DisplayNvidia()
+    threadNvidia = ThreadNvidia()
 
     def __init__(self, parent=None):
         super(WatchDog, self).__init__(parent)
         self.finished.connect(self.threadFinished)
         self.threadNvidia.signal.connect(self.threadNvidiaReceive)
+        self.threadSystem.signal.connect(self.threadSystemReceive)
 
     def threadFinished(self):
         self.start()
+
+    def threadSystemReceive(self, message):
+        # -----------------------------------------------------------------------------------------------------
+        # System, release and node machine
+        self.displaySystem.systemWidgets['distroStr'].setText(message['distroStr'])
+        self.displaySystem.systemWidgets['release'].setText(f"Kernel {message['release']}")
+        self.displaySystem.systemWidgets['nodeMachine'].setText(f"node {message['node']} arch {message['machine']}")
+        # -----------------------------------------------------------------------------------------------------
+        # boot time
+        self.displaySystem.systemWidgets['btDays'].setText(f"{message['btDays']} ")
+        self.displaySystem.systemWidgets['btHours'].setText(f"{message['btHours']} ")
+        self.displaySystem.systemWidgets['btMinutes'].setText(f"{message['btMinutes']} ")
+        self.displaySystem.systemWidgets['btSeconds'].setText(f"{message['btSeconds']} ")
+        # -----------------------------------------------------------------------------------------------------
+        # Cpu Load workout
+        self.displaySystem.systemWidgets['cpuProgressBar'].setValue(message['cpuProgressBar'])
+        self.common.analizeProgressBar(self.displaySystem.systemWidgets['cpuProgressBar'], message['cpuProgressBar'])
+        self.displaySystem.systemWidgets['cpuFreqCurrent'].setText(f"{message['cpuFreqCurrent']} MHz")
+        self.common.analizeValue(self.displaySystem.systemWidgets['cpuFreqCurrent'], message['cpuFreqCurrent'],
+                                 message['cpuFreqMax'])
+        # -----------------------------------------------------------------------------------------------------
+        # Ram Load workout
+        self.updateWorkOut(
+            self.displaySystem.systemWidgets['ramProgressBar'],
+            message['ramProgressBar'],
+            self.displaySystem.systemWidgets['ramUsed'],
+            message['ramUsed'],
+            message['ramTotal']
+        )
+        # -----------------------------------------------------------------------------------------------------
+        # swap Load workout
+        self.updateWorkOut(
+            self.displaySystem.systemWidgets['swapProgressBar'],
+            message['swapProgressBar'],
+            self.displaySystem.systemWidgets['swapUsed'],
+            f"{message['swapUsed']}",
+            message['swapTotal']
+        )
+
+        # ------------------------------------------------------------------------------------------------------
+        # Verify if can display cpuTemp
+        if self.system.isToDisplayCpuTemp():
+            self.displaySystem.showWidgetByDefault()
+            self.displaySystem.systemWidgets['cpuTempProgressBar'].setValue(message['cpuTempProgressBar'])
+            self.common.analizeProgressBar(self.displaySystem.systemWidgets['cpuTempProgressBar'],
+                                           message['cpuTempProgressBar'])
+            self.displaySystem.systemWidgets['cpuCurrentTempLabel'].setText(f"{message['cpuCurrentTempLabel']} °C")
+            self.common.analizeTemp(
+                self.displaySystem.systemWidgets['cpuCurrentTempLabel'],
+                float(message['cpuCurrentTempLabel']),
+                75.0,
+                85.0
+            )
+        else:
+            self.displaySystem.hideWidgetByDefault()
+        # ------------------------------------------------------------------------------------------------------
+
+    def updateWorkOut(self, pb, pbValue, labelUsed, labelUsedValue, labelTotal):
+        pb.setValue(pbValue)
+        self.common.analizeProgressBar(pb, pbValue)
+        labelUsed.setText(labelUsedValue)
+        self.common.analizeValue(labelUsed, labelUsedValue, labelTotal)
 
     def threadNvidiaReceive(self, message):
         if self.nvidia.isToDisplayNvidia():
@@ -77,6 +148,9 @@ class WatchDog(QtCore.QThread):
             self.displayNvidia.nvidiaWidgets['nvidiaGroupBox'].hide()
 
     def run(self):
+
+        if not self.threadSystem.isRunning():
+            self.threadSystem.start()
         # ----------------------------------------------------------------------------
         # Verify for nvidia
         if self.nvidia.isToDisplayNvidia() and (not self.threadNvidia.isRunning()):
