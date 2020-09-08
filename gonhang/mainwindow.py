@@ -8,6 +8,7 @@ from gonhang.displayclasses import CommomAttributes
 from gonhang.core import Config
 from gonhang.systemtray import SystemTrayIcon
 from gonhang.api import FileUtil
+from gonhang.core import System
 from gonhang.displayclasses import AboutBox
 import sys
 import time
@@ -15,6 +16,7 @@ import time
 
 class MainWindow(QtWidgets.QMainWindow):
     config = Config()
+    system = System()
     wmctrlBin = subprocess.getoutput('which wmctrl')
     myWizard = None
     app = QtWidgets.QApplication(sys.argv)
@@ -48,7 +50,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # Show Sections and initialize services
         self.showSections()
         self.show()
-        time.sleep(1/50)
+        time.sleep(1 / 50)
         self.setWindowInEveryWorkspaces()
         # -----------------------------------------------------------------------------
 
@@ -163,12 +165,19 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # ------------------------------------------------------------------------------------------------------
         # Verify if can display cpuTemp
-        cpuTempOption = self.config.getKey('cpuTempOption')
-        if not (cpuTempOption is None):
-            if cpuTempOption['enabled']:
-                self.displaySystem.showWidgetByDefault()
-            else:
-                self.displaySystem.hideWidgetByDefault()
+        if self.system.isToDisplayCpuTemp():
+            self.displaySystem.showWidgetByDefault()
+            self.displaySystem.systemWidgets['cpuTempProgressBar'].setValue(message['cpuTempProgressBar'])
+            self.common.analizeProgressBar(self.displaySystem.systemWidgets['cpuTempProgressBar'], message['cpuTempProgressBar'])
+            self.displaySystem.systemWidgets['cpuCurrentTempLabel'].setText(f"{message['cpuCurrentTempLabel']} °C")
+            self.common.analizeTemp(
+                self.displaySystem.systemWidgets['cpuCurrentTempLabel'],
+                float(message['cpuCurrentTempLabel']),
+                75.0,
+                85.0
+            )
+        else:
+            self.displaySystem.hideWidgetByDefault()
         # ------------------------------------------------------------------------------------------------------
 
     def updateWorkOut(self, pb, pbValue, labelUsed, labelUsedValue, labelTotal):

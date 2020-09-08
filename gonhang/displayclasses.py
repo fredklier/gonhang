@@ -180,6 +180,17 @@ class CommomAttributes:
         elif currentValue >= maxValue:
             lbl.setStyleSheet(self.red)
 
+    @staticmethod
+    def analizeTemp(label, current, highValue, criticalValue):
+        colorNormal = 'color: rgb(157, 255, 96);'
+        colorWarning = 'color: rgb(255, 255, 153);'
+        colorAlarm = 'color: rgb(255, 79, 79);'
+        label.setStyleSheet(colorNormal)
+        if current >= criticalValue:
+            label.setStyleSheet(colorAlarm)
+        elif (current < criticalValue) and (current >= highValue):
+            label.setStyleSheet(colorWarning)
+
 
 class DisplaySystem:
     commom = CommomAttributes()
@@ -421,7 +432,7 @@ class DisplaySystem:
         tempProgressBar.setFixedWidth(pbDefaultWidth)
         tempProgressBar.setFont(self.commom.fontDefault)
         tempProgressBar.setStyleSheet(self.commom.greenPBStyle)
-        self.systemWidgets['tempProgressBar'] = tempProgressBar
+        self.systemWidgets['cpuTempProgressBar'] = tempProgressBar
         tempProgressBar.setValue(30)
 
         gridLayout.addWidget(tempProgressBar, 3, 1)
@@ -459,7 +470,7 @@ class DisplaySystem:
         # --------------------------------------------------------------------------------------------------
         # Hide by default
         self.systemWidgets['cpuTempIcon'].hide()
-        self.systemWidgets['tempProgressBar'].hide()
+        self.systemWidgets['cpuTempProgressBar'].hide()
         self.systemWidgets['cpuCurrentTempLabel'].hide()
         self.systemWidgets['cpuTempSeparatorLabel'].hide()
         self.systemWidgets['cpuTempMaxLabel'].hide()
@@ -468,7 +479,7 @@ class DisplaySystem:
         # --------------------------------------------------------------------------------------------------
         # Hide by default
         self.systemWidgets['cpuTempIcon'].show()
-        self.systemWidgets['tempProgressBar'].show()
+        self.systemWidgets['cpuTempProgressBar'].show()
         self.systemWidgets['cpuCurrentTempLabel'].show()
         self.systemWidgets['cpuTempSeparatorLabel'].show()
         self.systemWidgets['cpuTempMaxLabel'].show()

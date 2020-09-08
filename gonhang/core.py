@@ -23,7 +23,6 @@ class KeysSkeleton:
     )
 
 
-
 class PlatFormUtil:
     plat = platform.uname()
 
@@ -54,78 +53,6 @@ class DistroUtil:
             return iconFile
         else:
             return f'{self.distrosDir}/generic.png'
-
-
-class System:
-    message = dict()
-    distroUtil = DistroUtil()
-    platformUtil = PlatFormUtil()
-
-    def getMessage(self):
-        self.message.clear()
-        # ---------------------------------------------------------------------------------
-        # Update distro Info
-        # ---------------------------------------------------------------------------------
-        self.message['distroIcon'] = self.distroUtil.getDistroIcon()
-        self.message['distroStr'] = self.distroUtil.getDistroStr()
-        self.message['release'] = self.platformUtil.getRelease()
-        self.message['node'] = self.platformUtil.getNode()
-        self.message['machine'] = self.platformUtil.getMachine()
-
-        cpuFreq = psutil.cpu_freq()
-        ram = psutil.virtual_memory()
-        swap = psutil.swap_memory()
-
-        self.message['cpuFreqCurrent'] = '{:.0f}'.format(cpuFreq.current)
-        self.message['cpuFreqMax'] = '{:.0f}'.format(cpuFreq.max)
-
-        ramUsed = ram.total - ram.available
-
-        self.message['ramUsed'] = '{}'.format(humanfriendly.format_size(ramUsed, binary=True))
-        self.message['ramTotal'] = '{}'.format(humanfriendly.format_size(ram.total, binary=True))
-
-        self.message['swapUsed'] = '{}'.format(humanfriendly.format_size(swap.used, binary=True))
-        self.message['swapTotal'] = '{}'.format(humanfriendly.format_size(swap.total, binary=True))
-
-        self.message['cpuProgressBar'] = psutil.cpu_percent(percpu=False)
-        self.message['ramProgressBar'] = ram.percent
-        self.message['swapProgressBar'] = swap.percent
-
-        # Get boot time
-        btDays, btHours, btMinutes, btSeconds = self.getUptime()
-        self.message['btDays'] = btDays
-        self.message['btHours'] = btHours
-        self.message['btMinutes'] = btMinutes
-        self.message['btSeconds'] = btSeconds
-
-        return self.message
-
-    @staticmethod
-    def getUptime():
-        bootTime = time.time() - psutil.boot_time()
-        days = bootTime // (24 * 3600)
-        bootTime = bootTime % (24 * 3600)
-        hours = bootTime // 3600
-        bootTime %= 3600
-        minutes = bootTime // 60
-        bootTime %= 60
-        seconds = bootTime
-        return [int(days), int(hours), int(minutes), int(seconds)]
-
-    @staticmethod
-    def getCpuModelName():
-        output = subprocess.getoutput('cat /proc/cpuinfo')
-        # regex = re.compile(r'[\t]')
-        # output = regex.sub('', output)
-        modelName = ''
-        output = api.StringUtil.removeString(r'[\t]', output)
-        lines = output.split('\n')
-        for line in lines:
-            if 'model name:' in line:
-                modelName = api.StringUtil.removeString(r'model name: ', line)
-                break
-
-        return modelName
 
 
 class Config:
@@ -179,3 +106,98 @@ class Config:
     @staticmethod
     def getVersion():
         return '0.0.1'
+
+
+class System:
+    message = dict()
+    distroUtil = DistroUtil()
+    platformUtil = PlatFormUtil()
+    config = Config()
+
+    def getMessage(self):
+        self.message.clear()
+        # ---------------------------------------------------------------------------------
+        # Update distro Info
+        # ---------------------------------------------------------------------------------
+        self.message['distroIcon'] = self.distroUtil.getDistroIcon()
+        self.message['distroStr'] = self.distroUtil.getDistroStr()
+        self.message['release'] = self.platformUtil.getRelease()
+        self.message['node'] = self.platformUtil.getNode()
+        self.message['machine'] = self.platformUtil.getMachine()
+
+        cpuFreq = psutil.cpu_freq()
+        ram = psutil.virtual_memory()
+        swap = psutil.swap_memory()
+
+        self.message['cpuFreqCurrent'] = '{:.0f}'.format(cpuFreq.current)
+        self.message['cpuFreqMax'] = '{:.0f}'.format(cpuFreq.max)
+
+        ramUsed = ram.total - ram.available
+
+        self.message['ramUsed'] = '{}'.format(humanfriendly.format_size(ramUsed, binary=True))
+        self.message['ramTotal'] = '{}'.format(humanfriendly.format_size(ram.total, binary=True))
+
+        self.message['swapUsed'] = '{}'.format(humanfriendly.format_size(swap.used, binary=True))
+        self.message['swapTotal'] = '{}'.format(humanfriendly.format_size(swap.total, binary=True))
+
+        self.message['cpuProgressBar'] = psutil.cpu_percent(percpu=False)
+        self.message['ramProgressBar'] = ram.percent
+        self.message['swapProgressBar'] = swap.percent
+
+        # Get boot time
+        btDays, btHours, btMinutes, btSeconds = self.getUptime()
+        self.message['btDays'] = btDays
+        self.message['btHours'] = btHours
+        self.message['btMinutes'] = btMinutes
+        self.message['btSeconds'] = btSeconds
+
+        if self.isToDisplayCpuTemp():
+            cpuTempOption = self.config.getKey('cpuTempOption')
+            cpuSensors = psutil.sensors_temperatures()
+            for index, sensor in enumerate(cpuSensors):
+                for subIndex, shwtemp in enumerate(cpuSensors[sensor]):
+                    if index == int(cpuTempOption['index']) and subIndex == int(cpuTempOption['subIndex']):
+                        self.message['cpuTempProgressBar'] = int(shwtemp.current)
+                        self.message['cpuCurrentTempLabel'] = '{:.1f}'.format(shwtemp.current)
+
+        return self.message
+
+    def isToDisplayCpuTemp(self):
+        cpuTempOption = self.config.getKey('cpuTempOption')
+        isDisplay = False
+        if cpuTempOption is None:
+            isDisplay = False
+        else:
+            if cpuTempOption['enabled']:
+                isDisplay = True
+            else:
+                isDisplay = False
+
+        return isDisplay
+
+    @staticmethod
+    def getUptime():
+        bootTime = time.time() - psutil.boot_time()
+        days = bootTime // (24 * 3600)
+        bootTime = bootTime % (24 * 3600)
+        hours = bootTime // 3600
+        bootTime %= 3600
+        minutes = bootTime // 60
+        bootTime %= 60
+        seconds = bootTime
+        return [int(days), int(hours), int(minutes), int(seconds)]
+
+    @staticmethod
+    def getCpuModelName():
+        output = subprocess.getoutput('cat /proc/cpuinfo')
+        # regex = re.compile(r'[\t]')
+        # output = regex.sub('', output)
+        modelName = ''
+        output = api.StringUtil.removeString(r'[\t]', output)
+        lines = output.split('\n')
+        for line in lines:
+            if 'model name:' in line:
+                modelName = api.StringUtil.removeString(r'model name: ', line)
+                break
+
+        return modelName
