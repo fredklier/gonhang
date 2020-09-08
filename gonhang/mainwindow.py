@@ -59,14 +59,14 @@ class MainWindow(QtWidgets.QMainWindow):
         self.watchDog = WatchDog(self.verticalLayout)
         print('Starting WatchDog....')
         self.watchDog.start()
+        self.loadPositionalParams()
 
     def showAboutBox(self):
         # self.aboutBox.exec_()
         self.aboutBox.show()
 
-    def loadGlobalParams(self):
+    def loadPositionalParams(self):
         position = self.config.getKey('positionOption')
-        print(f'Position is: {position}')
         if position is None:
             print('No position, default is [Left]...')
             self.refreshPosition(0)
