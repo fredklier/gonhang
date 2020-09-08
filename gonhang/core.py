@@ -22,6 +22,15 @@ class KeysSkeleton:
         }
     )
 
+    positionOption = dict(
+        {
+            'positionOption': {
+                'index': 0,
+                'value': 'Left'
+            }
+        }
+    )
+
 
 class PlatFormUtil:
     plat = platform.uname()

@@ -9,6 +9,7 @@ from gonhang.core import Config
 from gonhang.systemtray import SystemTrayIcon
 from gonhang.api import FileUtil
 from gonhang.core import System
+from gonhang.core import KeysSkeleton
 from gonhang.displayclasses import AboutBox
 import sys
 import time
@@ -20,6 +21,7 @@ class MainWindow(QtWidgets.QMainWindow):
     wmctrlBin = subprocess.getoutput('which wmctrl')
     myWizard = None
     app = QtWidgets.QApplication(sys.argv)
+    keySkeleton = KeysSkeleton()
     # -------------------------------------------------------------
     # Display classes
     common = CommomAttributes()
@@ -72,7 +74,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.verticalLayout.addWidget(self.displaySystem.initUi())
 
     def loadGlobalParams(self):
-        position = self.config.getKey('Position')
+        position = self.config.getKey('positionOption')
         if position is None:
             self.refreshPosition(0)
         else:
@@ -116,7 +118,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.move(x, 0)
         # write to config
-        self.config.updateConfig({'Position': {'index': index, 'value': positions[index]}})
+        self.keySkeleton.positionOption['positionOption']['index'] = index
+        self.keySkeleton.positionOption['positionOption']['value'] = positions[index]
+        self.config.updateConfig(self.keySkeleton.positionOption)
+        print(self.keySkeleton.positionOption)
 
     def wizardAction(self):
         print('Enter in wizard...')
