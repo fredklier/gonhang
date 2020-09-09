@@ -9,6 +9,7 @@ from pathlib import Path
 import json
 import distro
 import socket
+from telnetlib import Telnet
 
 
 class VirtualMachine:
@@ -369,28 +370,60 @@ class Net:
 
 class StorTemps:
     config = Config()
-    message = dict()
+    message = list()
     keys = KeysSkeleton()
 
     def getMessage(self):
-        storTempsConfig = self.config.getKey('storTempsOption')
-        print(f'storTempsConfig ==> {storTempsConfig}')
         self.message.clear()
+        storTempsConfig = self.config.getKey('storTempsOption')
         sensors = psutil.sensors_temperatures()
-        print(sensors)
-        self.message['devices'] = list()
-        # for device in storTempsConfig['devices']:
-        #     print(device['device'])
-        #     print(sensors[device['device']])
-        # self.message['devices'].append(
-        #     {
-        #         'deviceValueLabel': device['device'],
-        #         'labelValue':   sensors[device['device']].shwtemp.label,
-        #         'tempValueLabel': sensors[device['device']].shwtemp.current
-        #     }
-        # )
+        for device in storTempsConfig['devices']:
+            self.message.append(self.findDataFromDevice(device['device'], device['label']))
 
         return self.message
+
+    def findDataFromDevice(self, device, label):
+        deviceArray = list()
+        # print(f'finding data from [{device}] with label [{label}]')
+        sensors = psutil.sensors_temperatures()
+        for i, sensor in enumerate(sensors):
+            # print(f'index {i} sensor {sensor}')
+            if (sensor == device) and (sensors[sensor][i].label == label):
+                deviceArray.append({
+                    'device': device,
+                    'label': label,
+                    'temperature': sensors[sensor][i].current
+                })
+
+        # maybe hddtemp
+        if self.hddtempIsOk():
+            with Telnet('127.0.0.1', 7634) as tn:
+                lines = tn.read_all().decode('utf-8')
+
+            if lines != '':
+                data = lines
+                # remove first char
+                data = data[1:]
+                # remove the last char
+                data = ''.join([data[i] for i in range(len(data)) if i != len(data) - 1])
+                # replace double || by one |
+                data = data.replace('||', '|')
+                # convert to array
+                data = data.split('|')
+                dataLen = len(data)
+                forLenght = int(dataLen / 4)
+
+                newarray = self.chunkIt(data, forLenght)
+                for na in newarray:
+                    if (device == na[0]) and (label == na[1]):
+                        deviceArray.append({
+                            'device': na[0],
+                            'label': na[1],
+                            'temperature': na[2]
+                        })
+
+        # print(deviceArray)
+        return deviceArray
 
     @staticmethod
     def hddtempIsOk():
@@ -414,3 +447,10 @@ class StorTemps:
             last += avg
 
         return out
+
+    def isToDisplay(self):
+        storTempsOptionConfig = self.config.getKey('storTempsOption')
+        if storTempsOptionConfig['enabled'] and (len(storTempsOptionConfig['devices']) > 0):
+            return True
+        else:
+            return False

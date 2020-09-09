@@ -51,8 +51,8 @@ class ThreadNvidia(QtCore.QThread):
 
 class ThreadStorTemps(QtCore.QThread):
     storTemps = StorTemps()
-    signal = QtCore.pyqtSignal(dict, name='ThreadStorTempsFinish')
-    message = dict()
+    signal = QtCore.pyqtSignal(list, name='ThreadStorTempsFinish')
+    message = list()
 
     def __init__(self, parent=None):
         super(ThreadStorTemps, self).__init__(parent)
@@ -175,14 +175,15 @@ class WatchDog(QtCore.QThread):
         self.threadNvidia.start()
         print(f'Starting threadNet')
         self.threadNet.start()
-        # self.threadStorTempsId = self.threadStorTemps.currentThreadId()
-        # print(f'Starting threadStorTemps ID: [{self.threadStorTemps.currentThreadId()}] = [{self.threadStorTempsId}]')
+        print(f'Starting threadStorTemps')
+        self.threadStorTemps.start()
 
     def threadFinished(self):
         self.start()
 
     def threadStorTempsReceive(self, message):
-        print(message)
+        if self.storTemps.isToDisplay():
+            print(message)
 
     def threadNetReceive(self, message):
         if self.net.isToDisplayNet():
