@@ -366,19 +366,41 @@ class Net:
 
 
 class StorTemps:
+    config = Config()
     message = dict()
     keys = KeysSkeleton()
 
     def getMessage(self):
+        storTempsConfig = self.config.getKey('storTempsOption')
+        print(f'storTempsConfig ==> {storTempsConfig}')
         self.message.clear()
         sensors = psutil.sensors_temperatures()
         print(sensors)
-        for sensor in sensors:
-            if 'nvme' in sensor:
-                print(f"device: [{sensor}] temperature {sensors[sensor][0]}")
-                for nvme in sensors[sensor]:
-                    print(nvme)
+        self.message['devices'] = list()
+        for device in storTempsConfig['devices']:
+            print(device['device'])
+            print(sensors[device['device']])
+            self.message['devices'].append(
+                {
+                    'deviceValueLabel': device['device'],
+                    'labelValue':   sensors[device['device']].shwtemp.label,
+                    'tempValueLabel': sensors[device['device']].shwtemp.current
+                }
+            )
+            #if device == sensors[device]:
+                # print('i found')
+            # self.message[device['device']] = sensors[device]
+            # self.message[device['label']] = sensors[device]
+        # if storTempsConfig['enabled']:
+        #     sensors = psutil.sensors_temperatures()
+        #     for sensor in sensors:
+        #         print(sensor)
+        # if 'nvme' in sensor:
+        #     print(f"device: [{sensor}] temperature {sensors[sensor][0]}")
+        #     for nvme in sensors[sensor]:
+        #         print(nvme)
 
+        # print(self.message)
         return self.message
 
     @staticmethod

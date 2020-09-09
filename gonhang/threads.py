@@ -2,6 +2,7 @@ from PyQt5 import QtCore
 from gonhang.core import Config
 from gonhang.core import System
 from gonhang.core import Nvidia
+from gonhang.core import StorTemps
 from gonhang.core import Net
 from gonhang.displayclasses import DisplaySystem
 from gonhang.displayclasses import DisplayNvidia
@@ -46,6 +47,24 @@ class ThreadNvidia(QtCore.QThread):
 
     def run(self):
         self.msleep(500)  # sleep for 500ms
+
+
+class ThreadStorTemps(QtCore.QThread):
+    storTemps = StorTemps()
+    signal = QtCore.pyqtSignal(dict, name='ThreadStorTempsFinish')
+    message = dict()
+
+    def __init__(self, parent=None):
+        super(ThreadStorTemps, self).__init__(parent)
+        self.finished.connect(self.updateStorTemps)
+
+    def updateStorTemps(self):
+        self.message = self.storTemps.getMessage()
+        self.signal.emit(self.message)
+        self.start()
+
+    def run(self):
+        self.msleep(1000)  # sleep for 500ms
 
 
 class ThreadNet(QtCore.QThread):
@@ -128,6 +147,13 @@ class WatchDog(QtCore.QThread):
     threadNet = ThreadNet()
     threadNetId = None
 
+    # -----------------------------------------------------------------
+    # storTemps
+    storTemps = StorTemps()
+    # displayNet = DisplayNet()
+    threadStorTemps = ThreadStorTemps()
+    threadStorTempsId = None
+
     def __init__(self, vLayout, parent=None):
         super(WatchDog, self).__init__(parent)
         self.finished.connect(self.threadFinished)
@@ -136,6 +162,7 @@ class WatchDog(QtCore.QThread):
         self.threadNvidia.signal.connect(self.threadNvidiaReceive)
         self.threadSystem.signal.connect(self.threadSystemReceive)
         self.threadNet.signal.connect(self.threadNetReceive)
+        self.threadStorTemps.signal.connect(self.threadStorTempsReceive)
         # ------------------------------------------------------------------
         self.verticalLayout = vLayout
 
@@ -150,6 +177,9 @@ class WatchDog(QtCore.QThread):
 
     def threadFinished(self):
         self.start()
+
+    def threadStorTempsReceive(self, message):
+        print(message)
 
     def threadNetReceive(self, message):
         if self.net.isToDisplayNet():
@@ -261,4 +291,11 @@ class WatchDog(QtCore.QThread):
             self.threadNetId = self.threadNet.currentThreadId()
             print(f'Starting threadNet ID: [{self.threadNetId}]')
             self.threadNet.start()
+        # ----------------------------------------------------------------------------
+        # Verify for storTemps
+        if self.threadStorTempsId is None:
+            self.threadStorTemps.start()
+            self.threadStorTempsId = self.threadStorTemps.currentThreadId()
+            print(f'Starting threadStorTemps ID: [{self.threadStorTemps.currentThreadId()}] = [{self.threadStorTempsId}]')
+
         # ----------------------------------------------------------------------------

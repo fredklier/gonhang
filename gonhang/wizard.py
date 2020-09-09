@@ -451,7 +451,7 @@ class StorTempsPage(QtWidgets.QWizardPage):
         for i, device in enumerate(self.keysSkeleton.storTempsOption['storTempsOption']['devices']):
             line = self.optionsList.item(i).text()
             cols = line.split('|')
-            print(cols)
-            print(device)
+            # print(cols)
+            # print(device)
             if (device['device'] == cols[0]) and (device['label'] == cols[1]):
                 self.optionsList.item(i).setSelected(True)
