@@ -775,3 +775,167 @@ class DisplayNet:
         netGroupBox.hide()
 
         vLayout.addWidget(netGroupBox)
+
+
+class DisplayNvidia:
+    common = CommomAttributes()
+    nvidiaWidgets = dict()
+
+    def initUi(self, verticalLayout):
+        nvidiaGroupBox = self.common.getDefaultGb('nvidia')
+        self.nvidiaWidgets['nvidiaGroupBox'] = nvidiaGroupBox
+        gridLayout = QtWidgets.QGridLayout()
+        gridLayout.setVerticalSpacing(1)
+        gridLayout.setHorizontalSpacing(0)
+        # ---------------------------------------------------
+        # nvidia data
+
+        nvidiaLogoLabel = QtWidgets.QLabel()
+        nvidiaLogoLabel.setPixmap(QtGui.QPixmap(f"{FileUtil.getResourcePath()}/images/nvidia.png"))
+        nvidiaLogoLabel.setFixedSize(64, 57)
+        nvidiaLogoLabel.setAlignment(QtCore.Qt.AlignTop)
+
+        gridLayout.addWidget(nvidiaLogoLabel, 0, 0, -1, 1)
+
+        modelLabel = QtWidgets.QLabel('model:')
+        self.common.setLabel(modelLabel, self.common.orange, self.common.fontDefault)
+        # noinspection PyTypeChecker
+        modelLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+
+        gridLayout.addWidget(modelLabel, 0, 1)
+
+        modelValueLabel = QtWidgets.QLabel()
+        self.nvidiaWidgets['gpu_name'] = modelValueLabel
+        modelValueLabel.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
+        self.common.setLabel(modelValueLabel, self.common.white, self.common.fontDefault)
+
+        gridLayout.addWidget(modelValueLabel, 0, 2)
+
+        loadIcon = QtWidgets.QLabel()
+        loadIcon.setPixmap(QtGui.QPixmap(f'{FileUtil.getResourcePath()}/images/load.png'))
+        loadIcon.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        loadIcon.setFixedSize(24, 24)
+
+        gridLayout.addWidget(loadIcon, 0, 3)
+
+        loadValueLabel = QtWidgets.QLabel()
+        self.nvidiaWidgets['utilization_gpu'] = loadValueLabel
+        loadValueLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+        loadValueLabel.setFixedWidth(80)
+        self.common.setLabel(loadValueLabel, self.common.white, self.common.fontDefault)
+
+        gridLayout.addWidget(loadValueLabel, 0, 4)
+
+        memoryLabel = QtWidgets.QLabel('memory:')
+        memoryLabel.setFixedWidth(70)
+        self.common.setLabel(memoryLabel, self.common.orange, self.common.fontDefault)
+        memoryLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+
+        gridLayout.addWidget(memoryLabel, 1, 1)
+
+        usedTotalMemLabel = QtWidgets.QLabel()
+        self.nvidiaWidgets['usedTotalMemory'] = usedTotalMemLabel
+        self.common.setLabel(usedTotalMemLabel, self.common.white, self.common.fontDefault)
+        usedTotalMemLabel.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
+
+        gridLayout.addWidget(usedTotalMemLabel, 1, 2)
+
+        tempIcon = QtWidgets.QLabel()
+        tempIcon.setPixmap(QtGui.QPixmap(f'{FileUtil.getResourcePath()}/images/temp.png'))
+        tempIcon.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        tempIcon.setFixedSize(24, 24)
+
+        gridLayout.addWidget(tempIcon, 1, 3)
+
+        tempLabel = QtWidgets.QLabel('')
+        self.nvidiaWidgets['temperature_gpu'] = tempLabel
+        tempLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+        self.common.setLabel(tempLabel, self.common.white, self.common.fontDefault)
+        tempLabel.setFixedWidth(80)
+
+        gridLayout.addWidget(tempLabel, 1, 4)
+
+        # Driver Version
+
+        driverLabel = QtWidgets.QLabel('driver:')
+        self.common.setLabel(driverLabel, self.common.orange, self.common.fontDefault)
+        driverLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+
+        gridLayout.addWidget(driverLabel, 2, 1)
+
+        driverValueLabel = QtWidgets.QLabel()
+        self.common.setLabel(driverValueLabel, self.common.white, self.common.fontDefault)
+        driverValueLabel.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
+        self.nvidiaWidgets['driverValueLabel'] = driverValueLabel
+
+        gridLayout.addWidget(driverValueLabel, 2, 2)
+
+        fanIcon = QtWidgets.QLabel()
+        fanIcon.setPixmap(QtGui.QPixmap(f'{FileUtil.getResourcePath()}/images/fan.png'))
+        fanIcon.setAlignment(QtCore.Qt.AlignHCenter)
+        fanIcon.setFixedSize(24, 24)
+
+        gridLayout.addWidget(fanIcon, 2, 3)
+
+        fanValueLabel = QtWidgets.QLabel()
+        self.common.setLabel(fanValueLabel, self.common.white, self.common.fontDefault)
+        fanValueLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+        fanValueLabel.setFixedWidth(80)
+
+        self.nvidiaWidgets['fan_speed'] = fanValueLabel
+
+        gridLayout.addWidget(fanValueLabel, 2, 4)
+
+        # bios
+        biosLabel = QtWidgets.QLabel('bios:')
+        self.common.setLabel(biosLabel, self.common.orange, self.common.fontDefault)
+        biosLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+
+        gridLayout.addWidget(biosLabel, 3, 1)
+
+        biosValueLabel = QtWidgets.QLabel()
+        self.common.setLabel(biosValueLabel, self.common.white, self.common.fontDefault)
+        biosValueLabel.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
+        self.nvidiaWidgets['biosValueLabel'] = biosValueLabel
+
+        gridLayout.addWidget(biosValueLabel, 3, 2)
+
+        powerIcon = QtWidgets.QLabel()
+        powerIcon.setPixmap(QtGui.QPixmap(f'{FileUtil.getResourcePath()}/images/power.png'))
+        powerIcon.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
+        powerIcon.setFixedSize(24, 24)
+
+        gridLayout.addWidget(powerIcon, 3, 3)
+
+        powerDrawLabel = QtWidgets.QLabel()
+        self.common.setLabel(powerDrawLabel, self.common.white, self.common.fontDefault)
+        powerDrawLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+        powerDrawLabel.setFixedWidth(80)
+        self.nvidiaWidgets['power_draw'] = powerDrawLabel
+
+        gridLayout.addWidget(powerDrawLabel, 3, 4)
+
+        nvidiaGroupBox.setLayout(gridLayout)
+        nvidiaGroupBox.hide()
+
+        verticalLayout.addWidget(nvidiaGroupBox)
+
+
+class DisplayStorages:
+    config = Config()
+    common = CommomAttributes()
+    storageWidgets = dict()
+
+    def initUi(self, vLayout):
+        storageGroupBox = self.common.getDefaultGb('disks')
+        self.storageWidgets['storageGroupBox'] = storageGroupBox
+
+        storageGroupBox.hide()
+
+        vLayout.addWidget(storageGroupBox)
+
+    def displayStorTempsUi(self):
+        verticalLayout = QtWidgets.QVBoxLayout()
+        storTempsOptionConfig = self.config.getKey('storTempsOption')
+        for device in storTempsOptionConfig['devices']:
+            print(device)

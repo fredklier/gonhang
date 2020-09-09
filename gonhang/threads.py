@@ -7,6 +7,7 @@ from gonhang.core import Net
 from gonhang.displayclasses import DisplaySystem
 from gonhang.displayclasses import DisplayNvidia
 from gonhang.displayclasses import DisplayNet
+from gonhang.displayclasses import DisplayStorages
 from gonhang.displayclasses import CommomAttributes
 import psutil
 import subprocess
@@ -143,7 +144,7 @@ class WatchDog(QtCore.QThread):
     # -----------------------------------------------------------------
     # storTemps
     storTemps = StorTemps()
-    # displayNet = DisplayNet()
+    displayStorages = DisplayStorages()
     threadStorTemps = ThreadStorTemps()
 
     def __init__(self, vLayout, parent=None):
@@ -168,6 +169,9 @@ class WatchDog(QtCore.QThread):
         # display net
         self.displayNet.initUi(self.verticalLayout)
         # -------------------------------------------------------------------------------------------
+        # display storages
+        self.displayStorages.initUi(self.verticalLayout)
+        # -------------------------------------------------------------------------------------------
         # Start another threads
         print(f'Starting threadSystem')
         self.threadSystem.start()
@@ -183,7 +187,10 @@ class WatchDog(QtCore.QThread):
 
     def threadStorTempsReceive(self, message):
         if self.storTemps.isToDisplay():
-            print(message)
+            self.displayStorages.storageWidgets['storageGroupBox'].show()
+
+        else:
+            self.displayStorages.storageWidgets['storageGroupBox'].hide()
 
     def threadNetReceive(self, message):
         if self.net.isToDisplayNet():
