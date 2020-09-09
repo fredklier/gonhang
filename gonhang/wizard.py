@@ -403,31 +403,23 @@ class StorTempsPage(QtWidgets.QWizardPage):
                 for na in newarray:
                     self.optionsList.addItem(f'{na[0]}|{na[1]}| temperature {na[2]} °C')
 
-    # print(self.storTemps.getMessage())
-    # network = psutil.net_if_addrs()
-    # # print(network['enp6s0'][0].address)
-    # # print(f"{type(network['enp6s0'][0])}")
-    # for interface in psutil.net_if_addrs():
-    #     if interface != 'lo':
-    #         self.optionsList.addItem('{}|\tIP Address: [{}]'.format(interface, network[interface][0].address))
-    #
-    # # Verify if exists key in config
-    # netOptionConfig = self.config.getKey('netOption')
-    # if netOptionConfig is None:
-    #     self.updateNetOption('', False)
-    # else:
-    #     self.updateNetOption(
-    #         netOptionConfig['interface'],
-    #         netOptionConfig['enabled']
-    #     )
-    #
-    # if not self.keysSkeleton.netOption['netOption']['enabled']:
-    #     self.optionsList.setDisabled(True)
-    # else:
-    #     self.optionsList.setEnabled(True)
-    #     self.rbEnable.setChecked(True)
-    #
-    # self.common.displayRow(self.optionsList, self.keysSkeleton.netOption['netOption']['interface'])
+        # Verify if exists key in config
+        storTempsConfig = self.config.getKey('storTempsOption')
+        if storTempsConfig is None:
+            self.updateStorTempsOption(list(), False)
+        else:
+            self.updateStorTempsOption(
+                storTempsConfig['devices'],
+                storTempsConfig['enabled']
+            )
+
+        if not self.keysSkeleton.storTempsOption['storTempsOption']['enabled']:
+            self.optionsList.setDisabled(True)
+        else:
+            self.optionsList.setEnabled(True)
+            self.rbEnable.setChecked(True)
+
+        self.displayCorrectRows()
 
     def groupBoxClicked(self):
         enabled = False
@@ -448,9 +440,18 @@ class StorTempsPage(QtWidgets.QWizardPage):
             cols = self.optionsList.selectedItems()[i].text().split('|')
             tempList.append(
                 {
-                    'device':   cols[0],
-                    'label':    cols[1]
+                    'device': cols[0],
+                    'label': cols[1]
                 }
             )
 
         self.updateStorTempsOption(tempList, self.keysSkeleton.storTempsOption['storTempsOption']['enabled'])
+
+    def displayCorrectRows(self):
+        for i, device in enumerate(self.keysSkeleton.storTempsOption['storTempsOption']['devices']):
+            line = self.optionsList.item(i).text()
+            cols = line.split('|')
+            print(cols)
+            print(device)
+            if (device['device'] == cols[0]) and (device['label'] == cols[1]):
+                self.optionsList.item(i).setSelected(True)
