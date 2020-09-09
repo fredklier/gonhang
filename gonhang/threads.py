@@ -138,21 +138,18 @@ class WatchDog(QtCore.QThread):
     nvidia = Nvidia()
     displayNvidia = DisplayNvidia()
     threadNvidia = ThreadNvidia()
-    threadNvidiaId = None
 
     # -----------------------------------------------------------------
     # net
     net = Net()
     displayNet = DisplayNet()
     threadNet = ThreadNet()
-    threadNetId = None
 
     # -----------------------------------------------------------------
     # storTemps
     storTemps = StorTemps()
     # displayNet = DisplayNet()
     threadStorTemps = ThreadStorTemps()
-    threadStorTempsId = None
 
     def __init__(self, vLayout, parent=None):
         super(WatchDog, self).__init__(parent)
@@ -164,16 +161,26 @@ class WatchDog(QtCore.QThread):
         self.threadNet.signal.connect(self.threadNetReceive)
         self.threadStorTemps.signal.connect(self.threadStorTempsReceive)
         # ------------------------------------------------------------------
+        # show displayClasses
         self.verticalLayout = vLayout
-
         # display system (default section)
         self.displaySystem.initUi(self.verticalLayout)
         # display nvidia if have nvidia gpu
         if self.nvidia.getNumberGPUs() > 0:
             self.displayNvidia.initUi(self.verticalLayout)
-
+        # display net
         self.displayNet.initUi(vLayout)
         self.displayNet.netWidgets['netGroupBox'].hide()
+        # -------------------------------------------------------------------------------------------
+        # Start another threads
+        self.threadSystem.start()
+        print(f'Starting threadSystem')
+        # self.threadNvidia.start()
+        # print(f'Starting threadNvidia')
+        # print(f'Starting threadNet ID: [{self.threadNetId}]')
+        # self.threadNet.start()
+        # self.threadStorTempsId = self.threadStorTemps.currentThreadId()
+        # print(f'Starting threadStorTemps ID: [{self.threadStorTemps.currentThreadId()}] = [{self.threadStorTempsId}]')
 
     def threadFinished(self):
         self.start()
@@ -187,10 +194,14 @@ class WatchDog(QtCore.QThread):
             self.displayNet.netWidgets['intipLabel'].setText(message['intipLabel'])
             self.displayNet.netWidgets['extipLabel'].setText(message['extipLabel'])
             self.displayNet.netWidgets['ifaceValueLabel'].setText(message['ifaceValueLabel'])
-            self.displayNet.netWidgets['ifaceDownRateLabel'].setText('{}/s'.format(humanfriendly.format_size(message['ifaceDownRateLabel'], binary=True)))
-            self.displayNet.netWidgets['ifaceUpRateLabel'].setText('{}/s'.format(humanfriendly.format_size(message['ifaceUpRateLabel'], binary=True)))
-            self.displayNet.netWidgets['bytesRcvValueLabel'].setText(humanfriendly.format_size(message['bytesRcvValueLabel'], binary=True))
-            self.displayNet.netWidgets['bytesSentValueLabel'].setText(humanfriendly.format_size(message['bytesSentValueLabel'], binary=True))
+            self.displayNet.netWidgets['ifaceDownRateLabel'].setText(
+                '{}/s'.format(humanfriendly.format_size(message['ifaceDownRateLabel'], binary=True)))
+            self.displayNet.netWidgets['ifaceUpRateLabel'].setText(
+                '{}/s'.format(humanfriendly.format_size(message['ifaceUpRateLabel'], binary=True)))
+            self.displayNet.netWidgets['bytesRcvValueLabel'].setText(
+                humanfriendly.format_size(message['bytesRcvValueLabel'], binary=True))
+            self.displayNet.netWidgets['bytesSentValueLabel'].setText(
+                humanfriendly.format_size(message['bytesSentValueLabel'], binary=True))
         else:
             self.displayNet.netWidgets['netGroupBox'].hide()
 
@@ -276,26 +287,5 @@ class WatchDog(QtCore.QThread):
             self.displayNvidia.nvidiaWidgets['nvidiaGroupBox'].hide()
 
     def run(self):
-        if not self.threadSystem.isRunning():
-            self.threadSystem.start()
-        # ----------------------------------------------------------------------------
-        # Verify for nvidia
-        if self.nvidia.isToDisplayNvidia() or (not self.threadNvidia.isRunning()):
-            self.threadNvidia.start()
-        else:
-            self.threadNvidia.quit()
-
-        # ----------------------------------------------------------------------------
-        # Verify for net
-        if self.threadNetId is None:
-            self.threadNetId = self.threadNet.currentThreadId()
-            print(f'Starting threadNet ID: [{self.threadNetId}]')
-            self.threadNet.start()
-        # ----------------------------------------------------------------------------
-        # Verify for storTemps
-        if self.threadStorTempsId is None:
-            self.threadStorTemps.start()
-            self.threadStorTempsId = self.threadStorTemps.currentThreadId()
-            print(f'Starting threadStorTemps ID: [{self.threadStorTemps.currentThreadId()}] = [{self.threadStorTempsId}]')
-
-        # ----------------------------------------------------------------------------
+        # print('running....')
+        self.sleep(1)

@@ -301,7 +301,7 @@ class DisplaySystem:
 
         bootAndCpuModelLayout.addLayout(btHLayout)
 
-        # verticalLayout.addLayout(bootAndCpuModelLayout)
+        localVLayout.addLayout(bootAndCpuModelLayout)
         # ---------------------------------------------------------------------------
         # CPU info
         cpuBrandLabel = QtWidgets.QLabel(self.system.getCpuModelName())

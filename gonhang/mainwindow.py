@@ -57,7 +57,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # -------------------------------------------------------------
         # WatchDog the king off all Threads
         self.watchDog = WatchDog(self.verticalLayout)
-        print('Starting WatchDog....')
+        print('Running WatchDog....')
         self.watchDog.start()
         self.loadPositionalParams()
 
