@@ -278,8 +278,8 @@ class Nvidia:
         numGPUS = int(self.getOutputCommand('count')[0])
         message = dict()
         if numGPUS > 0:
-            gpu_uuid, gpu_name, display_mode, vbios_version, fan_speed, pstate, memory_total, memory_used, memory_free, temperature_gpu, power_management, power_draw, clocks_current_graphics, clocks_current_sm, clocks_current_memory, clocks_current_video, utilization_gpu = self.getOutputCommand(
-                'gpu_uuid,gpu_name,display_mode,vbios_version,fan.speed,pstate,memory.total,memory.used,memory.free,temperature.gpu,power.management,power.draw,clocks.current.graphics,clocks.current.sm,clocks.current.memory,clocks.current.video,utilization.gpu'
+            gpu_uuid, gpu_name, display_mode, driver_version, vbios_version, fan_speed, pstate, memory_total, memory_used, memory_free, temperature_gpu, power_management, power_draw, clocks_current_graphics, clocks_current_sm, clocks_current_memory, clocks_current_video, utilization_gpu = self.getOutputCommand(
+                'gpu_uuid,gpu_name,display_mode,driver_version,vbios_version,fan.speed,pstate,memory.total,memory.used,memory.free,temperature.gpu,power.management,power.draw,clocks.current.graphics,clocks.current.sm,clocks.current.memory,clocks.current.video,utilization.gpu'
             )
 
             message.update(
@@ -287,6 +287,7 @@ class Nvidia:
                     'gpu_uuid': gpu_uuid,
                     'gpu_name': gpu_name,
                     'display_mode': display_mode,
+                    'driver_version': driver_version,
                     'vbios_version': vbios_version,
                     'fan_speed': fan_speed,
                     'pstate': pstate,

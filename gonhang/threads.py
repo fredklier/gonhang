@@ -163,19 +163,21 @@ class WatchDog(QtCore.QThread):
         # ------------------------------------------------------------------
         # show displayClasses
         self.verticalLayout = vLayout
+        # ------------------------------------------------------------------
         # display system (default section)
         self.displaySystem.initUi(self.verticalLayout)
+        # ------------------------------------------------------------------
         # display nvidia if have nvidia gpu
-        if self.nvidia.getNumberGPUs() > 0:
-            self.displayNvidia.initUi(self.verticalLayout)
+        self.displayNvidia.initUi(self.verticalLayout)
+        # ------------------------------------------------------------------
         # display net
-        self.displayNet.initUi(vLayout)
-        self.displayNet.netWidgets['netGroupBox'].hide()
+        self.displayNet.initUi(self.verticalLayout)
         # -------------------------------------------------------------------------------------------
         # Start another threads
-        self.threadSystem.start()
         print(f'Starting threadSystem')
-        # self.threadNvidia.start()
+        self.threadSystem.start()
+        print(f'Starting threadNvidia')
+        self.threadNvidia.start()
         # print(f'Starting threadNvidia')
         # print(f'Starting threadNet ID: [{self.threadNetId}]')
         # self.threadNet.start()
@@ -270,6 +272,8 @@ class WatchDog(QtCore.QThread):
     def threadNvidiaReceive(self, message):
         if self.nvidia.isToDisplayNvidia():
             self.displayNvidia.nvidiaWidgets['nvidiaGroupBox'].show()
+            self.displayNvidia.nvidiaWidgets['driverValueLabel'].setText(message['driver_version'])
+            self.displayNvidia.nvidiaWidgets['biosValueLabel'].setText(message['vbios_version'])
             self.displayNvidia.nvidiaWidgets['gpu_name'].setText(message['gpu_name'])
             self.displayNvidia.nvidiaWidgets['utilization_gpu'].setText(f"{str(message['utilization_gpu'])}")
             self.displayNvidia.nvidiaWidgets['usedTotalMemory'].setText(

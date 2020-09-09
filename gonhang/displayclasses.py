@@ -500,7 +500,6 @@ class DisplaySystem:
 
 
 class DisplayNvidia:
-    nvidia = Nvidia()
     common = CommomAttributes()
     nvidiaWidgets = dict()
 
@@ -520,8 +519,6 @@ class DisplayNvidia:
 
         gridLayout.addWidget(nvidiaLogoLabel, 0, 0, -1, 1)
 
-        gpu = self.nvidia.getGPUsInfo()
-
         modelLabel = QtWidgets.QLabel('model:')
         self.common.setLabel(modelLabel, self.common.orange, self.common.fontDefault)
         # noinspection PyTypeChecker
@@ -529,7 +526,7 @@ class DisplayNvidia:
 
         gridLayout.addWidget(modelLabel, 0, 1)
 
-        modelValueLabel = QtWidgets.QLabel(gpu['gpu_name'])
+        modelValueLabel = QtWidgets.QLabel()
         self.nvidiaWidgets['gpu_name'] = modelValueLabel
         modelValueLabel.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
         self.common.setLabel(modelValueLabel, self.common.white, self.common.fontDefault)
@@ -543,7 +540,7 @@ class DisplayNvidia:
 
         gridLayout.addWidget(loadIcon, 0, 3)
 
-        loadValueLabel = QtWidgets.QLabel(gpu['utilization_gpu'])
+        loadValueLabel = QtWidgets.QLabel()
         self.nvidiaWidgets['utilization_gpu'] = loadValueLabel
         loadValueLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
         loadValueLabel.setFixedWidth(80)
@@ -558,7 +555,7 @@ class DisplayNvidia:
 
         gridLayout.addWidget(memoryLabel, 1, 1)
 
-        usedTotalMemLabel = QtWidgets.QLabel(f"{gpu['memory_used']}/{gpu['memory_total']}")
+        usedTotalMemLabel = QtWidgets.QLabel()
         self.nvidiaWidgets['usedTotalMemory'] = usedTotalMemLabel
         self.common.setLabel(usedTotalMemLabel, self.common.white, self.common.fontDefault)
         usedTotalMemLabel.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
@@ -588,9 +585,10 @@ class DisplayNvidia:
 
         gridLayout.addWidget(driverLabel, 2, 1)
 
-        driverValueLabel = QtWidgets.QLabel(self.nvidia.nvidiaEntity['driver_version'])
+        driverValueLabel = QtWidgets.QLabel()
         self.common.setLabel(driverValueLabel, self.common.white, self.common.fontDefault)
         driverValueLabel.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
+        self.nvidiaWidgets['driverValueLabel'] = driverValueLabel
 
         gridLayout.addWidget(driverValueLabel, 2, 2)
 
@@ -601,7 +599,7 @@ class DisplayNvidia:
 
         gridLayout.addWidget(fanIcon, 2, 3)
 
-        fanValueLabel = QtWidgets.QLabel(gpu['fan_speed'])
+        fanValueLabel = QtWidgets.QLabel()
         self.common.setLabel(fanValueLabel, self.common.white, self.common.fontDefault)
         fanValueLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
         fanValueLabel.setFixedWidth(80)
@@ -617,9 +615,10 @@ class DisplayNvidia:
 
         gridLayout.addWidget(biosLabel, 3, 1)
 
-        biosValueLabel = QtWidgets.QLabel(gpu['vbios_version'])
+        biosValueLabel = QtWidgets.QLabel()
         self.common.setLabel(biosValueLabel, self.common.white, self.common.fontDefault)
         biosValueLabel.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
+        self.nvidiaWidgets['biosValueLabel'] = biosValueLabel
 
         gridLayout.addWidget(biosValueLabel, 3, 2)
 
@@ -630,7 +629,7 @@ class DisplayNvidia:
 
         gridLayout.addWidget(powerIcon, 3, 3)
 
-        powerDrawLabel = QtWidgets.QLabel(gpu['power_draw'])
+        powerDrawLabel = QtWidgets.QLabel()
         self.common.setLabel(powerDrawLabel, self.common.white, self.common.fontDefault)
         powerDrawLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
         powerDrawLabel.setFixedWidth(80)
@@ -639,12 +638,12 @@ class DisplayNvidia:
         gridLayout.addWidget(powerDrawLabel, 3, 4)
 
         nvidiaGroupBox.setLayout(gridLayout)
+        nvidiaGroupBox.hide()
 
         verticalLayout.addWidget(nvidiaGroupBox)
 
 
 class DisplayNet:
-    # net = Net
     common = CommomAttributes()
     netWidgets = dict()
 
@@ -773,5 +772,6 @@ class DisplayNet:
         verticalLayout.addLayout(bytesLayout)
 
         netGroupBox.setLayout(verticalLayout)
+        netGroupBox.hide()
 
         vLayout.addWidget(netGroupBox)
