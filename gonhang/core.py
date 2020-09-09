@@ -62,7 +62,7 @@ class KeysSkeleton:
 
     storTempsOption = dict(
         {
-            'StorTempsOption': {
+            'storTempsOption': {
                 'devices': list(),
                 'enabled': False
             }
@@ -147,7 +147,7 @@ class Config:
         try:
             return self.globalJson[key]
         except KeyError:
-            print(f'Key not found in {self.cfgFile}: key ====> {key}')
+            # print(f'Key not found in {self.cfgFile}: key ====> {key}')
             return None
 
     @staticmethod
@@ -380,3 +380,26 @@ class StorTemps:
                     print(nvme)
 
         return self.message
+
+    @staticmethod
+    def hddtempIsOk():
+        a_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        location = ('127.0.0.1', 7634)
+        result_of_check = a_socket.connect_ex(location)
+        a_socket.close()
+        if result_of_check == 0:
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def chunkIt(seq, num):
+        avg = len(seq) / float(num)
+        out = []
+        last = 0.0
+
+        while last < len(seq):
+            out.append(seq[int(last):int(last + avg)])
+            last += avg
+
+        return out

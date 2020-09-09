@@ -94,11 +94,13 @@ class ThreadNet(QtCore.QThread):
         self.counters['two'] = dict()
 
     def run(self):
-        self.loadConfig()
-        self.clearCounters()
-        counter = psutil.net_io_counters(pernic=True)[self.netOptionConfig['interface']]
-        self.counters['one']['bytes_recv'] = counter.bytes_recv
-        self.counters['one']['bytes_sent'] = counter.bytes_sent
+        if self.net.isToDisplayNet():
+            self.loadConfig()
+            self.clearCounters()
+            counter = psutil.net_io_counters(pernic=True)[self.netOptionConfig['interface']]
+            self.counters['one']['bytes_recv'] = counter.bytes_recv
+            self.counters['one']['bytes_sent'] = counter.bytes_sent
+
         self.msleep(1000)  # sleep for 500ms
 
 
@@ -117,6 +119,7 @@ class WatchDog(QtCore.QThread):
     nvidia = Nvidia()
     displayNvidia = DisplayNvidia()
     threadNvidia = ThreadNvidia()
+    threadNvidiaId = None
 
     # -----------------------------------------------------------------
     # net

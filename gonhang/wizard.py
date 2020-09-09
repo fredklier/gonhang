@@ -6,6 +6,7 @@ from gonhang.core import Nvidia
 from gonhang.core import StorTemps
 from gonhang.displayclasses import CommomAttributes
 import psutil
+from telnetlib import Telnet
 
 
 class GonhaNgWizard(QtWidgets.QWizard):
@@ -346,77 +347,110 @@ class StorTempsPage(QtWidgets.QWizardPage):
 
         self.vLayout.addWidget(self.groupBoxEnabled)
 
-        self.questionLabel = QtWidgets.QLabel('Please select the nvme you want to monitor.')
+        self.questionLabel = QtWidgets.QLabel(
+            'Please select the Storage Temperature you want to monitor. Press <shift> to multiples selections.')
         self.vLayout.addWidget(self.questionLabel)
 
         self.optionsList = QtWidgets.QListWidget()
+        self.optionsList.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.optionsList.clicked.connect(self.optionsClick)
         self.vLayout.addWidget(self.optionsList)
         self.setLayout(self.vLayout)
         self.displayStorTemps()
 
-    def updateNvmeOption(self, interface, enabled):
-        pass
-        # self.keysSkeleton.netOption.clear()
-        # self.keysSkeleton.netOption.update(
-        #     {
-        #         'nvmeOption': {
-        #             'interface': interface,
-        #             'enabled': enabled
-        #         }
-        #     }
-        # )
-        # self.config.updateConfig(self.keysSkeleton.netOption)
-        # # print(self.keysSkeleton.netOption)
+    def updateStorTempsOption(self, devices, enabled):
+        self.keysSkeleton.storTempsOption.clear()
+        self.keysSkeleton.storTempsOption.update(
+            {
+                'storTempsOption': {
+                    'devices': devices,
+                    'enabled': enabled
+                }
+            }
+        )
+        self.config.updateConfig(self.keysSkeleton.storTempsOption)
+        # print(self.keysSkeleton.storTempsOption)
 
     def displayStorTemps(self):
         sensors = psutil.sensors_temperatures()
-        print(sensors)
+        # print(sensors)
         # Show nvmes
         for sensor in sensors:
             if 'nvme' in sensor:
                 for nvme in sensors[sensor]:
-                    self.optionsList.addItem(f'{sensor}|{nvme.label}| Temperature{nvme.current} °C')
+                    self.optionsList.addItem(f'{sensor}|{nvme.label}| temperature {nvme.current} °C')
 
-        # print(self.storTemps.getMessage())
-        # network = psutil.net_if_addrs()
-        # # print(network['enp6s0'][0].address)
-        # # print(f"{type(network['enp6s0'][0])}")
-        # for interface in psutil.net_if_addrs():
-        #     if interface != 'lo':
-        #         self.optionsList.addItem('{}|\tIP Address: [{}]'.format(interface, network[interface][0].address))
-        #
-        # # Verify if exists key in config
-        # netOptionConfig = self.config.getKey('netOption')
-        # if netOptionConfig is None:
-        #     self.updateNetOption('', False)
-        # else:
-        #     self.updateNetOption(
-        #         netOptionConfig['interface'],
-        #         netOptionConfig['enabled']
-        #     )
-        #
-        # if not self.keysSkeleton.netOption['netOption']['enabled']:
-        #     self.optionsList.setDisabled(True)
-        # else:
-        #     self.optionsList.setEnabled(True)
-        #     self.rbEnable.setChecked(True)
-        #
-        # self.common.displayRow(self.optionsList, self.keysSkeleton.netOption['netOption']['interface'])
+        # hddtemp section
+        if self.storTemps.hddtempIsOk():
+            with Telnet('127.0.0.1', 7634) as tn:
+                lines = tn.read_all().decode('utf-8')
+
+            if lines != '':
+                data = lines
+                # remove first char
+                data = data[1:]
+                # remove the last char
+                data = ''.join([data[i] for i in range(len(data)) if i != len(data) - 1])
+                # replace double || by one |
+                data = data.replace('||', '|')
+                # convert to array
+                data = data.split('|')
+                dataLen = len(data)
+                forLenght = int(dataLen / 4)
+
+                newarray = self.storTemps.chunkIt(data, forLenght)
+
+                for na in newarray:
+                    self.optionsList.addItem(f'{na[0]}|{na[1]}| temperature {na[2]} °C')
+
+    # print(self.storTemps.getMessage())
+    # network = psutil.net_if_addrs()
+    # # print(network['enp6s0'][0].address)
+    # # print(f"{type(network['enp6s0'][0])}")
+    # for interface in psutil.net_if_addrs():
+    #     if interface != 'lo':
+    #         self.optionsList.addItem('{}|\tIP Address: [{}]'.format(interface, network[interface][0].address))
+    #
+    # # Verify if exists key in config
+    # netOptionConfig = self.config.getKey('netOption')
+    # if netOptionConfig is None:
+    #     self.updateNetOption('', False)
+    # else:
+    #     self.updateNetOption(
+    #         netOptionConfig['interface'],
+    #         netOptionConfig['enabled']
+    #     )
+    #
+    # if not self.keysSkeleton.netOption['netOption']['enabled']:
+    #     self.optionsList.setDisabled(True)
+    # else:
+    #     self.optionsList.setEnabled(True)
+    #     self.rbEnable.setChecked(True)
+    #
+    # self.common.displayRow(self.optionsList, self.keysSkeleton.netOption['netOption']['interface'])
 
     def groupBoxClicked(self):
-        pass
-        # enabled = False
-        # if self.rbEnable.isChecked():
-        #     self.optionsList.setEnabled(True)
-        #     enabled = True
-        # else:
-        #     self.optionsList.setDisabled(True)
-        #
-        # self.keysSkeleton.netOption['netOption']['enabled'] = enabled
-        # self.updateNetOption(self.keysSkeleton.netOption['netOption']['interface'], enabled)
+        enabled = False
+        if self.rbEnable.isChecked():
+            self.optionsList.setEnabled(True)
+            enabled = True
+        else:
+            self.optionsList.setDisabled(True)
+
+        self.keysSkeleton.storTempsOption['storTempsOption']['enabled'] = enabled
+        self.updateStorTempsOption(self.keysSkeleton.storTempsOption['storTempsOption']['devices'], enabled)
 
     def optionsClick(self):
-        pass
-        # rowList = self.optionsList.currentItem().text().split('|')
-        # self.updateNetOption(rowList[0], self.keysSkeleton.netOption['netOption']['enabled'])
+        items = self.optionsList.selectedItems()
+        tempList = list()
+        for i in range(len(items)):
+            # print(self.optionsList.selectedItems()[i].text())
+            cols = self.optionsList.selectedItems()[i].text().split('|')
+            tempList.append(
+                {
+                    'device':   cols[0],
+                    'label':    cols[1]
+                }
+            )
+
+        self.updateStorTempsOption(tempList, self.keysSkeleton.storTempsOption['storTempsOption']['enabled'])
