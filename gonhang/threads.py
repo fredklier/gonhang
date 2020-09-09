@@ -178,9 +178,8 @@ class WatchDog(QtCore.QThread):
         self.threadSystem.start()
         print(f'Starting threadNvidia')
         self.threadNvidia.start()
-        # print(f'Starting threadNvidia')
-        # print(f'Starting threadNet ID: [{self.threadNetId}]')
-        # self.threadNet.start()
+        print(f'Starting threadNet')
+        self.threadNet.start()
         # self.threadStorTempsId = self.threadStorTemps.currentThreadId()
         # print(f'Starting threadStorTemps ID: [{self.threadStorTemps.currentThreadId()}] = [{self.threadStorTempsId}]')
 

@@ -357,13 +357,13 @@ class Net:
 
     def isToDisplayNet(self):
         netOptionConfig = self.config.getKey('netOption')
-        if not (netOptionConfig is None):
-            if netOptionConfig['enabled'] and (netOptionConfig['interface'] != '') and self.isOnline():
-                return True
-            else:
-                return False
+        if netOptionConfig is None:
+            return False
 
-        return False
+        if netOptionConfig['enabled'] and (netOptionConfig['interface'] != '') and self.isOnline():
+            return True
+        else:
+            return False
 
 
 class StorTemps:
