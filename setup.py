@@ -5,7 +5,7 @@ import gonhang.api as api
 # system dependencies
 # curl
 # wmctrl
-#
+# hddtemp
 
 setuptools.setup(
     name='gonhang',

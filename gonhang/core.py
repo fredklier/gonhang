@@ -60,6 +60,15 @@ class KeysSkeleton:
         }
     )
 
+    storTempsOption = dict(
+        {
+            'StorTempsOption': {
+                'devices': list(),
+                'enabled': False
+            }
+        }
+    )
+
 
 class PlatFormUtil:
     plat = platform.uname()
@@ -312,16 +321,13 @@ class Nvidia:
 
     def isToDisplayNvidia(self):
         nvidiaOptionConfig = self.config.getKey('nvidiaOption')
-        isDisplay = False
         if nvidiaOptionConfig is None:
-            isDisplay = False
+            return False
         else:
             if nvidiaOptionConfig['enabled'] and nvidiaOptionConfig['GpuId'] != '':
-                isDisplay = True
+                return True
             else:
-                isDisplay = False
-
-        return isDisplay
+                return False
 
 
 class Net:
@@ -357,3 +363,20 @@ class Net:
                 return False
 
         return False
+
+
+class StorTemps:
+    message = dict()
+    keys = KeysSkeleton()
+
+    def getMessage(self):
+        self.message.clear()
+        sensors = psutil.sensors_temperatures()
+        print(sensors)
+        for sensor in sensors:
+            if 'nvme' in sensor:
+                print(f"device: [{sensor}] temperature {sensors[sensor][0]}")
+                for nvme in sensors[sensor]:
+                    print(nvme)
+
+        return self.message

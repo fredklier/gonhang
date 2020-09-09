@@ -3,6 +3,7 @@ from gonhang.api import FileUtil
 from gonhang.core import Config
 from gonhang.core import KeysSkeleton
 from gonhang.core import Nvidia
+from gonhang.core import StorTemps
 from gonhang.displayclasses import CommomAttributes
 import psutil
 
@@ -16,6 +17,9 @@ class GonhaNgWizard(QtWidgets.QWizard):
         self.addPage(NetPage(self))
         if self.nvidia.getNumberGPUs() > 0:
             self.addPage(NvidiaPage(self))
+
+        self.addPage(StorTempsPage(self))
+
         self.setWindowTitle('GonhaNG Wizard Welcome')
         self.resize(640, 480)
         self.setWizardStyle(QtWidgets.QWizard.MacStyle)
@@ -315,3 +319,104 @@ class NetPage(QtWidgets.QWizardPage):
     def optionsClick(self):
         rowList = self.optionsList.currentItem().text().split('|')
         self.updateNetOption(rowList[0], self.keysSkeleton.netOption['netOption']['enabled'])
+
+
+class StorTempsPage(QtWidgets.QWizardPage):
+    storTemps = StorTemps()
+    keysSkeleton = KeysSkeleton()
+    config = Config()
+    common = CommomAttributes()
+
+    def __init__(self, parent=None):
+        super(StorTempsPage, self).__init__(parent)
+        self.setTitle('Storages Temperatures')
+        self.setSubTitle('Remember, to monitor SSD/HDD Sata temperatures you need hddtemp running as daemon.')
+        self.vLayout = QtWidgets.QVBoxLayout()
+        self.groupBoxEnabled = QtWidgets.QGroupBox('Enable or Disable Storages Temperature Monitor? ')
+        self.gbLayout = QtWidgets.QVBoxLayout()
+        self.rbEnable = QtWidgets.QRadioButton('Enabled')
+        self.rbEnable.clicked.connect(self.groupBoxClicked)
+        self.gbLayout.addWidget(self.rbEnable)
+        self.rbDisable = QtWidgets.QRadioButton('Disabled')
+        self.rbDisable.clicked.connect(self.groupBoxClicked)
+        self.rbDisable.setChecked(True)
+        self.gbLayout.addWidget(self.rbDisable)
+
+        self.groupBoxEnabled.setLayout(self.gbLayout)
+
+        self.vLayout.addWidget(self.groupBoxEnabled)
+
+        self.questionLabel = QtWidgets.QLabel('Please select the nvme you want to monitor.')
+        self.vLayout.addWidget(self.questionLabel)
+
+        self.optionsList = QtWidgets.QListWidget()
+        self.optionsList.clicked.connect(self.optionsClick)
+        self.vLayout.addWidget(self.optionsList)
+        self.setLayout(self.vLayout)
+        self.displayStorTemps()
+
+    def updateNvmeOption(self, interface, enabled):
+        pass
+        # self.keysSkeleton.netOption.clear()
+        # self.keysSkeleton.netOption.update(
+        #     {
+        #         'nvmeOption': {
+        #             'interface': interface,
+        #             'enabled': enabled
+        #         }
+        #     }
+        # )
+        # self.config.updateConfig(self.keysSkeleton.netOption)
+        # # print(self.keysSkeleton.netOption)
+
+    def displayStorTemps(self):
+        sensors = psutil.sensors_temperatures()
+        print(sensors)
+        # Show nvmes
+        for sensor in sensors:
+            if 'nvme' in sensor:
+                for nvme in sensors[sensor]:
+                    self.optionsList.addItem(f'{sensor}|{nvme.label}| Temperature{nvme.current} °C')
+
+        # print(self.storTemps.getMessage())
+        # network = psutil.net_if_addrs()
+        # # print(network['enp6s0'][0].address)
+        # # print(f"{type(network['enp6s0'][0])}")
+        # for interface in psutil.net_if_addrs():
+        #     if interface != 'lo':
+        #         self.optionsList.addItem('{}|\tIP Address: [{}]'.format(interface, network[interface][0].address))
+        #
+        # # Verify if exists key in config
+        # netOptionConfig = self.config.getKey('netOption')
+        # if netOptionConfig is None:
+        #     self.updateNetOption('', False)
+        # else:
+        #     self.updateNetOption(
+        #         netOptionConfig['interface'],
+        #         netOptionConfig['enabled']
+        #     )
+        #
+        # if not self.keysSkeleton.netOption['netOption']['enabled']:
+        #     self.optionsList.setDisabled(True)
+        # else:
+        #     self.optionsList.setEnabled(True)
+        #     self.rbEnable.setChecked(True)
+        #
+        # self.common.displayRow(self.optionsList, self.keysSkeleton.netOption['netOption']['interface'])
+
+    def groupBoxClicked(self):
+        pass
+        # enabled = False
+        # if self.rbEnable.isChecked():
+        #     self.optionsList.setEnabled(True)
+        #     enabled = True
+        # else:
+        #     self.optionsList.setDisabled(True)
+        #
+        # self.keysSkeleton.netOption['netOption']['enabled'] = enabled
+        # self.updateNetOption(self.keysSkeleton.netOption['netOption']['interface'], enabled)
+
+    def optionsClick(self):
+        pass
+        # rowList = self.optionsList.currentItem().text().split('|')
+        # self.updateNetOption(rowList[0], self.keysSkeleton.netOption['netOption']['enabled'])
