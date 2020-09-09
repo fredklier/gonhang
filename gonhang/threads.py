@@ -73,8 +73,9 @@ class ThreadNet(QtCore.QThread):
     signal = QtCore.pyqtSignal(dict, name='ThreadNetFinish')
     message = dict()
     netOptionConfig = dict()
-    counters = dict()
     myExtIp = subprocess.getoutput('curl -s ifconfig.me')
+    countersRcv = [0, 0]
+    countersSent = [0, 0]
 
     def __init__(self, parent=None):
         super(ThreadNet, self).__init__(parent)
@@ -89,10 +90,10 @@ class ThreadNet(QtCore.QThread):
             self.message.clear()
             interface = self.netOptionConfig['interface']
             counter = psutil.net_io_counters(pernic=True)[interface]
-            self.counters['two']['bytes_recv'] = counter.bytes_recv
-            self.counters['two']['bytes_sent'] = counter.bytes_sent
-            downSpeed = self.counters['two']['bytes_recv'] - self.counters['one']['bytes_recv']
-            upSpeed = self.counters['two']['bytes_sent'] - self.counters['one']['bytes_sent']
+            self.countersRcv[1] = counter.bytes_recv
+            self.countersSent[1] = counter.bytes_sent
+            downSpeed = self.countersRcv[1] - self.countersRcv[0]
+            upSpeed = self.countersSent[1] - self.countersSent[0]
             # get io statistics since boot
             net_io = psutil.net_io_counters(pernic=True)
             network = psutil.net_if_addrs()
@@ -107,18 +108,12 @@ class ThreadNet(QtCore.QThread):
         self.signal.emit(self.message)
         self.start()
 
-    def clearCounters(self):
-        self.counters.clear()
-        self.counters['one'] = dict()
-        self.counters['two'] = dict()
-
     def run(self):
         if self.net.isToDisplayNet():
             self.loadConfig()
-            self.clearCounters()
             counter = psutil.net_io_counters(pernic=True)[self.netOptionConfig['interface']]
-            self.counters['one']['bytes_recv'] = counter.bytes_recv
-            self.counters['one']['bytes_sent'] = counter.bytes_sent
+            self.countersRcv[0] = counter.bytes_recv
+            self.countersSent[0] = counter.bytes_sent
 
         self.msleep(1000)  # sleep for 500ms
 
