@@ -460,12 +460,12 @@ class DisplaySystem:
 
         gridLayout.addWidget(cpuTempSeparatorLabel, 3, 3)
 
-        cpuTempMaxLabel = QtWidgets.QLabel('100 °C')
-        self.commom.setLabel(cpuTempMaxLabel, self.commom.red, self.commom.fontDefault)
-        cpuTempMaxLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
-        self.systemWidgets['cpuTempMaxLabel'] = cpuTempMaxLabel
+        cpuTempLabel = QtWidgets.QLabel()
+        self.commom.setLabel(cpuTempLabel, self.commom.green, self.commom.fontDefault)
+        cpuTempLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+        self.systemWidgets['cpuTempLabel'] = cpuTempLabel
 
-        gridLayout.addWidget(cpuTempMaxLabel, 3, 4)
+        gridLayout.addWidget(cpuTempLabel, 3, 4)
 
         # vLayout.addLayout(gridLayout)
 
@@ -487,7 +487,7 @@ class DisplaySystem:
         self.systemWidgets['cpuTempProgressBar'].hide()
         self.systemWidgets['cpuCurrentTempLabel'].hide()
         self.systemWidgets['cpuTempSeparatorLabel'].hide()
-        self.systemWidgets['cpuTempMaxLabel'].hide()
+        self.systemWidgets['cpuTempLabel'].hide()
 
     def showWidgetByDefault(self):
         # --------------------------------------------------------------------------------------------------
@@ -496,7 +496,7 @@ class DisplaySystem:
         self.systemWidgets['cpuTempProgressBar'].show()
         self.systemWidgets['cpuCurrentTempLabel'].show()
         self.systemWidgets['cpuTempSeparatorLabel'].show()
-        self.systemWidgets['cpuTempMaxLabel'].show()
+        self.systemWidgets['cpuTempLabel'].show()
 
 
 class DisplayNvidia:

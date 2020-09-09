@@ -253,6 +253,7 @@ class WatchDog(QtCore.QThread):
                 75.0,
                 85.0
             )
+            self.displaySystem.systemWidgets['cpuTempLabel'].setText(message['cpuTempLabel'])
         else:
             self.displaySystem.hideWidgetByDefault()
         # ------------------------------------------------------------------------------------------------------

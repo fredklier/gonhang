@@ -206,6 +206,7 @@ class System:
                     if index == int(cpuTempOption['index']) and subIndex == int(cpuTempOption['subIndex']):
                         self.message['cpuTempProgressBar'] = int(shwtemp.current)
                         self.message['cpuCurrentTempLabel'] = '{:.1f}'.format(shwtemp.current)
+                        self.message['cpuTempLabel'] = shwtemp.label
 
         return self.message
 
