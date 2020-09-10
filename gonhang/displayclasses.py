@@ -5,6 +5,7 @@ import humanfriendly
 from gonhang.core import Config
 from gonhang.api import FileUtil
 from gonhang.core import StorTemps
+import os
 
 
 class AboutBox(QtWidgets.QDialog):
@@ -777,13 +778,33 @@ class DisplayNet:
         vLayout.addWidget(netGroupBox)
 
 
-class DisplayStorages:
+class DisplayStorages(QtCore.QThread):
     storTemps = StorTemps()
     config = Config()
     common = CommomAttributes()
     storTempsWidgets = list()
     firstPass = False
     storageGroupBox = None
+    configCacheStamp = 0
+    signal = QtCore.pyqtSignal(list, name='DisplayStorageFinish')
+
+    def __init__(self, parent=None):
+        super(DisplayStorages, self).__init__(parent)
+        self.finished.connect(self.myFinish)
+        self.signal.connect(self.storTempsReceive)
+
+    def myFinish(self):
+        self.start()
+
+    def storTempsReceive(self, message):
+        print(message)
+        self.hideStorTempsWidgets()
+        if self.storTemps.isToDisplay():
+            self.storageGroupBox.show()
+            self.updateStorTempsUi()
+
+        else:
+            self.storageGroupBox.hide()
 
     def initUi(self, vLayout):
         self.storageGroupBox = self.common.getDefaultGb('disks')
@@ -828,3 +849,26 @@ class DisplayStorages:
         vLayout.addWidget(self.storageGroupBox)
         # --------------------------------------------------------------------------
         # self.hideWidgets()
+
+    def run(self):
+        # -----------------------------------------------------------------------------
+        # Detect if config file changed and mount StorTemps on the fly
+        # -----------------------------------------------------------------------------
+        cfgCacheStamp = os.stat(self.config.cfgFile).st_mtime
+        if cfgCacheStamp != self.configCacheStamp:
+            self.configCacheStamp = cfgCacheStamp
+            print(f'Config File Changed. New Time Stamp: {self.configCacheStamp}')
+            print(f'Current Thread ID: {self.currentThreadId()}')
+        # -----------------------------------------------------------------------------
+        self.msleep(500)
+        self.signal.emit(self.storTemps.getMessage())
+
+    def hideStorTempsWidgets(self):
+        for line in range(10):
+            for col in range(5):
+                self.storTempsWidgets[line][col].hide()
+
+    def updateStorTempsUi(self):
+        for line, device in enumerate(self.storTemps.getMessage()):
+            for col in range(5):
+                self.storTempsWidgets[line][col].show()

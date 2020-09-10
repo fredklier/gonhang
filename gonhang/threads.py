@@ -12,7 +12,6 @@ from gonhang.displayclasses import CommomAttributes
 import psutil
 import subprocess
 import humanfriendly
-import os
 
 
 # ------------------------------------------------------------------------------------
@@ -49,24 +48,6 @@ class ThreadNvidia(QtCore.QThread):
 
     def run(self):
         self.msleep(500)  # sleep for 500ms
-
-
-class ThreadStorTemps(QtCore.QThread):
-    storTemps = StorTemps()
-    signal = QtCore.pyqtSignal(list, name='ThreadStorTempsFinish')
-    message = list()
-
-    def __init__(self, parent=None):
-        super(ThreadStorTemps, self).__init__(parent)
-        self.finished.connect(self.updateStorTemps)
-
-    def updateStorTemps(self):
-        self.message = self.storTemps.getMessage()
-        self.signal.emit(self.message)
-        self.start()
-
-    def run(self):
-        self.msleep(1000)  # sleep for 500ms
 
 
 class ThreadNet(QtCore.QThread):
@@ -148,7 +129,6 @@ class WatchDog(QtCore.QThread):
     # storTemps
     storTemps = StorTemps()
     displayStorages = DisplayStorages()
-    threadStorTemps = ThreadStorTemps()
 
     def __init__(self, vLayout, parent=None):
         super(WatchDog, self).__init__(parent)
@@ -157,7 +137,6 @@ class WatchDog(QtCore.QThread):
         self.threadNvidia.signal.connect(self.threadNvidiaReceive)
         self.threadSystem.signal.connect(self.threadSystemReceive)
         self.threadNet.signal.connect(self.threadNetReceive)
-        self.threadStorTemps.signal.connect(self.threadStorTempsReceive)
         # ------------------------------------------------------------------
         # show displayClasses
         self.verticalLayout = vLayout
@@ -181,17 +160,10 @@ class WatchDog(QtCore.QThread):
         self.threadNvidia.start()
         print(f'Starting threadNet')
         self.threadNet.start()
-        print(f'Starting threadStorTemps')
-        self.threadStorTemps.start()
+        print(f'Starting Thread DisplayStorages')
+        self.displayStorages.start()
 
         self.start()
-
-    def threadStorTempsReceive(self, message):
-        if self.storTemps.isToDisplay():
-            self.displayStorages.storageGroupBox.show()
-
-        else:
-            self.displayStorages.storageGroupBox.hide()
 
     def threadNetReceive(self, message):
         if self.net.isToDisplayNet():
@@ -293,27 +265,3 @@ class WatchDog(QtCore.QThread):
             )
         else:
             self.displayNvidia.nvidiaWidgets['nvidiaGroupBox'].hide()
-
-    def run(self):
-        while True:
-            # -----------------------------------------------------------------------------
-            # Detect if config file changed and mount StorTemps on the fly
-            # -----------------------------------------------------------------------------
-            cfgCacheStamp = os.stat(self.config.cfgFile).st_mtime
-            if cfgCacheStamp != self.configCacheStamp:
-                self.configCacheStamp = cfgCacheStamp
-                print(f'Config File Changed. New Time Stamp: {self.configCacheStamp}')
-                print(f'Current Thread ID: {self.currentThreadId()}')
-                # self.updateStorTempsUi()
-            # -----------------------------------------------------------------------------
-
-    def hideStorTempsWidgets(self):
-        for line in range(10):
-            for col in range(5):
-                self.displayStorages.storTempsWidgets[line][col].hide()
-
-    def updateStorTempsUi(self):
-        self.hideStorTempsWidgets()
-        for line, device in enumerate(self.storTemps.getMessage()):
-            for col in range(5):
-                self.displayStorages.storTempsWidgets[line][col].show()
