@@ -450,6 +450,9 @@ class StorTemps:
 
     def isToDisplay(self):
         storTempsOptionConfig = self.config.getKey('storTempsOption')
+        if storTempsOptionConfig is None:
+            return False
+
         if storTempsOptionConfig['enabled'] and (len(storTempsOptionConfig['devices']) > 0):
             return True
         else:

@@ -859,7 +859,6 @@ class DisplayStorages(QtCore.QThread):
         if cfgCacheStamp != self.configCacheStamp:
             self.configCacheStamp = cfgCacheStamp
             print(f'Config File Changed. New Time Stamp: {self.configCacheStamp}')
-            print(f'Current Thread ID: {self.currentThreadId()}')
         # -----------------------------------------------------------------------------
         self.msleep(500)
         self.signal.emit(list())
