@@ -926,43 +926,36 @@ class DisplayStorages:
     config = Config()
     common = CommomAttributes()
     storageWidgets = dict()
-    verticalLayout = QtWidgets.QVBoxLayout()
+    firstPass = False
+    gridLayout = QtWidgets.QGridLayout()
+    ssdIcon = None
+    storageGroupBox = None
 
     def initUi(self, vLayout):
-        self.verticalLayout = vLayout
-        storageGroupBox = self.common.getDefaultGb('disks')
-        self.storageWidgets['storageGroupBox'] = storageGroupBox
-        storageGroupBox.setLayout(QtWidgets.QVBoxLayout())
-        storageGroupBox.hide()
-        self.verticalLayout.addWidget(storageGroupBox)
+        self.storageGroupBox = self.common.getDefaultGb('disks')
+        self.storageWidgets['storageGroupBox'] = self.storageGroupBox
 
-    def displayStorTempsUi(self):
-        vLayout = self.storageWidgets['storageGroupBox'].layout()
-        print(f'total de widgets ===== > {vLayout.count()}')
-        if vLayout.count() > 0:
-            for i in vLayout.count():
-                vLayout.itemAt(i).deleteLater()
+        self.ssdIcon = QtWidgets.QLabel()
+        self.ssdIcon.setPixmap(QtGui.QPixmap(f'{FileUtil.getResourcePath()}/images/ssd.png'))
+        self.ssdIcon.setFixedSize(24, 24)
 
-        vLayout.addWidget(QtWidgets.QLabel('Teste'))
-        print(f'total de widgets ===== > {vLayout.count()}')
+        self.storageWidgets['ssdIcon'] = self.ssdIcon
 
-        # # self.clearLayout(vLayout)
-        # gridLayout = QtWidgets.QGridLayout()
-        # for i, dev in enumerate(self.storTemps.getMessage()):
-        #     # ------------------------------------------------------------------------------
-        #     # Icon SSD
-        #     ssdIcon = QtWidgets.QLabel()
-        #     ssdIcon.setPixmap(QtGui.QPixmap(f'{FileUtil.getResourcePath()}/images/ssd.png'))
-        #     ssdIcon.setFixedSize(20, 20)
-        #
-        #     gridLayout.addWidget(ssdIcon, i, 0)
-        # ------------------------------------------------------------------------------
-        # self.storageWidgets['storageGroupBox'].setLayout(gridLayout)
-        # print(self.storageWidgets['storageGroupBox'].layout())
+        self.gridLayout.addWidget(self.storageWidgets['ssdIcon'], 0, 0)
 
-        # vLayout.addLayout(gridLayout)
+        # --------------------------------------------------------------------------
+        self.storageGroupBox.setLayout(self.gridLayout)
+        vLayout.addWidget(self.storageGroupBox)
+        # --------------------------------------------------------------------------
 
-    @staticmethod
-    def clearLayout(layout):
-        for i in layout.count():
-            layout.itemAt(i).widget().deleteLater()
+    def updateUi(self):
+        # if self.gridLayout.count() > 0:
+            # self.gridLayout.removeWidget(self.ssdIcon)
+        #    self.gridLayout.itemAt(0).widget().deleteLater()
+
+        # self.gridLayout.addWidget(self.ssdIcon, 0, 1)
+        # self.storageGroupBox.
+
+        print(f'Total de widgets: {self.gridLayout.count()}')
+    #
+    # Icon

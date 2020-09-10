@@ -171,10 +171,10 @@ class WatchDog(QtCore.QThread):
         # ------------------------------------------------------------------
         # display net
         self.displayNet.initUi(self.verticalLayout)
-        # -------------------------------------------------------------------------------------------
-        # display storages
+        # ------------------------------------------------------------------
+        # display Storages
         self.displayStorages.initUi(self.verticalLayout)
-        # -------------------------------------------------------------------------------------------
+        # ------------------------------------------------------------------
         # Start another threads
         print(f'Starting threadSystem')
         self.threadSystem.start()
@@ -304,5 +304,5 @@ class WatchDog(QtCore.QThread):
         if stamp != self.configCacheStamp:
             self.configCacheStamp = stamp
             print(f'Config File Changed. New Time Stamp: {self.configCacheStamp}')
-            self.displayStorages.displayStorTempsUi()
+            self.displayStorages.updateUi()
         # -----------------------------------------------------------------------------
