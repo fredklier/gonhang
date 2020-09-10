@@ -152,7 +152,6 @@ class WatchDog(QtCore.QThread):
 
     def __init__(self, vLayout, parent=None):
         super(WatchDog, self).__init__(parent)
-        self.finished.connect(self.threadFinished)
         # ------------------------------------------------------------------
         # Connecting signals
         self.threadNvidia.signal.connect(self.threadNvidiaReceive)
@@ -185,7 +184,6 @@ class WatchDog(QtCore.QThread):
         print(f'Starting threadStorTemps')
         self.threadStorTemps.start()
 
-    def threadFinished(self):
         self.start()
 
     def threadStorTempsReceive(self, message):
@@ -297,12 +295,25 @@ class WatchDog(QtCore.QThread):
             self.displayNvidia.nvidiaWidgets['nvidiaGroupBox'].hide()
 
     def run(self):
-        # -----------------------------------------------------------------------------
-        # Detect if config file changed and mount StorTemps on the fly
-        # -----------------------------------------------------------------------------
-        stamp = os.stat(self.config.cfgFile).st_mtime
-        if stamp != self.configCacheStamp:
-            self.configCacheStamp = stamp
-            print(f'Config File Changed. New Time Stamp: {self.configCacheStamp}')
-            self.displayStorages.updateUi()
-        # -----------------------------------------------------------------------------
+        while True:
+            # -----------------------------------------------------------------------------
+            # Detect if config file changed and mount StorTemps on the fly
+            # -----------------------------------------------------------------------------
+            cfgCacheStamp = os.stat(self.config.cfgFile).st_mtime
+            if cfgCacheStamp != self.configCacheStamp:
+                self.configCacheStamp = cfgCacheStamp
+                print(f'Config File Changed. New Time Stamp: {self.configCacheStamp}')
+                print(f'Current Thread ID: {self.currentThreadId()}')
+                # self.updateStorTempsUi()
+            # -----------------------------------------------------------------------------
+
+    def hideStorTempsWidgets(self):
+        for line in range(10):
+            for col in range(5):
+                self.displayStorages.storTempsWidgets[line][col].hide()
+
+    def updateStorTempsUi(self):
+        self.hideStorTempsWidgets()
+        for line, device in enumerate(self.storTemps.getMessage()):
+            for col in range(5):
+                self.displayStorages.storTempsWidgets[line][col].show()

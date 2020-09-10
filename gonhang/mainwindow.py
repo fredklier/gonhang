@@ -54,11 +54,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.aboutBox = AboutBox(self)
 
         # ----------------------------------------------------------------------------
-        # -------------------------------------------------------------
         # WatchDog the king off all Threads
-        self.watchDog = WatchDog(self.verticalLayout)
         print('Running WatchDog....')
-        self.watchDog.start()
+        self.watchDog = WatchDog(self.verticalLayout, self)
         self.loadPositionalParams()
 
     def showAboutBox(self):
