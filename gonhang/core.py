@@ -70,6 +70,15 @@ class KeysSkeleton:
         }
     )
 
+    partitionsOption = dict(
+        {
+            'partitionsOption': {
+                'partitions':   list(),
+                'enabled':      False
+            }
+        }
+    )
+
 
 class PlatFormUtil:
     plat = platform.uname()

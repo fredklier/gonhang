@@ -21,6 +21,8 @@ class GonhaNgWizard(QtWidgets.QWizard):
 
         self.addPage(StorTempsPage(self))
 
+        self.addPage(PartitionsPage(self))
+
         self.setWindowTitle('GonhaNG Wizard Welcome')
         self.resize(640, 480)
         self.setWizardStyle(QtWidgets.QWizard.MacStyle)
@@ -331,7 +333,12 @@ class StorTempsPage(QtWidgets.QWizardPage):
     def __init__(self, parent=None):
         super(StorTempsPage, self).__init__(parent)
         self.setTitle('Storages Temperatures')
-        self.setSubTitle('Remember, to monitor SSD/HDD Sata temperatures you need hddtemp running as daemon.')
+        subTitleComplement = ''
+        if not self.storTemps.hddtempIsOk():
+            subTitleComplement = 'Warning: [Your computer is not running hddtemp as daemon! ]'
+
+        self.setSubTitle(
+            f'Remember, to monitor SSD/HDD Sata temperatures you need hddtemp running as daemon. {subTitleComplement}')
         self.vLayout = QtWidgets.QVBoxLayout()
         self.groupBoxEnabled = QtWidgets.QGroupBox('Enable or Disable Storages Temperature Monitor? ')
         self.gbLayout = QtWidgets.QVBoxLayout()
@@ -455,3 +462,112 @@ class StorTempsPage(QtWidgets.QWizardPage):
             # print(device)
             if (device['device'] == cols[0]) and (device['label'] == cols[1]):
                 self.optionsList.item(i).setSelected(True)
+
+
+class PartitionsPage(QtWidgets.QWizardPage):
+    storTemps = StorTemps()
+    keysSkeleton = KeysSkeleton()
+    config = Config()
+    common = CommomAttributes()
+
+    def __init__(self, parent=None):
+        super(PartitionsPage, self).__init__(parent)
+        self.setTitle('Partitions')
+        self.vLayout = QtWidgets.QVBoxLayout()
+        self.groupBoxEnabled = QtWidgets.QGroupBox('Enable or Disable Partitions Space Monitor? ')
+        self.gbLayout = QtWidgets.QVBoxLayout()
+        self.rbEnable = QtWidgets.QRadioButton('Enabled')
+        self.rbEnable.clicked.connect(self.groupBoxClicked)
+        self.gbLayout.addWidget(self.rbEnable)
+        self.rbDisable = QtWidgets.QRadioButton('Disabled')
+        self.rbDisable.clicked.connect(self.groupBoxClicked)
+        self.rbDisable.setChecked(True)
+        self.gbLayout.addWidget(self.rbDisable)
+
+        self.groupBoxEnabled.setLayout(self.gbLayout)
+
+        self.vLayout.addWidget(self.groupBoxEnabled)
+
+        self.questionLabel = QtWidgets.QLabel(
+            'Please select the partitions you want to monitor. Press <shift> to multiples selections.')
+        self.vLayout.addWidget(self.questionLabel)
+
+        self.optionsList = QtWidgets.QListWidget()
+        self.optionsList.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
+        self.optionsList.clicked.connect(self.optionsClick)
+        self.vLayout.addWidget(self.optionsList)
+        self.setLayout(self.vLayout)
+        self.displayPartitionsOption()
+
+    def updatePartitionsOption(self, devices, enabled):
+        self.keysSkeleton.partitionsOption.clear()
+        self.keysSkeleton.partitionsOption.update(
+            {
+                'partitionsOption': {
+                    'partitions': devices,
+                    'enabled': enabled
+                }
+            }
+        )
+        self.config.updateConfig(self.keysSkeleton.partitionsOption)
+
+    def displayPartitionsOption(self):
+        for partition in psutil.disk_partitions():
+            print(partition)
+            self.optionsList.addItem(
+                f'{partition.device}| mountpoint: |{partition.mountpoint}| fstype: {partition.fstype}')
+
+        # Verify if exists key in config
+        partitionOptionConfig = self.config.getKey('partitionsOption')
+        print(f'partitionOptionConfig: {partitionOptionConfig}')
+        if partitionOptionConfig is None:
+            self.updatePartitionsOption(list(), False)
+        else:
+            self.updatePartitionsOption(
+                partitionOptionConfig['partitions'],
+                partitionOptionConfig['enabled']
+            )
+
+        if not self.keysSkeleton.partitionsOption['partitionsOption']['enabled']:
+            self.optionsList.setDisabled(True)
+        else:
+            self.optionsList.setEnabled(True)
+            self.rbEnable.setChecked(True)
+
+        self.displayCorrectRows()
+
+    def groupBoxClicked(self):
+        enabled = False
+        if self.rbEnable.isChecked():
+            self.optionsList.setEnabled(True)
+            enabled = True
+        else:
+            self.optionsList.setDisabled(True)
+
+        self.keysSkeleton.partitionsOption['partitionsOption']['enabled'] = enabled
+        self.updatePartitionsOption(self.keysSkeleton.partitionsOption['partitionsOption']['partitions'], enabled)
+
+    def optionsClick(self):
+        items = self.optionsList.selectedItems()
+        tempList = list()
+        for i in range(len(items)):
+            # print(self.optionsList.selectedItems()[i].text())
+            cols = self.optionsList.selectedItems()[i].text().split('|')
+            # print(cols)
+            tempList.append(
+                {
+                    'partition': cols[0],
+                    'mountpoint': cols[2]
+                }
+            )
+        #
+        self.updatePartitionsOption(tempList, self.keysSkeleton.partitionsOption['partitionsOption']['enabled'])
+
+    def displayCorrectRows(self):
+        for i in range(self.optionsList.count()):
+            print(self.optionsList.item(i).text())
+            line = self.optionsList.item(i).text()
+            cols = line.split('|')
+            for partConfig in self.keysSkeleton.partitionsOption['partitionsOption']['partitions']:
+                if (partConfig['partition'] == cols[0]) and (partConfig['mountpoint'] == cols[2]):
+                    self.optionsList.item(i).setSelected(True)
