@@ -797,7 +797,6 @@ class DisplayStorages(QtCore.QThread):
         self.start()
 
     def storTempsReceive(self, message):
-        print(message)
         self.hideStorTempsWidgets()
         if self.storTemps.isToDisplay():
             self.storageGroupBox.show()
@@ -848,7 +847,7 @@ class DisplayStorages(QtCore.QThread):
         self.storageGroupBox.setLayout(gridLayout)
         vLayout.addWidget(self.storageGroupBox)
         # --------------------------------------------------------------------------
-        # self.hideWidgets()
+        self.hideStorTempsWidgets()
 
     def run(self):
         # -----------------------------------------------------------------------------
@@ -872,3 +871,8 @@ class DisplayStorages(QtCore.QThread):
         for line, device in enumerate(self.storTemps.getMessage()):
             for col in range(5):
                 self.storTempsWidgets[line][col].show()
+
+            self.storTempsWidgets[line][1].setText(device[0]['device'])
+            self.storTempsWidgets[line][2].setText(device[0]['label'])
+            self.storTempsWidgets[line][4].setText("{:.1f} °C".format(float(device[0]['temperature'])))
+            self.common.analizeTemp(self.storTempsWidgets[line][4], float(device[0]['temperature']), 50, 70)
