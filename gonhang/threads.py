@@ -12,6 +12,7 @@ from gonhang.displayclasses import CommomAttributes
 import psutil
 import subprocess
 import humanfriendly
+import os
 
 
 # ------------------------------------------------------------------------------------
@@ -123,6 +124,8 @@ class ThreadNet(QtCore.QThread):
 # WatchDog
 # One thread to manager another threads
 class WatchDog(QtCore.QThread):
+    configCacheStamp = 0
+    config = Config()
     common = CommomAttributes()
     # -----------------------------------------------------------------
     # System
@@ -294,5 +297,12 @@ class WatchDog(QtCore.QThread):
             self.displayNvidia.nvidiaWidgets['nvidiaGroupBox'].hide()
 
     def run(self):
-        # print('running....')
-        self.sleep(1)
+        # -----------------------------------------------------------------------------
+        # Detect if config file changed and mount StorTemps on the fly
+        # -----------------------------------------------------------------------------
+        stamp = os.stat(self.config.cfgFile).st_mtime
+        if stamp != self.configCacheStamp:
+            self.configCacheStamp = stamp
+            print(f'Config File Changed. New Time Stamp: {self.configCacheStamp}')
+            self.displayStorages.displayStorTempsUi()
+        # -----------------------------------------------------------------------------

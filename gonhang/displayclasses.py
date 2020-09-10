@@ -3,8 +3,8 @@ from gonhang import core
 from gonhang import api
 import humanfriendly
 from gonhang.core import Config
-from gonhang.core import Nvidia
 from gonhang.api import FileUtil
+from gonhang.core import StorTemps
 
 
 class AboutBox(QtWidgets.QDialog):
@@ -922,20 +922,47 @@ class DisplayNvidia:
 
 
 class DisplayStorages:
+    storTemps = StorTemps()
     config = Config()
     common = CommomAttributes()
     storageWidgets = dict()
+    verticalLayout = QtWidgets.QVBoxLayout()
 
     def initUi(self, vLayout):
+        self.verticalLayout = vLayout
         storageGroupBox = self.common.getDefaultGb('disks')
         self.storageWidgets['storageGroupBox'] = storageGroupBox
-
+        storageGroupBox.setLayout(QtWidgets.QVBoxLayout())
         storageGroupBox.hide()
-
-        vLayout.addWidget(storageGroupBox)
+        self.verticalLayout.addWidget(storageGroupBox)
 
     def displayStorTempsUi(self):
-        verticalLayout = QtWidgets.QVBoxLayout()
-        storTempsOptionConfig = self.config.getKey('storTempsOption')
-        for device in storTempsOptionConfig['devices']:
-            print(device)
+        vLayout = self.storageWidgets['storageGroupBox'].layout()
+        print(f'total de widgets ===== > {vLayout.count()}')
+        if vLayout.count() > 0:
+            for i in vLayout.count():
+                vLayout.itemAt(i).deleteLater()
+
+        vLayout.addWidget(QtWidgets.QLabel('Teste'))
+        print(f'total de widgets ===== > {vLayout.count()}')
+
+        # # self.clearLayout(vLayout)
+        # gridLayout = QtWidgets.QGridLayout()
+        # for i, dev in enumerate(self.storTemps.getMessage()):
+        #     # ------------------------------------------------------------------------------
+        #     # Icon SSD
+        #     ssdIcon = QtWidgets.QLabel()
+        #     ssdIcon.setPixmap(QtGui.QPixmap(f'{FileUtil.getResourcePath()}/images/ssd.png'))
+        #     ssdIcon.setFixedSize(20, 20)
+        #
+        #     gridLayout.addWidget(ssdIcon, i, 0)
+        # ------------------------------------------------------------------------------
+        # self.storageWidgets['storageGroupBox'].setLayout(gridLayout)
+        # print(self.storageWidgets['storageGroupBox'].layout())
+
+        # vLayout.addLayout(gridLayout)
+
+    @staticmethod
+    def clearLayout(layout):
+        for i in layout.count():
+            layout.itemAt(i).widget().deleteLater()
