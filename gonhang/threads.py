@@ -190,10 +190,10 @@ class WatchDog(QtCore.QThread):
 
     def threadStorTempsReceive(self, message):
         if self.storTemps.isToDisplay():
-            self.displayStorages.storageWidgets['storageGroupBox'].show()
+            self.displayStorages.storageGroupBox.show()
 
         else:
-            self.displayStorages.storageWidgets['storageGroupBox'].hide()
+            self.displayStorages.storageGroupBox.hide()
 
     def threadNetReceive(self, message):
         if self.net.isToDisplayNet():
