@@ -65,6 +65,7 @@ class AboutBox(QtWidgets.QDialog):
 class CommomAttributes:
     pbDefaultHeight = 20
     tempLabelWidth = 50
+    debugRed = 'background-color: rgb(255, 48, 79);'
 
     def __init__(self):
         # -------------------------------------------------------------
@@ -783,6 +784,7 @@ class DisplayStorages(QtCore.QThread):
     config = Config()
     common = CommomAttributes()
     storTempsWidgets = list()
+    partitionsWidgets = list()
     firstPass = False
     storageGroupBox = None
     configCacheStamp = 0
@@ -796,7 +798,7 @@ class DisplayStorages(QtCore.QThread):
     def myFinish(self):
         self.start()
 
-    def storTempsReceive(self, message):
+    def storTempsReceive(self):
         self.hideStorTempsWidgets()
         if self.storTemps.isToDisplay():
             self.storageGroupBox.show()
@@ -817,21 +819,20 @@ class DisplayStorages(QtCore.QThread):
             colList.append(ssdIcon)
 
             device = QtWidgets.QLabel('/dev/teste')
-            device.setFixedWidth(120)
+            device.setFixedWidth(80)
             self.common.setLabel(device, self.common.white, self.common.fontDefault)
             gridLayout.addWidget(device, line, 1)
             colList.append(device)
 
             deviceLabel = QtWidgets.QLabel('label')
-            deviceLabel.setFixedWidth(200)
             self.common.setLabel(deviceLabel, self.common.white, self.common.fontDefault)
             gridLayout.addWidget(deviceLabel, line, 2)
             colList.append(deviceLabel)
 
             tempIcon = QtWidgets.QLabel()
             tempIcon.setPixmap(QtGui.QPixmap(f'{FileUtil.getResourcePath()}/images/temp.png'))
-            tempIcon.setFixedHeight(20)
-            tempIcon.setFixedWidth(20)
+            tempIcon.setFixedHeight(24)
+            tempIcon.setFixedWidth(24)
             gridLayout.addWidget(tempIcon, line, 3)
             colList.append(tempIcon)
 
@@ -840,6 +841,7 @@ class DisplayStorages(QtCore.QThread):
             deviceTempLabel.setAlignment(QtCore.Qt.AlignRight)
             gridLayout.addWidget(deviceTempLabel, line, 4)
             colList.append(deviceTempLabel)
+            deviceTempLabel.setFixedWidth(70)
 
             self.storTempsWidgets.append(colList)
 
@@ -860,7 +862,7 @@ class DisplayStorages(QtCore.QThread):
             print(f'Current Thread ID: {self.currentThreadId()}')
         # -----------------------------------------------------------------------------
         self.msleep(500)
-        self.signal.emit(self.storTemps.getMessage())
+        self.signal.emit(list())
 
     def hideStorTempsWidgets(self):
         for line in range(10):
