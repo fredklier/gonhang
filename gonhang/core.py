@@ -7,9 +7,44 @@ import subprocess
 from gonhang import api
 from pathlib import Path
 import json
+import requests
 import distro
 import socket
 from telnetlib import Telnet
+import urllib.request
+
+
+class Temperature:
+
+    @staticmethod
+    def celtokel(C):  # Celsius para Kelvin
+        K = (C + 273.15)
+        return '{K:.1f} °K'.format(K=K)
+
+    @staticmethod
+    def celtofah(C):  # Celsius para Fahrenheit
+        F = (C * 1.8 + 32)
+        return '{F:.1f} °F'.format(F=F)
+
+    @staticmethod
+    def keltocel(K):  # Kelvin para Celsius
+        C = (K - 273.15)
+        return '{C:.1f} °C'.format(C=C)
+
+    @staticmethod
+    def keltofah(K):  # Kelvin para Fahrenheit
+        F = (K * 1.8 - 459.7)
+        return '{F:.1f} °F'.format(F=F)
+
+    @staticmethod
+    def fahtocel(F):  # Fahrenheit para Celsius
+        C = ((F - 32) / 1.8)
+        return '{C:.1f} °C'.format(C=C)
+
+    @staticmethod
+    def fahtokel(F):  # Fahrenheit para Kelvin
+        K = ((F - 32) / 1.8 + 273)
+        return '{K:.1f} °K'.format(K=K)
 
 
 class VirtualMachine:
@@ -75,6 +110,18 @@ class KeysSkeleton:
             'partitionsOption': {
                 'partitions': list(),
                 'enabled': False
+            }
+        }
+    )
+
+    weatherOption = dict(
+        {
+            'weatherOption': {
+                'lat': '',
+                'lon': '',
+                'apiKey': '',
+                'enabled': False
+
             }
         }
     )
@@ -482,13 +529,13 @@ class Partitions:
             # print(usage)
             self.message.append(
                 {
-                    'partition':    partition['partition'],
-                    'mountpoint':   partition['mountpoint'],
-                    'fstype':       partition['fstype'],
-                    'total':        usage.total,
-                    'used':         usage.used,
-                    'free':         usage.free,
-                    'percent':      usage.percent
+                    'partition': partition['partition'],
+                    'mountpoint': partition['mountpoint'],
+                    'fstype': partition['fstype'],
+                    'total': usage.total,
+                    'used': usage.used,
+                    'free': usage.free,
+                    'percent': usage.percent
                 }
             )
 
@@ -503,3 +550,37 @@ class Partitions:
             return True
         else:
             return False
+
+
+class Weather:
+    temperature = Temperature()
+    net = Net()
+    url = ''
+    iconUrlPrefix = 'https://openweathermap.org/img/wn/'
+    iconUrlSuffix = '@2x.png'
+    message = dict()
+
+    def updateUrl(self, lat, lon, apiKey):
+        self.url = f'https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={apiKey}'
+
+    def getMessage(self):
+        self.message.clear()
+        if self.net.isOnline():
+            res = requests.get(self.url)
+            if res.status_code == 200:
+                tempJson = json.loads(res.text)
+                self.message['icon'] = tempJson['weather']['icon']
+                self.message['temp'] = self.temperature.keltocel(float(tempJson['main']['temp']))
+                self.message['status'] = f'http code {res.status_code} OK!'
+            else:
+                self.message['status'] = f'ERROR: http code {res.status_code}!'
+            print(res)
+        else:
+            self.message['status'] = 'ERROR: You are offline?'
+
+        return self.message
+
+    def getIcon(self, iconStr):
+        if self.net.isOnline():
+            with urllib.request.urlopen(f"{self.iconUrlPrefix}{iconStr}{self.iconUrlSuffix}") as response:
+                return response.read()

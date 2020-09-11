@@ -28,7 +28,8 @@ setuptools.setup(
     install_requires=[
         'PyQt5',
         'psutil',
-        'humanfriendly'
+        'humanfriendly',
+        'requests'
     ],
     include_package_data=True,
     zip_safe=False,

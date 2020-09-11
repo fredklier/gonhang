@@ -12,6 +12,8 @@ from gonhang.displayclasses import CommomAttributes
 import psutil
 import subprocess
 import humanfriendly
+import requests
+import json
 
 
 # ------------------------------------------------------------------------------------
@@ -265,3 +267,38 @@ class WatchDog(QtCore.QThread):
             )
         else:
             self.displayNvidia.nvidiaWidgets['nvidiaGroupBox'].hide()
+
+
+class ThreadValidateWeather(QtCore.QThread):
+    net = Net()
+    signal = QtCore.pyqtSignal(dict, name='ThreadValidateWeatherFinish')
+    message = dict()
+    url = ''
+
+    def __init__(self, parent=None):
+        super(ThreadValidateWeather, self).__init__(parent)
+        self.finished.connect(self.updateValidateWheather)
+
+    def startFetch(self, lat, lon, apiKey):
+        # Prepare URL
+        self.url = f'https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={apiKey}'
+        self.start()
+
+    def updateValidateWheather(self):
+        self.message.clear()
+        if self.net.isOnline():
+            res = requests.get(self.url)
+            if res.status_code == 200:
+                tempJson = json.loads(res.text)
+                print(tempJson)
+                self.message['status'] = f'http code {res.status_code} OK!'
+            else:
+                self.message['status'] = f'ERROR: http code {res.status_code}!'
+            print(res)
+        else:
+            self.message['status'] = 'ERROR: You are offline?'
+
+        self.signal.emit(self.message)
+
+    def run(self):
+        pass

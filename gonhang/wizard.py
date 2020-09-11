@@ -4,7 +4,9 @@ from gonhang.core import Config
 from gonhang.core import KeysSkeleton
 from gonhang.core import Nvidia
 from gonhang.core import StorTemps
+from gonhang.core import Net
 from gonhang.displayclasses import CommomAttributes
+from gonhang.threads import ThreadValidateWeather
 import psutil
 from telnetlib import Telnet
 
@@ -14,6 +16,7 @@ class GonhaNgWizard(QtWidgets.QWizard):
 
     def __init__(self, parent=None):
         super(GonhaNgWizard, self).__init__(parent)
+        self.addPage(WeatherPage(self))
         self.addPage(CpuTempPage(self))
         self.addPage(NetPage(self))
         if self.nvidia.getNumberGPUs() > 0:
@@ -556,9 +559,9 @@ class PartitionsPage(QtWidgets.QWizardPage):
             # print(cols)
             tempList.append(
                 {
-                    'partition':    cols[0],
-                    'mountpoint':   cols[2],
-                    'fstype':       cols[3]
+                    'partition': cols[0],
+                    'mountpoint': cols[2],
+                    'fstype': cols[3]
                 }
             )
         #
@@ -572,3 +575,110 @@ class PartitionsPage(QtWidgets.QWizardPage):
             for partConfig in self.keysSkeleton.partitionsOption['partitionsOption']['partitions']:
                 if (partConfig['partition'] == cols[0]) and (partConfig['mountpoint'] == cols[2]):
                     self.optionsList.item(i).setSelected(True)
+
+
+class WeatherPage(QtWidgets.QWizardPage):
+    storTemps = StorTemps()
+    keysSkeleton = KeysSkeleton()
+    config = Config()
+    common = CommomAttributes()
+    threadValidateWeather = ThreadValidateWeather()
+    net = Net()
+
+    def __init__(self, parent=None):
+        super(WeatherPage, self).__init__(parent)
+        self.setTitle('Weather')
+        self.vLayout = QtWidgets.QVBoxLayout()
+        messageLabel = QtWidgets.QLabel(
+            'To view weather information you need an account at <a href="https://openweathermap.org/">https://openweathermap.org/</a> and place your api key.')
+        self.vLayout.addWidget(messageLabel)
+        messageLabel.setTextFormat(QtCore.Qt.RichText)
+        # self.sub
+        self.groupBoxEnabled = QtWidgets.QGroupBox('Do you want to enable date, time and weather conditions? ')
+        self.gbLayout = QtWidgets.QVBoxLayout()
+        self.rbEnable = QtWidgets.QRadioButton('Enabled')
+        self.rbEnable.clicked.connect(self.groupBoxClicked)
+        self.gbLayout.addWidget(self.rbEnable)
+        self.rbDisable = QtWidgets.QRadioButton('Disabled')
+        self.rbDisable.clicked.connect(self.groupBoxClicked)
+        self.rbDisable.setChecked(True)
+        self.gbLayout.addWidget(self.rbDisable)
+
+        self.groupBoxEnabled.setLayout(self.gbLayout)
+
+        self.vLayout.addWidget(self.groupBoxEnabled)
+
+        self.questionLabel = QtWidgets.QLabel(
+            'Please fill in the fields below correctly and click on the validate button.')
+        self.vLayout.addWidget(self.questionLabel)
+
+        # -----------------------------------------------------------------
+        # city
+        gridLayout = QtWidgets.QGridLayout()
+        latitudeLabel = QtWidgets.QLabel('Latitude:')
+        latitudeLabel.setFixedWidth(100)
+        gridLayout.addWidget(latitudeLabel, 0, 0)
+
+        self.latitudeEdit = QtWidgets.QLineEdit('-8.052240')
+        self.latitudeEdit.setFixedWidth(200)
+        gridLayout.addWidget(self.latitudeEdit, 0, 1)
+
+        longitudeLabel = QtWidgets.QLabel('Longitude:')
+        longitudeLabel.setFixedWidth(100)
+        gridLayout.addWidget(longitudeLabel, 1, 0)
+
+        self.longitudeEdit = QtWidgets.QLineEdit('-34.928612')
+        self.longitudeEdit.setFixedWidth(200)
+        gridLayout.addWidget(self.longitudeEdit, 1, 1)
+
+        apiKeyLabel = QtWidgets.QLabel('Api Key:')
+        gridLayout.addWidget(apiKeyLabel, 2, 0)
+
+        self.apiKeyEdit = QtWidgets.QLineEdit('e943e3d03143693768df6ca7c621c8b5')
+        gridLayout.addWidget(self.apiKeyEdit, 2, 1)
+
+        self.validateButton = QtWidgets.QPushButton('Validate')
+        self.validateButton.setFixedWidth(100)
+        gridLayout.addWidget(self.validateButton, 3, 1)
+        self.validateButton.clicked.connect(self.validateButtonClicked)
+        self.threadValidateWeather.signal.connect(self.threadValidaWeatherFinish)
+
+        statusLabel = QtWidgets.QLabel('Status: ')
+        gridLayout.addWidget(statusLabel, 4, 0)
+
+        self.statusValueLabel = QtWidgets.QLabel('')
+        gridLayout.addWidget(self.statusValueLabel, 4, 1)
+
+        self.vLayout.addLayout(gridLayout)
+
+        self.setLayout(self.vLayout)
+
+    def threadValidaWeatherFinish(self, message):
+        print(message)
+
+    def validateButtonClicked(self):
+        if self.net.isOnline():
+            self.threadValidateWeather.startFetch(
+                self.latitudeEdit.text(),
+                self.longitudeEdit.text(),
+                self.apiKeyEdit.text()
+            )
+        else:
+            pass
+
+    def updateWeatherOption(self, city, region, country, apiKey, enabled):
+        self.keysSkeleton.weatherOption.clear()
+        self.keysSkeleton.weatherOption.update(
+            {
+                'weatherOption': {
+                    'lat': city,
+                    'lon': region,
+                    'apiKey': apiKey,
+                    'enabled': enabled
+                }
+            }
+        )
+        self.config.updateConfig(self.keysSkeleton.weatherOption)
+
+    def groupBoxClicked(self):
+        pass
