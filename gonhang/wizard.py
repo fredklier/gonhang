@@ -646,11 +646,17 @@ class WeatherPage(QtWidgets.QWizardPage):
         statusLabel = QtWidgets.QLabel('Status: ')
         gridLayout.addWidget(statusLabel, 4, 0)
 
-        self.statusIcon = QtWidgets.QLabel()
-        gridLayout.addWidget(self.statusIcon, 4, 1)
+        hLayout = QtWidgets.QHBoxLayout()
 
-        self.statusValueLabel = QtWidgets.QLabel('')
-        gridLayout.addWidget(self.statusValueLabel, 4, 2)
+        self.statusIcon = QtWidgets.QLabel()
+        self.statusIcon.setFixedWidth(24)
+        self.statusIcon.setFixedHeight(24)
+        hLayout.addWidget(self.statusIcon)
+
+        self.statusValueLabel = QtWidgets.QLabel()
+        hLayout.addWidget(self.statusValueLabel)
+
+        gridLayout.addLayout(hLayout, 4, 1)
 
         self.vLayout.addLayout(gridLayout)
         self.setLayout(self.vLayout)
@@ -665,7 +671,7 @@ class WeatherPage(QtWidgets.QWizardPage):
         validated = False
         self.rbEnable.setChecked(False)
         self.disableAll()
-        print(weatherOptionConfig)
+        # print(weatherOptionConfig)
         if not (weatherOptionConfig is None):
             lat = weatherOptionConfig['lat']
             self.latitudeEdit.setText(lat)
@@ -674,9 +680,10 @@ class WeatherPage(QtWidgets.QWizardPage):
             apiKey = weatherOptionConfig['apiKey']
             self.apiKeyEdit.setText(apiKey)
             enabled = weatherOptionConfig['enabled']
-            if enabled:
-                self.statusIcon.setPixmap(QtGui.QPixmap(f'{FileUtil.getResourcePath()}/images/validated.png'))
             validated = weatherOptionConfig['validated']
+            if validated:
+                self.statusIcon.setPixmap(QtGui.QPixmap(f'{FileUtil.getResourcePath()}/images/validated.png'))
+                self.statusValueLabel.setText('Validated!')
             if weatherOptionConfig['enabled']:
                 self.enableAll()
                 self.rbEnable.setChecked(True)

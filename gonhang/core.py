@@ -571,7 +571,7 @@ class Weather:
             res = requests.get(self.url)
             if res.status_code == 200:
                 tempJson = json.loads(res.text)
-                print(tempJson)
+                # print(tempJson)
                 self.message['temp'] = int(float(self.temperature.keltocel(tempJson['main']['temp'])))
                 self.message['humidity'] = f"{tempJson['main']['humidity']}%"
                 self.message['pressure'] = f"{tempJson['main']['pressure']}hPa"
