@@ -5,6 +5,7 @@ import humanfriendly
 from gonhang.core import Config
 from gonhang.api import FileUtil
 from gonhang.core import StorTemps
+from gonhang.core import Partitions
 import os
 
 
@@ -202,6 +203,15 @@ class CommomAttributes:
             rowList = rowText.split('|')
             if str(value) == str(rowList[0]):
                 optionsList.setCurrentRow(i)
+
+    def makePartitionPB(self):
+        Pb = QtWidgets.QProgressBar()
+        Pb.setFixedHeight(20)
+        Pb.setFont(self.fontDefault)
+        Pb.setStyleSheet(self.greenPBStyle)
+        Pb.setFixedWidth(260)
+        Pb.setValue(100)
+        return Pb
 
 
 class DisplaySystem:
@@ -781,6 +791,7 @@ class DisplayNet:
 
 class DisplayStorages(QtCore.QThread):
     storTemps = StorTemps()
+    partitions = Partitions()
     config = Config()
     common = CommomAttributes()
     storTempsWidgets = list()
@@ -807,7 +818,14 @@ class DisplayStorages(QtCore.QThread):
         else:
             self.storageGroupBox.hide()
 
+        if self.partitions.isToDisplay():
+            self.storageGroupBox.show()
+            self.updatePartitionsUi()
+        else:
+            self.storageGroupBox.hide()
+
     def initUi(self, vLayout):
+        localVLayout = QtWidgets.QVBoxLayout()
         self.storageGroupBox = self.common.getDefaultGb('disks')
         gridLayout = QtWidgets.QGridLayout()
         for line in range(10):
@@ -845,11 +863,76 @@ class DisplayStorages(QtCore.QThread):
 
             self.storTempsWidgets.append(colList)
 
-        # --------------------------------------------------------------------------
-        self.storageGroupBox.setLayout(gridLayout)
+        # -------------------------------------------------------------------------
+        # now, i will display partitions widgets
+        partGridLayout = QtWidgets.QGridLayout()
+        for i in range(0, 20, 3):
+            partColList = list()
+            mountpointValueLabel = QtWidgets.QLabel('mountpoint')
+            self.common.setLabel(mountpointValueLabel, self.common.white, self.common.fontDefault)
+            partGridLayout.addWidget(mountpointValueLabel, i, 0)
+            partColList.append(mountpointValueLabel)
+
+            fsTypeLabel = QtWidgets.QLabel('fsType')
+            self.common.setLabel(fsTypeLabel, self.common.white, self.common.fontDefault)
+            fsTypeLabel.setAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignHCenter)
+            partGridLayout.addWidget(fsTypeLabel, i, 1)
+            partColList.append(fsTypeLabel)
+
+            totalValueLabel = QtWidgets.QLabel('total')
+            self.common.setLabel(totalValueLabel, self.common.white, self.common.fontDefault)
+            totalValueLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+            partGridLayout.addWidget(totalValueLabel, i, 2)
+            partColList.append(totalValueLabel)
+
+            # ----------------------------------------------------------
+            # used stats
+            usedLabel = QtWidgets.QLabel('used:')
+            self.common.setLabel(usedLabel, self.common.red, self.common.fontDefault)
+            usedLabel.setFixedWidth(60)
+            partGridLayout.addWidget(usedLabel, i + 1, 0)
+            partColList.append(usedLabel)
+
+            # ProgressBar
+            usedPB = self.common.makePartitionPB()
+            usedPB.setStyleSheet(self.common.redPBStyle)
+            partGridLayout.addWidget(usedPB, i + 1, 1)
+            partColList.append(usedPB)
+
+            usedValueLabel = QtWidgets.QLabel('used')
+            self.common.setLabel(usedValueLabel, self.common.white, self.common.fontDefault)
+            usedValueLabel.setStyleSheet(self.common.red)
+            usedValueLabel.setAlignment(QtCore.Qt.AlignRight)
+            partGridLayout.addWidget(usedValueLabel, i + 1, 2)
+            partColList.append(usedValueLabel)
+
+            # ----------------------------------------------------------
+            # free stats
+            freeLabel = QtWidgets.QLabel('free:')
+            self.common.setLabel(freeLabel, self.common.green, self.common.fontDefault)
+            freeLabel.setFixedWidth(60)
+            partGridLayout.addWidget(freeLabel, i + 2, 0)
+            partColList.append(freeLabel)
+
+            freePB = self.common.makePartitionPB()
+            partGridLayout.addWidget(freePB, i + 2, 1)
+            partColList.append(freePB)
+
+            freeValueLabel = QtWidgets.QLabel('free')
+            self.common.setLabel(freeValueLabel, self.common.green, self.common.fontDefault)
+            freeValueLabel.setAlignment(QtCore.Qt.AlignRight)
+            partGridLayout.addWidget(freeValueLabel, i + 2, 2)
+            partColList.append(freeValueLabel)
+            # ----------------------------------------------------------
+            self.partitionsWidgets.append(partColList)
+
+        localVLayout.addLayout(gridLayout)
+        localVLayout.addLayout(partGridLayout)
+        self.storageGroupBox.setLayout(localVLayout)
         vLayout.addWidget(self.storageGroupBox)
         # --------------------------------------------------------------------------
         self.hideStorTempsWidgets()
+        self.hidePartTempsWidgets()
 
     def run(self):
         # -----------------------------------------------------------------------------
@@ -877,3 +960,22 @@ class DisplayStorages(QtCore.QThread):
             self.storTempsWidgets[line][2].setText(device[0]['label'])
             self.storTempsWidgets[line][4].setText("{:.1f} °C".format(float(device[0]['temperature'])))
             self.common.analizeTemp(self.storTempsWidgets[line][4], float(device[0]['temperature']), 50, 70)
+
+    def hidePartTempsWidgets(self):
+        for line in range(len(self.partitionsWidgets)):
+            for col in range(len(self.partitionsWidgets[line])):
+                self.partitionsWidgets[line][col].hide()
+
+    def updatePartitionsUi(self):
+        for line, partition in enumerate(self.partitions.getMessage()):
+            print(partition)
+            for col in range(9):
+                self.partitionsWidgets[line][col].show()
+                self.partitionsWidgets[line][0].setText(partition['mountpoint'])
+                self.partitionsWidgets[line][1].setText(partition['fstype'])
+
+        # print('\n\n')
+        # self.storTempsWidgets[line][1].setText(device[0]['device'])
+        # self.storTempsWidgets[line][2].setText(device[0]['label'])
+        # self.storTempsWidgets[line][4].setText("{:.1f} °C".format(float(device[0]['temperature'])))
+        # self.common.analizeTemp(self.storTempsWidgets[line][4], float(device[0]['temperature']), 50, 70)

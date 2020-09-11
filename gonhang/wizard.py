@@ -515,7 +515,7 @@ class PartitionsPage(QtWidgets.QWizardPage):
         for partition in psutil.disk_partitions():
             print(partition)
             self.optionsList.addItem(
-                f'{partition.device}| mountpoint: |{partition.mountpoint}| fstype: {partition.fstype}')
+                f'{partition.device}| mountpoint: |{partition.mountpoint}|{partition.fstype}')
 
         # Verify if exists key in config
         partitionOptionConfig = self.config.getKey('partitionsOption')
@@ -556,8 +556,9 @@ class PartitionsPage(QtWidgets.QWizardPage):
             # print(cols)
             tempList.append(
                 {
-                    'partition': cols[0],
-                    'mountpoint': cols[2]
+                    'partition':    cols[0],
+                    'mountpoint':   cols[2],
+                    'fstype':       cols[3]
                 }
             )
         #

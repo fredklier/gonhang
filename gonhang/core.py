@@ -73,8 +73,8 @@ class KeysSkeleton:
     partitionsOption = dict(
         {
             'partitionsOption': {
-                'partitions':   list(),
-                'enabled':      False
+                'partitions': list(),
+                'enabled': False
             }
         }
     )
@@ -463,6 +463,43 @@ class StorTemps:
             return False
 
         if storTempsOptionConfig['enabled'] and (len(storTempsOptionConfig['devices']) > 0):
+            return True
+        else:
+            return False
+
+
+class Partitions:
+    config = Config()
+    message = list()
+    keys = KeysSkeleton()
+
+    def getMessage(self):
+        self.message.clear()
+        partitionsOptionConfig = self.config.getKey('partitionsOption')
+        for partition in partitionsOptionConfig['partitions']:
+            usage = psutil.disk_usage(partition['mountpoint'])
+            # print(partition)
+            # print(usage)
+            self.message.append(
+                {
+                    'partition':    partition['partition'],
+                    'mountpoint':   partition['mountpoint'],
+                    'fstype':       partition['fstype'],
+                    'total':        usage.total,
+                    'used':         usage.used,
+                    'free':         usage.free,
+                    'percent':      usage.percent
+                }
+            )
+
+        return self.message
+
+    def isToDisplay(self):
+        partitionsOptionConfig = self.config.getKey('partitionsOption')
+        if partitionsOptionConfig is None:
+            return False
+
+        if partitionsOptionConfig['enabled'] and (len(partitionsOptionConfig['partitions']) > 0):
             return True
         else:
             return False
