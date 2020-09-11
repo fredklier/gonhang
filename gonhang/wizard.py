@@ -513,13 +513,13 @@ class PartitionsPage(QtWidgets.QWizardPage):
 
     def displayPartitionsOption(self):
         for partition in psutil.disk_partitions():
-            print(partition)
+            # print(partition)
             self.optionsList.addItem(
                 f'{partition.device}| mountpoint: |{partition.mountpoint}|{partition.fstype}')
 
         # Verify if exists key in config
         partitionOptionConfig = self.config.getKey('partitionsOption')
-        print(f'partitionOptionConfig: {partitionOptionConfig}')
+        # print(f'partitionOptionConfig: {partitionOptionConfig}')
         if partitionOptionConfig is None:
             self.updatePartitionsOption(list(), False)
         else:
@@ -566,7 +566,7 @@ class PartitionsPage(QtWidgets.QWizardPage):
 
     def displayCorrectRows(self):
         for i in range(self.optionsList.count()):
-            print(self.optionsList.item(i).text())
+            # print(self.optionsList.item(i).text())
             line = self.optionsList.item(i).text()
             cols = line.split('|')
             for partConfig in self.keysSkeleton.partitionsOption['partitionsOption']['partitions']:

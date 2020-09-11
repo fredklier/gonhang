@@ -811,16 +811,15 @@ class DisplayStorages(QtCore.QThread):
 
     def storTempsReceive(self):
         self.hideStorTempsWidgets()
-        if self.storTemps.isToDisplay():
-            self.storageGroupBox.show()
-            self.updateStorTempsUi()
+        self.hidePartTempsWidgets()
 
-        else:
-            self.storageGroupBox.hide()
-
-        if self.partitions.isToDisplay():
+        if self.storTemps.isToDisplay() or self.partitions.isToDisplay():
             self.storageGroupBox.show()
-            self.updatePartitionsUi()
+            if self.storTemps.isToDisplay():
+                self.updateStorTempsUi()
+
+            if self.partitions.isToDisplay():
+                self.updatePartitionsUi()
         else:
             self.storageGroupBox.hide()
 
@@ -967,15 +966,25 @@ class DisplayStorages(QtCore.QThread):
                 self.partitionsWidgets[line][col].hide()
 
     def updatePartitionsUi(self):
-        for line, partition in enumerate(self.partitions.getMessage()):
-            print(partition)
+        for line, message in enumerate(self.partitions.getMessage()):
+            # print(f'line: {line} message: {message}')
+            # print(len(self.partitionsWidgets[line]))
             for col in range(9):
                 self.partitionsWidgets[line][col].show()
-                self.partitionsWidgets[line][0].setText(partition['mountpoint'])
-                self.partitionsWidgets[line][1].setText(partition['fstype'])
 
-        # print('\n\n')
-        # self.storTempsWidgets[line][1].setText(device[0]['device'])
-        # self.storTempsWidgets[line][2].setText(device[0]['label'])
-        # self.storTempsWidgets[line][4].setText("{:.1f} °C".format(float(device[0]['temperature'])))
-        # self.common.analizeTemp(self.storTempsWidgets[line][4], float(device[0]['temperature']), 50, 70)
+            self.partitionsWidgets[line][0].setText(message['mountpoint'])
+            self.partitionsWidgets[line][1].setText(message['fstype'])
+            self.partitionsWidgets[line][2].setText(humanfriendly.format_size(message['total'], binary=True))
+            pUsed, pFree = self.getPercents(message['percent'])
+            self.partitionsWidgets[line][4].setValue(pUsed)
+            self.partitionsWidgets[line][5].setText(humanfriendly.format_size(message['used'], binary=True))
+            self.partitionsWidgets[line][7].setValue(pFree)
+            self.partitionsWidgets[line][8].setText(humanfriendly.format_size(message['free'], binary=True))
+
+    @staticmethod
+    def getPercents(percent):
+        pUsed = int(percent)
+        pFree = 100 - pUsed
+        return [pUsed, pFree]
+
+        # return [int(percentFree), int((100 - percent)))]
