@@ -988,3 +988,194 @@ class DisplayStorages(QtCore.QThread):
         return [pUsed, pFree]
 
         # return [int(percentFree), int((100 - percent)))]
+
+
+class DisplayWeather:
+    common = CommomAttributes()
+    weatherWidgets = dict()
+
+    def initUi(self, verticalLayout):
+        weatherGroupBox = QtWidgets.QGroupBox()
+        vLayout = QtWidgets.QVBoxLayout()
+        self.weatherWidgets['weatherGroupBox'] = weatherGroupBox
+        timeHeight = 50
+        dateHeight = 25
+        tempHeight = 60
+
+        timeFont = QtGui.QFont('Fira Code', 45)
+        dayFont = QtGui.QFont('Fira Code', 20)
+        weekdayFont = QtGui.QFont('Fira Code', 15)
+        yearFont = QtGui.QFont('Fira Code', 12)
+        monthFont = QtGui.QFont('Fira Code', 12)
+
+        gray = 'color: rgb(143, 143, 143);'
+
+        mainHBLayout = QtWidgets.QHBoxLayout()
+        mainHBLayout.setSpacing(0)
+        mainHBLayout.setAlignment(QtCore.Qt.AlignHCenter)
+
+        # Horizontal Layout for time
+        timeHBLayout = QtWidgets.QHBoxLayout()
+        timeHBLayout.setAlignment(QtCore.Qt.AlignHCenter)
+
+        twoPointLabel = [QtWidgets.QLabel(':'), QtWidgets.QLabel(':')]
+        for label in twoPointLabel:
+            label.setFont(timeFont)
+            label.setStyleSheet(gray)
+            label.setFixedHeight(timeHeight)
+
+        hourLabel = QtWidgets.QLabel('22')
+        self.common.setLabel(hourLabel, self.common.white, timeFont)
+        hourLabel.setFixedHeight(timeHeight)
+        self.weatherWidgets['hour'] = hourLabel
+
+        minLabel = QtWidgets.QLabel('24')
+        self.common.setLabel(minLabel, self.common.white, timeFont)
+        minLabel.setFixedHeight(timeHeight)
+        self.weatherWidgets['min'] = minLabel
+
+        timeHBLayout.addWidget(hourLabel)
+        timeHBLayout.addWidget(twoPointLabel[0])
+        timeHBLayout.addWidget(minLabel)
+
+        self.weatherWidgets['hour'] = hourLabel
+        self.weatherWidgets['min'] = minLabel
+
+        mainHBLayout.addLayout(timeHBLayout)
+
+        # date vertical layout
+        dateVBLayout = QtWidgets.QVBoxLayout()
+        # date horizontal layout
+        dateHBLayout = QtWidgets.QHBoxLayout()
+        dateHBLayout.setAlignment(QtCore.Qt.AlignLeft)
+
+        dayLabel = QtWidgets.QLabel('05')
+        self.common.setLabel(dayLabel, self.common.orange, dayFont)
+        dayLabel.setFixedHeight(dateHeight)
+
+        monthLabel = QtWidgets.QLabel('June')
+        self.common.setLabel(monthLabel, self.common.orange, monthFont)
+        monthLabel.setFixedHeight(dateHeight)
+        monthLabel.setAlignment(QtCore.Qt.AlignBottom)
+
+        yearLabel = QtWidgets.QLabel('2020')
+        yearLabel.setFont(yearFont)
+        yearLabel.setStyleSheet(self.common.white)
+        self.common.setLabel(yearLabel, self.common.orange, yearFont)
+        yearLabel.setFixedHeight(dateHeight)
+        yearLabel.setAlignment(QtCore.Qt.AlignBottom)
+
+        dateHBLayout.addWidget(dayLabel)
+        dateHBLayout.addWidget(monthLabel)
+        dateHBLayout.addWidget(yearLabel)
+        self.weatherWidgets['day'] = dayLabel
+        self.weatherWidgets['month'] = monthLabel
+        self.weatherWidgets['year'] = yearLabel
+
+        dateVBLayout.addLayout(dateHBLayout)
+
+        weekdayHBLayout = QtWidgets.QHBoxLayout()
+
+        weekdayLabel = QtWidgets.QLabel('Saturday')
+        self.common.setLabel(weekdayLabel, self.common.orange, weekdayFont)
+        weekdayLabel.setFixedHeight(20)
+
+        weekdayHBLayout.addWidget(weekdayLabel)
+        self.weatherWidgets['weekday'] = weekdayLabel
+
+        # --------------------------------------------------------------------
+        # Weather
+        weatherHBLayout = QtWidgets.QHBoxLayout()
+
+        weatherVBLayout = QtWidgets.QVBoxLayout()
+        weatherVBLayout.setSpacing(0)
+        weatherVBLayout.setAlignment(QtCore.Qt.AlignVCenter)
+
+        tempLabel = QtWidgets.QLabel('27°C')
+        self.common.setLabel(tempLabel, self.common.white, timeFont)
+        tempLabel.setFixedHeight(tempHeight)
+        self.weatherWidgets['temp'] = tempLabel
+
+        weatherHBLayout.addWidget(tempLabel)
+
+        # Cloud Icon
+        cloudIconLabel = QtWidgets.QLabel()
+        cloudIconLabel.setPixmap(QtGui.QPixmap(f'{FileUtil.getResourcePath()}/images/weather_icon.png'))
+        cloudIconLabel.setFixedHeight(42)
+        cloudIconLabel.setFixedHeight(tempHeight)
+        self.weatherWidgets['cloudicon'] = cloudIconLabel
+
+        weatherHBLayout.addWidget(cloudIconLabel)
+        weatherHBLayout.setAlignment(QtCore.Qt.AlignHCenter)
+
+        nameLabel = QtWidgets.QLabel('Recife')
+        self.common.setLabel(nameLabel, self.common.orange, self.common.fontDefault)
+        self.weatherWidgets['nameLabel'] = nameLabel
+
+        countryLabel = QtWidgets.QLabel('BR')
+        self.common.setLabel(countryLabel, self.common.white, self.common.fontDefault)
+        self.weatherWidgets['countryLabel'] = countryLabel
+
+        weatherVBLayout.addWidget(nameLabel)
+        weatherVBLayout.addWidget(countryLabel)
+
+        weatherHBLayout.addLayout(weatherVBLayout)
+        # ---------------------------------------------------------------------
+        # humidity, pressure, visibility,  wind,
+        weatherGridLayout = QtWidgets.QGridLayout()
+        weatherGridLayout.setSpacing(0)
+
+        # humidityIcon
+        humidityIcon = QtWidgets.QLabel()
+        humidityIcon.setPixmap(QtGui.QPixmap(f'{FileUtil.getResourcePath()}/images/humidity.png'))
+        humidityIcon.setFixedWidth(32)
+
+        pressureIcon = QtWidgets.QLabel()
+        pressureIcon.setPixmap(QtGui.QPixmap(f'{FileUtil.getResourcePath()}/images/pressure.png'))
+        pressureIcon.setFixedWidth(32)
+
+        visibilityIcon = QtWidgets.QLabel()
+        visibilityIcon.setPixmap(QtGui.QPixmap(f'{FileUtil.getResourcePath()}/images/visibility.png'))
+        visibilityIcon.setFixedWidth(32)
+
+        windIcon = QtWidgets.QLabel()
+        windIcon.setPixmap(QtGui.QPixmap(f'{FileUtil.getResourcePath()}/images/wind.png'))
+        windIcon.setFixedWidth(32)
+
+        weatherGridLayout.addWidget(humidityIcon, 0, 0, 1, 1, QtCore.Qt.AlignHCenter)
+        weatherGridLayout.addWidget(pressureIcon, 0, 1, 1, 1, QtCore.Qt.AlignHCenter)
+        weatherGridLayout.addWidget(visibilityIcon, 0, 2, 1, 1, QtCore.Qt.AlignHCenter)
+        weatherGridLayout.addWidget(windIcon, 0, 3, 1, 1, QtCore.Qt.AlignHCenter)
+        # ---------------------------------------------------------------------
+
+        humidityLabel = QtWidgets.QLabel('65%')
+        self.common.setLabel(humidityLabel, self.common.white, self.common.fontDefault)
+        self.weatherWidgets['humidity'] = humidityLabel
+
+        pressureLabel = QtWidgets.QLabel('1014hPa')
+        self.common.setLabel(pressureLabel, self.common.white, self.common.fontDefault)
+        self.weatherWidgets['pressure'] = pressureLabel
+
+        visibilityLabel = QtWidgets.QLabel('10.0Km')
+        self.common.setLabel(visibilityLabel, self.common.white, self.common.fontDefault)
+        self.weatherWidgets['visibility'] = visibilityLabel
+
+        windLabel = QtWidgets.QLabel('7.7m/s SE')
+        self.common.setLabel(windLabel, self.common.white, self.common.fontDefault)
+        self.weatherWidgets['wind'] = windLabel
+
+        weatherGridLayout.addWidget(humidityLabel, 1, 0, 1, 1, QtCore.Qt.AlignHCenter)
+        weatherGridLayout.addWidget(pressureLabel, 1, 1, 1, 1, QtCore.Qt.AlignHCenter)
+        weatherGridLayout.addWidget(visibilityLabel, 1, 2, 1, 1, QtCore.Qt.AlignHCenter)
+        weatherGridLayout.addWidget(windLabel, 1, 3, 1, 1, QtCore.Qt.AlignHCenter)
+
+        # vLayout.addLayout(weatherGridLayout)
+        dateVBLayout.addLayout(weekdayHBLayout)
+        mainHBLayout.addLayout(dateVBLayout)
+        vLayout.addLayout(mainHBLayout)
+
+        weatherGroupBox.setLayout(vLayout)
+        vLayout.addLayout(weatherHBLayout)
+        vLayout.addLayout(weatherGridLayout)
+
+        verticalLayout.addWidget(weatherGroupBox)

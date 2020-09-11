@@ -9,11 +9,32 @@ from gonhang.displayclasses import DisplaySystem
 from gonhang.displayclasses import DisplayNvidia
 from gonhang.displayclasses import DisplayNet
 from gonhang.displayclasses import DisplayStorages
+from gonhang.displayclasses import DisplayWeather
 from gonhang.displayclasses import CommomAttributes
 
 import psutil
 import subprocess
 import humanfriendly
+
+
+class ThreadWeather(QtCore.QThread):
+    signal = QtCore.pyqtSignal(dict, name='ThreadWeatherFinish')
+    myTime = 30 * 60
+    weather = Weather()
+
+    def __init__(self, parent=None):
+        super(ThreadWeather, self).__init__(parent)
+        self.finished.connect(self.finishThreadWeather)
+
+    def updateMyTime(self, myTime):
+        self.myTime = (myTime * 60)
+
+    def finishThreadWeather(self):
+        self.start()
+
+    def run(self):
+        self.signal.emit(self.weather.getMessage())
+        self.sleep(self.myTime)
 
 
 # ------------------------------------------------------------------------------------
@@ -111,6 +132,11 @@ class WatchDog(QtCore.QThread):
     config = Config()
     common = CommomAttributes()
     # -----------------------------------------------------------------
+    # weather
+    weather = Weather()
+    displayWeather = DisplayWeather()
+    threadWeather = ThreadWeather()
+    # -----------------------------------------------------------------
     # System
     system = System()
     displaySystem = DisplaySystem()
@@ -139,9 +165,20 @@ class WatchDog(QtCore.QThread):
         self.threadNvidia.signal.connect(self.threadNvidiaReceive)
         self.threadSystem.signal.connect(self.threadSystemReceive)
         self.threadNet.signal.connect(self.threadNetReceive)
+        self.threadWeather.signal.connect(self.threadWeatherReceive)
         # ------------------------------------------------------------------
         # show displayClasses
         self.verticalLayout = vLayout
+        # ------------------------------------------------------------------
+        # display weather
+        weatherOptionConfig = self.config.getKey('weatherOption')
+        myTime = 30
+        if not (weatherOptionConfig is None):
+            myTime = weatherOptionConfig['updateTime']
+
+        self.threadWeather.updateMyTime(30)
+        self.displayWeather.initUi(self.verticalLayout)
+
         # ------------------------------------------------------------------
         # display system (default section)
         self.displaySystem.initUi(self.verticalLayout)
@@ -156,6 +193,8 @@ class WatchDog(QtCore.QThread):
         self.displayStorages.initUi(self.verticalLayout)
         # ------------------------------------------------------------------
         # Start another threads
+        print(f'Starting threadWeather')
+        self.threadWeather.start()
         print(f'Starting threadSystem')
         self.threadSystem.start()
         print(f'Starting threadNvidia')
@@ -166,6 +205,9 @@ class WatchDog(QtCore.QThread):
         self.displayStorages.start()
 
         self.start()
+
+    def threadWeatherReceive(self, message):
+        print(message)
 
     def threadNetReceive(self, message):
         if self.net.isToDisplayNet():

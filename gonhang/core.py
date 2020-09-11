@@ -14,6 +14,7 @@ from telnetlib import Telnet
 import urllib.request
 
 
+
 class Temperature:
 
     @staticmethod
@@ -117,12 +118,12 @@ class KeysSkeleton:
     weatherOption = dict(
         {
             'weatherOption': {
-                'lat':          '',
-                'lon':          '',
-                'apiKey':       '',
-                'updateTime':   30,
-                'validated':    False,
-                'enabled':      False
+                'lat': '',
+                'lon': '',
+                'apiKey': '',
+                'updateTime': 30,
+                'validated': False,
+                'enabled': False
 
             }
         }
@@ -555,17 +556,20 @@ class Partitions:
 
 
 class Weather:
+    config = Config()
     temperature = Temperature()
     net = Net()
     url = ''
     iconUrlPrefix = 'https://openweathermap.org/img/wn/'
     iconUrlSuffix = '@2x.png'
     message = dict()
+    keysSkeleton = KeysSkeleton()
 
     def updateUrl(self, lat, lon, apiKey):
         self.url = f'https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={apiKey}'
 
     def getMessage(self):
+        self.loadConfig()
         self.message.clear()
         self.message['statusCode'] = 0
         if self.net.isOnline():
@@ -583,6 +587,7 @@ class Weather:
                 )
                 self.message['country'] = tempJson['sys']['country']
                 self.message['name'] = tempJson['name']
+                self.message['icon'] = tempJson['weather'][0]['icon']
                 self.message['statusCode'] = 200
                 self.message['statusText'] = f'http code {res.status_code} OK!'
             else:
@@ -591,6 +596,32 @@ class Weather:
             self.message['statusText'] = 'ERROR: You are offline?'
 
         return self.message
+
+    def loadConfig(self):
+        weatherOptionConfig = self.config.getKey('weatherOption')
+        lat = ''
+        lon = ''
+        updateTime = 30
+        apiKey = ''
+        validated = False
+        enabled = False
+        if not (weatherOptionConfig is None):
+            lat = weatherOptionConfig['lat']
+            lon = weatherOptionConfig['lon']
+            updateTime = weatherOptionConfig['updateTime']
+            apiKey = weatherOptionConfig['apiKey']
+            validated = weatherOptionConfig['validated']
+            enabled = weatherOptionConfig['enabled']
+
+        self.updateUrl(lat, lon, apiKey)
+        self.updateWeatherOption(lat, lon,updateTime, apiKey, validated, enabled)
+
+    def isToDisplay(self):
+        self.loadConfig()
+        if self.keysSkeleton.weatherOption['weatherOption']['enabled'] and self.keysSkeleton.weatherOption['weatherOption']['validated']:
+            return True
+        else:
+            return False
 
     def getIcon(self, iconStr):
         if self.net.isOnline():
@@ -602,3 +633,19 @@ class Weather:
         val = int((num / 22.5) + .5)
         arr = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW']
         return arr[(val % 16)]
+
+    def updateWeatherOption(self, lat, lon, updateTime, apiKey, validated, enabled):
+        self.keysSkeleton.weatherOption.clear()
+        self.keysSkeleton.weatherOption.update(
+            {
+                'weatherOption': {
+                    'lat': lat,
+                    'lon': lon,
+                    'updateTime': updateTime,
+                    'apiKey': apiKey,
+                    'validated': validated,
+                    'enabled': enabled
+
+                }
+            }
+        )
