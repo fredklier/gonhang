@@ -729,13 +729,19 @@ class WeatherPage(QtWidgets.QWizardPage):
         self.validateButton.setEnabled(True)
         self.statusValueLabel.setText(message['statusText'])
         if message['statusCode'] == 200:
-            self.statusIcon.setPixmap(QtGui.QPixmap(f'{FileUtil.getResourcePath()}/images/validated.png'))
+            validated = False
+            if message['validated']:
+                self.statusIcon.setPixmap(QtGui.QPixmap(f'{FileUtil.getResourcePath()}/images/validated.png'))
+                validated = True
+            else:
+                self.statusIcon.setPixmap(QtGui.QPixmap(f'{FileUtil.getResourcePath()}/images/unvalidated.png'))
+
             self.updateWeatherOption(
                 self.latitudeEdit.text(),
                 self.longitudeEdit.text(),
                 self.updateTimeSpinner.value(),
                 self.apiKeyEdit.text(),
-                True,
+                validated,
                 self.keysSkeleton.weatherOption['weatherOption']['enabled']
             )
         else:

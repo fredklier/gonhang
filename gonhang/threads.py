@@ -264,21 +264,10 @@ class WatchDog(QtCore.QThread):
             self.displayWeather.weatherWidgets['pressure'].setText(message['pressure'])
             self.displayWeather.weatherWidgets['visibility'].setText(message['visibility'])
             self.displayWeather.weatherWidgets['wind'].setText(message['wind'])
-            print(message)
-            if not message['validated']:
-                weatherOptionConfig = self.config.getKey('weatherOption')
-                self.weather.updateWeatherOption(
-                    weatherOptionConfig['lat'],
-                    weatherOptionConfig['lon'],
-                    weatherOptionConfig['updateTime'],
-                    weatherOptionConfig['apiKey'],
-                    False,
-                    False
-                )
-            else:
-                pixmap = QtGui.QPixmap()
-                pixmap.loadFromData(self.weather.getIcon(message['icon']))
-                self.displayWeather.weatherWidgets['cloudicon'].setPixmap(pixmap)
+            # print(message)
+            pixmap = QtGui.QPixmap()
+            pixmap.loadFromData(self.weather.getIcon(message['icon']))
+            self.displayWeather.weatherWidgets['cloudicon'].setPixmap(pixmap)
         else:
             self.displayWeather.weatherWidgets['weatherGroupBox'].hide()
 

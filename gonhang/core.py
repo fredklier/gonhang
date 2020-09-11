@@ -613,8 +613,8 @@ class Weather:
         lon = ''
         updateTime = 30
         apiKey = ''
-        validated = False
         enabled = False
+        validated = False
         if not (weatherOptionConfig is None):
             lat = weatherOptionConfig['lat']
             lon = weatherOptionConfig['lon']
@@ -628,8 +628,7 @@ class Weather:
 
     def isToDisplay(self):
         self.loadConfig()
-        if self.keysSkeleton.weatherOption['weatherOption']['enabled'] and \
-                self.keysSkeleton.weatherOption['weatherOption']['validated']:
+        if self.keysSkeleton.weatherOption['weatherOption']['enabled'] and self.keysSkeleton.weatherOption['weatherOption']['validated']:
             return True
         else:
             return False
@@ -660,4 +659,3 @@ class Weather:
                 }
             }
         )
-        self.config.updateConfig(self.keysSkeleton.weatherOption)
