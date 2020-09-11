@@ -654,17 +654,17 @@ class WeatherPage(QtWidgets.QWizardPage):
         self.setLayout(self.vLayout)
 
     def threadValidaWeatherFinish(self, message):
+        self.validateButton.setEnabled(True)
         print(message)
 
     def validateButtonClicked(self):
         if self.net.isOnline():
-            self.threadValidateWeather.startFetch(
+            self.validateButton.setEnabled(False)
+            self.threadValidateWeather.updateAndStart(
                 self.latitudeEdit.text(),
                 self.longitudeEdit.text(),
                 self.apiKeyEdit.text()
             )
-        else:
-            pass
 
     def updateWeatherOption(self, city, region, country, apiKey, enabled):
         self.keysSkeleton.weatherOption.clear()

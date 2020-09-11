@@ -4,16 +4,16 @@ from gonhang.core import System
 from gonhang.core import Nvidia
 from gonhang.core import StorTemps
 from gonhang.core import Net
+from gonhang.core import Weather
 from gonhang.displayclasses import DisplaySystem
 from gonhang.displayclasses import DisplayNvidia
 from gonhang.displayclasses import DisplayNet
 from gonhang.displayclasses import DisplayStorages
 from gonhang.displayclasses import CommomAttributes
+
 import psutil
 import subprocess
 import humanfriendly
-import requests
-import json
 
 
 # ------------------------------------------------------------------------------------
@@ -272,33 +272,14 @@ class WatchDog(QtCore.QThread):
 class ThreadValidateWeather(QtCore.QThread):
     net = Net()
     signal = QtCore.pyqtSignal(dict, name='ThreadValidateWeatherFinish')
-    message = dict()
-    url = ''
+    weather = Weather()
 
     def __init__(self, parent=None):
         super(ThreadValidateWeather, self).__init__(parent)
-        self.finished.connect(self.updateValidateWheather)
 
-    def startFetch(self, lat, lon, apiKey):
-        # Prepare URL
-        self.url = f'https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={apiKey}'
+    def updateAndStart(self, lat, lon, apiKey):
+        self.weather.updateUrl(lat, lon, apiKey)
         self.start()
 
-    def updateValidateWheather(self):
-        self.message.clear()
-        if self.net.isOnline():
-            res = requests.get(self.url)
-            if res.status_code == 200:
-                tempJson = json.loads(res.text)
-                print(tempJson)
-                self.message['status'] = f'http code {res.status_code} OK!'
-            else:
-                self.message['status'] = f'ERROR: http code {res.status_code}!'
-            print(res)
-        else:
-            self.message['status'] = 'ERROR: You are offline?'
-
-        self.signal.emit(self.message)
-
     def run(self):
-        pass
+        self.signal.emit(self.weather.getMessage())

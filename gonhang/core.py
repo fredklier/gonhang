@@ -19,32 +19,32 @@ class Temperature:
     @staticmethod
     def celtokel(C):  # Celsius para Kelvin
         K = (C + 273.15)
-        return '{K:.1f} °K'.format(K=K)
+        return '{K:.2f}'.format(K=K)
 
     @staticmethod
     def celtofah(C):  # Celsius para Fahrenheit
         F = (C * 1.8 + 32)
-        return '{F:.1f} °F'.format(F=F)
+        return '{F:.2f}'.format(F=F)
 
     @staticmethod
     def keltocel(K):  # Kelvin para Celsius
         C = (K - 273.15)
-        return '{C:.1f} °C'.format(C=C)
+        return '{C:.2f}'.format(C=C)
 
     @staticmethod
     def keltofah(K):  # Kelvin para Fahrenheit
         F = (K * 1.8 - 459.7)
-        return '{F:.1f} °F'.format(F=F)
+        return '{F:.2f}'.format(F=F)
 
     @staticmethod
     def fahtocel(F):  # Fahrenheit para Celsius
         C = ((F - 32) / 1.8)
-        return '{C:.1f} °C'.format(C=C)
+        return '{C:.2f}'.format(C=C)
 
     @staticmethod
     def fahtokel(F):  # Fahrenheit para Kelvin
         K = ((F - 32) / 1.8 + 273)
-        return '{K:.1f} °K'.format(K=K)
+        return '{K:.2f}'.format(K=K)
 
 
 class VirtualMachine:
@@ -569,12 +569,30 @@ class Weather:
             res = requests.get(self.url)
             if res.status_code == 200:
                 tempJson = json.loads(res.text)
-                self.message['icon'] = tempJson['weather']['icon']
-                self.message['temp'] = self.temperature.keltocel(float(tempJson['main']['temp']))
+                print(tempJson)
+                # message['temp'] = temp
+                # message['scale'] = scale
+                # message['humidity'] = f"{data['main']['humidity']}%"
+                # message['pressure'] = f"{data['main']['pressure']}hPa"
+                # visibilityAsKm = UnitConvert(metres=int(data['visibility'])).kilometres
+                # message['visibility'] = f"{visibilityAsKm}Km"
+                # windDir = portolan.abbr(float(data['wind']['deg']))
+                # message['wind'] = f"{data['wind']['speed']}m/s {windDir}"
+                # pixmap = QtGui.QPixmap()
+                # data = self.weather.getIcon(data['weather'][0]['icon'])
+                # pixmap.loadFromData(data)
+                # message['icon'] = pixmap
+                self.message['temp'] = int(float(self.temperature.keltocel(tempJson['main']['temp'])))
+                self.message['humidity'] = f"{tempJson['main']['humidity']}%"
+                self.message['pressure'] = f"{tempJson['main']['pressure']}hPa"
+                self.message['visibility'] = '{:.1f}Km'.format(int(tempJson['visibility']) / 1000)
+                self.message['wind'] = '{} m/s {}'.format(
+                    tempJson['wind']['speed'],
+                    self.degToCompass(tempJson['wind']['deg'])
+                )
                 self.message['status'] = f'http code {res.status_code} OK!'
             else:
                 self.message['status'] = f'ERROR: http code {res.status_code}!'
-            print(res)
         else:
             self.message['status'] = 'ERROR: You are offline?'
 
@@ -584,3 +602,9 @@ class Weather:
         if self.net.isOnline():
             with urllib.request.urlopen(f"{self.iconUrlPrefix}{iconStr}{self.iconUrlSuffix}") as response:
                 return response.read()
+
+    @staticmethod
+    def degToCompass(num):
+        val = int((num / 22.5) + .5)
+        arr = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW']
+        return arr[(val % 16)]
