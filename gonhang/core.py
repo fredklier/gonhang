@@ -117,10 +117,11 @@ class KeysSkeleton:
     weatherOption = dict(
         {
             'weatherOption': {
-                'lat': '',
-                'lon': '',
-                'apiKey': '',
-                'enabled': False
+                'lat':          '',
+                'lon':          '',
+                'apiKey':       '',
+                'validated':    False,
+                'enabled':      False
 
             }
         }
@@ -565,23 +566,12 @@ class Weather:
 
     def getMessage(self):
         self.message.clear()
+        self.message['statusCode'] = 0
         if self.net.isOnline():
             res = requests.get(self.url)
             if res.status_code == 200:
                 tempJson = json.loads(res.text)
                 print(tempJson)
-                # message['temp'] = temp
-                # message['scale'] = scale
-                # message['humidity'] = f"{data['main']['humidity']}%"
-                # message['pressure'] = f"{data['main']['pressure']}hPa"
-                # visibilityAsKm = UnitConvert(metres=int(data['visibility'])).kilometres
-                # message['visibility'] = f"{visibilityAsKm}Km"
-                # windDir = portolan.abbr(float(data['wind']['deg']))
-                # message['wind'] = f"{data['wind']['speed']}m/s {windDir}"
-                # pixmap = QtGui.QPixmap()
-                # data = self.weather.getIcon(data['weather'][0]['icon'])
-                # pixmap.loadFromData(data)
-                # message['icon'] = pixmap
                 self.message['temp'] = int(float(self.temperature.keltocel(tempJson['main']['temp'])))
                 self.message['humidity'] = f"{tempJson['main']['humidity']}%"
                 self.message['pressure'] = f"{tempJson['main']['pressure']}hPa"
@@ -590,11 +580,14 @@ class Weather:
                     tempJson['wind']['speed'],
                     self.degToCompass(tempJson['wind']['deg'])
                 )
-                self.message['status'] = f'http code {res.status_code} OK!'
+                self.message['country'] = tempJson['sys']['country']
+                self.message['name'] = tempJson['name']
+                self.message['statusCode'] = 200
+                self.message['statusText'] = f'http code {res.status_code} OK!'
             else:
-                self.message['status'] = f'ERROR: http code {res.status_code}!'
+                self.message['statusText'] = f'ERROR: http code {res.status_code}!'
         else:
-            self.message['status'] = 'ERROR: You are offline?'
+            self.message['statusText'] = 'ERROR: You are offline?'
 
         return self.message
 

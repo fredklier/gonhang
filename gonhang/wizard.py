@@ -619,7 +619,7 @@ class WeatherPage(QtWidgets.QWizardPage):
         latitudeLabel.setFixedWidth(100)
         gridLayout.addWidget(latitudeLabel, 0, 0)
 
-        self.latitudeEdit = QtWidgets.QLineEdit('-8.052240')
+        self.latitudeEdit = QtWidgets.QLineEdit()
         self.latitudeEdit.setFixedWidth(200)
         gridLayout.addWidget(self.latitudeEdit, 0, 1)
 
@@ -627,14 +627,14 @@ class WeatherPage(QtWidgets.QWizardPage):
         longitudeLabel.setFixedWidth(100)
         gridLayout.addWidget(longitudeLabel, 1, 0)
 
-        self.longitudeEdit = QtWidgets.QLineEdit('-34.928612')
+        self.longitudeEdit = QtWidgets.QLineEdit()
         self.longitudeEdit.setFixedWidth(200)
         gridLayout.addWidget(self.longitudeEdit, 1, 1)
 
         apiKeyLabel = QtWidgets.QLabel('Api Key:')
         gridLayout.addWidget(apiKeyLabel, 2, 0)
 
-        self.apiKeyEdit = QtWidgets.QLineEdit('e943e3d03143693768df6ca7c621c8b5')
+        self.apiKeyEdit = QtWidgets.QLineEdit()
         gridLayout.addWidget(self.apiKeyEdit, 2, 1)
 
         self.validateButton = QtWidgets.QPushButton('Validate')
@@ -646,16 +646,63 @@ class WeatherPage(QtWidgets.QWizardPage):
         statusLabel = QtWidgets.QLabel('Status: ')
         gridLayout.addWidget(statusLabel, 4, 0)
 
+        self.statusIcon = QtWidgets.QLabel()
+        gridLayout.addWidget(self.statusIcon, 4, 1)
+
         self.statusValueLabel = QtWidgets.QLabel('')
-        gridLayout.addWidget(self.statusValueLabel, 4, 1)
+        gridLayout.addWidget(self.statusValueLabel, 4, 2)
 
         self.vLayout.addLayout(gridLayout)
-
         self.setLayout(self.vLayout)
+        self.displayUi()
+
+    def displayUi(self):
+        weatherOptionConfig = self.config.getKey('weatherOption')
+        lat = self.latitudeEdit.text()
+        lon = self.longitudeEdit.text()
+        apiKey = self.apiKeyEdit.text()
+        enabled = False
+        validated = False
+        self.rbEnable.setChecked(False)
+        self.disableAll()
+        print(weatherOptionConfig)
+        if not (weatherOptionConfig is None):
+            lat = weatherOptionConfig['lat']
+            self.latitudeEdit.setText(lat)
+            lon = weatherOptionConfig['lon']
+            self.longitudeEdit.setText(lon)
+            apiKey = weatherOptionConfig['apiKey']
+            self.apiKeyEdit.setText(apiKey)
+            enabled = weatherOptionConfig['enabled']
+            if enabled:
+                self.statusIcon.setPixmap(QtGui.QPixmap(f'{FileUtil.getResourcePath()}/images/validated.png'))
+            validated = weatherOptionConfig['validated']
+            if weatherOptionConfig['enabled']:
+                self.enableAll()
+                self.rbEnable.setChecked(True)
+
+        self.updateWeatherOption(
+            lat,
+            lon,
+            apiKey,
+            validated,
+            enabled
+        )
 
     def threadValidaWeatherFinish(self, message):
         self.validateButton.setEnabled(True)
-        print(message)
+        self.statusValueLabel.setText(message['statusText'])
+        if message['statusCode'] == 200:
+            self.statusIcon.setPixmap(QtGui.QPixmap(f'{FileUtil.getResourcePath()}/images/validated.png'))
+            self.updateWeatherOption(
+                self.latitudeEdit.text(),
+                self.longitudeEdit.text(),
+                self.apiKeyEdit.text(),
+                True,
+                self.keysSkeleton.weatherOption['weatherOption']['enabled']
+            )
+        else:
+            self.statusIcon.setPixmap(QtGui.QPixmap(f'{FileUtil.getResourcePath()}/images/unvalidated.png'))
 
     def validateButtonClicked(self):
         if self.net.isOnline():
@@ -666,19 +713,49 @@ class WeatherPage(QtWidgets.QWizardPage):
                 self.apiKeyEdit.text()
             )
 
-    def updateWeatherOption(self, city, region, country, apiKey, enabled):
+    def updateWeatherOption(self, lat, lon, apiKey, validated, enabled):
         self.keysSkeleton.weatherOption.clear()
         self.keysSkeleton.weatherOption.update(
             {
                 'weatherOption': {
-                    'lat': city,
-                    'lon': region,
+                    'lat': lat,
+                    'lon': lon,
                     'apiKey': apiKey,
+                    'validated': validated,
                     'enabled': enabled
+
                 }
             }
         )
         self.config.updateConfig(self.keysSkeleton.weatherOption)
 
+    def disableAll(self):
+        enabled = False
+        self.latitudeEdit.setEnabled(enabled)
+        self.longitudeEdit.setEnabled(enabled)
+        self.apiKeyEdit.setEnabled(enabled)
+        self.validateButton.setEnabled(enabled)
+
+    def enableAll(self):
+        enabled = True
+        self.latitudeEdit.setEnabled(enabled)
+        self.longitudeEdit.setEnabled(enabled)
+        self.apiKeyEdit.setEnabled(enabled)
+        self.validateButton.setEnabled(enabled)
+
     def groupBoxClicked(self):
-        pass
+        enabled = False
+        if self.rbEnable.isChecked():
+            self.enableAll()
+            enabled = True
+        else:
+            self.disableAll()
+
+        self.keysSkeleton.weatherOption['weatherOption']['enabled'] = enabled
+        self.updateWeatherOption(
+            self.latitudeEdit.text(),
+            self.longitudeEdit.text(),
+            self.apiKeyEdit.text(),
+            self.keysSkeleton.weatherOption['weatherOption']['validated'],
+            enabled
+        )
