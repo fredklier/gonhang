@@ -799,7 +799,7 @@ class DisplayStorages(QtCore.QThread):
     firstPass = False
     storageGroupBox = None
     configCacheStamp = 0
-    signal = QtCore.pyqtSignal(list, name='DisplayStorageFinish')
+    signal = QtCore.pyqtSignal(bool, name='DisplayStorageFinish')
 
     def __init__(self, parent=None):
         super(DisplayStorages, self).__init__(parent)
@@ -943,7 +943,7 @@ class DisplayStorages(QtCore.QThread):
             print(f'Config File Changed. New Time Stamp: {self.configCacheStamp}')
         # -----------------------------------------------------------------------------
         self.msleep(500)
-        self.signal.emit(list())
+        self.signal.emit(True)
 
     def hideStorTempsWidgets(self):
         for line in range(10):
