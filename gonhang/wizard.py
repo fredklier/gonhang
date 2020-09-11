@@ -681,6 +681,14 @@ class WeatherPage(QtWidgets.QWizardPage):
 
     def updateTimeChanged(self):
         self.updateTimeValue.setText('{} minutes'.format(self.updateTimeSpinner.value()))
+        self.updateWeatherOption(
+            self.latitudeEdit.text(),
+            self.longitudeEdit.text(),
+            self.updateTimeSpinner.value(),
+            self.apiKeyEdit.text(),
+            self.keysSkeleton.weatherOption['weatherOption']['validated'],
+            self.rbEnable.isChecked()
+        )
 
     def displayUi(self):
         weatherOptionConfig = self.config.getKey('weatherOption')

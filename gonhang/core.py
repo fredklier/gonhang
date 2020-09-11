@@ -572,6 +572,7 @@ class Weather:
         # print(self.keysSkeleton.weatherOption)
         self.message.clear()
         self.message['statusCode'] = 0
+        validated = False
         if self.net.isOnline():
             # print(f"self.url ===> {self.url}")
             res = requests.get(self.url)
@@ -586,16 +587,24 @@ class Weather:
                     tempJson['wind']['speed'],
                     self.degToCompass(tempJson['wind']['deg'])
                 )
-                self.message['country'] = tempJson['sys']['country']
                 self.message['name'] = tempJson['name']
-                self.message['icon'] = tempJson['weather'][0]['icon']
                 self.message['statusCode'] = 200
                 self.message['statusText'] = f'http code {res.status_code} OK!'
+                self.message['icon'] = tempJson['weather'][0]['icon']
+                self.message['country'] = ''
+                if self.message['name'] == '':
+                    self.message['statusCode'] = 0
+                    self.message['statusText'] = f'Error: Latitude and Longitude not found!'
+                else:
+                    self.message['country'] = tempJson['sys']['country']
+                    validated = True
+
             else:
                 self.message['statusText'] = f'ERROR: http code {res.status_code}!'
         else:
             self.message['statusText'] = 'ERROR: You are offline?'
 
+        self.message['validated'] = validated
         return self.message
 
     def loadConfig(self):
@@ -651,3 +660,4 @@ class Weather:
                 }
             }
         )
+        self.config.updateConfig(self.keysSkeleton.weatherOption)

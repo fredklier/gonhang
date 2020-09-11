@@ -1,4 +1,4 @@
-from PyQt5 import QtCore
+from PyQt5 import QtCore, QtGui
 from gonhang.core import Config
 from gonhang.core import System
 from gonhang.core import Nvidia
@@ -66,8 +66,8 @@ class ThreadWeather(QtCore.QThread):
 
     def run(self):
         self.signal.emit(self.weather.getMessage())
-        # self.sleep(self.myTime)
-        self.sleep(5)
+        print(f'threadWeather sleep now for {self.myTime} seconds...')
+        self.sleep(self.myTime)
 
 
 # ------------------------------------------------------------------------------------
@@ -264,6 +264,21 @@ class WatchDog(QtCore.QThread):
             self.displayWeather.weatherWidgets['pressure'].setText(message['pressure'])
             self.displayWeather.weatherWidgets['visibility'].setText(message['visibility'])
             self.displayWeather.weatherWidgets['wind'].setText(message['wind'])
+            print(message)
+            if not message['validated']:
+                weatherOptionConfig = self.config.getKey('weatherOption')
+                self.weather.updateWeatherOption(
+                    weatherOptionConfig['lat'],
+                    weatherOptionConfig['lon'],
+                    weatherOptionConfig['updateTime'],
+                    weatherOptionConfig['apiKey'],
+                    False,
+                    False
+                )
+            else:
+                pixmap = QtGui.QPixmap()
+                pixmap.loadFromData(self.weather.getIcon(message['icon']))
+                self.displayWeather.weatherWidgets['cloudicon'].setPixmap(pixmap)
         else:
             self.displayWeather.weatherWidgets['weatherGroupBox'].hide()
 
