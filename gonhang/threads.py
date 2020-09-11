@@ -258,7 +258,6 @@ class WatchDog(QtCore.QThread):
     def threadWeatherReceive(self, message):
         if self.weather.isToDisplay():
             self.displayWeather.weatherWidgets['weatherGroupBox'].show()
-            print(message)
             self.displayWeather.weatherWidgets['name'].setText(message['name'])
             self.displayWeather.weatherWidgets['country'].setText(message['country'])
             self.displayWeather.weatherWidgets['humidity'].setText(message['humidity'])

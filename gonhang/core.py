@@ -14,7 +14,6 @@ from telnetlib import Telnet
 import urllib.request
 
 
-
 class Temperature:
 
     @staticmethod
@@ -570,9 +569,11 @@ class Weather:
 
     def getMessage(self):
         self.loadConfig()
+        # print(self.keysSkeleton.weatherOption)
         self.message.clear()
         self.message['statusCode'] = 0
         if self.net.isOnline():
+            # print(f"self.url ===> {self.url}")
             res = requests.get(self.url)
             if res.status_code == 200:
                 tempJson = json.loads(res.text)
@@ -614,11 +615,12 @@ class Weather:
             enabled = weatherOptionConfig['enabled']
 
         self.updateUrl(lat, lon, apiKey)
-        self.updateWeatherOption(lat, lon,updateTime, apiKey, validated, enabled)
+        self.updateWeatherOption(lat, lon, updateTime, apiKey, validated, enabled)
 
     def isToDisplay(self):
         self.loadConfig()
-        if self.keysSkeleton.weatherOption['weatherOption']['enabled'] and self.keysSkeleton.weatherOption['weatherOption']['validated']:
+        if self.keysSkeleton.weatherOption['weatherOption']['enabled'] and \
+                self.keysSkeleton.weatherOption['weatherOption']['validated']:
             return True
         else:
             return False

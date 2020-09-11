@@ -995,8 +995,9 @@ class DisplayWeather:
     weatherWidgets = dict()
 
     def initUi(self, verticalLayout):
-        weatherGroupBox = QtWidgets.QGroupBox()
+        weatherGroupBox = self.common.getDefaultGb('weather')
         vLayout = QtWidgets.QVBoxLayout()
+        vLayout.addSpacing(10)
         self.weatherWidgets['weatherGroupBox'] = weatherGroupBox
         timeHeight = 50
         dateHeight = 25

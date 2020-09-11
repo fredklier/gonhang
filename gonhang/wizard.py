@@ -736,6 +736,14 @@ class WeatherPage(QtWidgets.QWizardPage):
     def validateButtonClicked(self):
         if self.net.isOnline():
             self.validateButton.setEnabled(False)
+            lat = self.latitudeEdit.text()
+            lon = self.longitudeEdit.text()
+            updateTime = self.updateTimeSpinner.value()
+            validated = self.keysSkeleton.weatherOption['weatherOption']['validated']
+            enabled = self.rbEnable.isChecked()
+            apiKey = self.apiKeyEdit.text()
+            self.updateWeatherOption(lat, lon, updateTime, apiKey, validated, enabled)
+
             self.threadValidateWeather.updateAndStart(
                 self.latitudeEdit.text(),
                 self.longitudeEdit.text(),
