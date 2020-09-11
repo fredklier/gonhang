@@ -15,6 +15,38 @@ from gonhang.displayclasses import CommomAttributes
 import psutil
 import subprocess
 import humanfriendly
+from datetime import datetime
+
+
+class ThreadDateTime(QtCore.QThread):
+    signal = QtCore.pyqtSignal(dict, name='ThreadDateTimeFinish')
+    myTime = 30 * 60
+    weather = Weather()
+    message = dict()
+
+    def __init__(self, parent=None):
+        super(ThreadDateTime, self).__init__(parent)
+        self.finished.connect(self.finishThreadTime)
+
+    def finishThreadTime(self):
+        self.message.clear()
+        now = datetime.now()
+        # ---------------------------------------------------------------------------------
+        # Update Date and time
+        # ---------------------------------------------------------------------------------
+        self.message['hour'] = now.strftime('%H')
+        self.message['min'] = now.strftime('%M')
+        self.message['sec'] = now.strftime('%S')
+        self.message['day'] = now.strftime("%d")
+        self.message['weekday'] = now.strftime("%A")
+        self.message['month'] = now.strftime("%B")
+        self.message['year'] = now.strftime("%Y")
+
+        self.signal.emit(self.message)
+        self.start()
+
+    def run(self):
+        self.sleep(1)
 
 
 class ThreadWeather(QtCore.QThread):
@@ -34,7 +66,8 @@ class ThreadWeather(QtCore.QThread):
 
     def run(self):
         self.signal.emit(self.weather.getMessage())
-        self.sleep(self.myTime)
+        # self.sleep(self.myTime)
+        self.sleep(5)
 
 
 # ------------------------------------------------------------------------------------
@@ -136,6 +169,7 @@ class WatchDog(QtCore.QThread):
     weather = Weather()
     displayWeather = DisplayWeather()
     threadWeather = ThreadWeather()
+    threadDateTime = ThreadDateTime()
     # -----------------------------------------------------------------
     # System
     system = System()
@@ -166,6 +200,7 @@ class WatchDog(QtCore.QThread):
         self.threadSystem.signal.connect(self.threadSystemReceive)
         self.threadNet.signal.connect(self.threadNetReceive)
         self.threadWeather.signal.connect(self.threadWeatherReceive)
+        self.threadDateTime.signal.connect(self.threadDateTimeReceive)
         # ------------------------------------------------------------------
         # show displayClasses
         self.verticalLayout = vLayout
@@ -176,7 +211,7 @@ class WatchDog(QtCore.QThread):
         if not (weatherOptionConfig is None):
             myTime = weatherOptionConfig['updateTime']
 
-        self.threadWeather.updateMyTime(30)
+        self.threadWeather.updateMyTime(myTime)
         self.displayWeather.initUi(self.verticalLayout)
 
         # ------------------------------------------------------------------
@@ -193,21 +228,45 @@ class WatchDog(QtCore.QThread):
         self.displayStorages.initUi(self.verticalLayout)
         # ------------------------------------------------------------------
         # Start another threads
-        print(f'Starting threadWeather')
+        print('Starting threadWeather')
         self.threadWeather.start()
-        print(f'Starting threadSystem')
+        print('Starting threadDateTime')
+        self.threadDateTime.start()
+        print('Starting threadSystem')
         self.threadSystem.start()
-        print(f'Starting threadNvidia')
+        print('Starting threadNvidia')
         self.threadNvidia.start()
-        print(f'Starting threadNet')
+        print('Starting threadNet')
         self.threadNet.start()
-        print(f'Starting Thread DisplayStorages')
+        print('Starting Thread DisplayStorages')
         self.displayStorages.start()
 
         self.start()
 
+    def threadDateTimeReceive(self, message):
+        if self.weather.isToDisplay():
+            self.displayWeather.weatherWidgets['weatherGroupBox'].show()
+            self.displayWeather.weatherWidgets['hour'].setText(message['hour'])
+            self.displayWeather.weatherWidgets['min'].setText(message['min'])
+            self.displayWeather.weatherWidgets['day'].setText(f"{message['day']},")
+            self.displayWeather.weatherWidgets['month'].setText(f"{message['month']} ")
+            self.displayWeather.weatherWidgets['year'].setText(message['year'])
+            self.displayWeather.weatherWidgets['weekday'].setText(message['weekday'])
+        else:
+            self.displayWeather.weatherWidgets['weatherGroupBox'].hide()
+
     def threadWeatherReceive(self, message):
-        print(message)
+        if self.weather.isToDisplay():
+            self.displayWeather.weatherWidgets['weatherGroupBox'].show()
+            print(message)
+            self.displayWeather.weatherWidgets['name'].setText(message['name'])
+            self.displayWeather.weatherWidgets['country'].setText(message['country'])
+            self.displayWeather.weatherWidgets['humidity'].setText(message['humidity'])
+            self.displayWeather.weatherWidgets['pressure'].setText(message['pressure'])
+            self.displayWeather.weatherWidgets['visibility'].setText(message['visibility'])
+            self.displayWeather.weatherWidgets['wind'].setText(message['wind'])
+        else:
+            self.displayWeather.weatherWidgets['weatherGroupBox'].hide()
 
     def threadNetReceive(self, message):
         if self.net.isToDisplayNet():

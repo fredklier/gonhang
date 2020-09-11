@@ -1110,11 +1110,11 @@ class DisplayWeather:
 
         nameLabel = QtWidgets.QLabel('Recife')
         self.common.setLabel(nameLabel, self.common.orange, self.common.fontDefault)
-        self.weatherWidgets['nameLabel'] = nameLabel
+        self.weatherWidgets['name'] = nameLabel
 
         countryLabel = QtWidgets.QLabel('BR')
         self.common.setLabel(countryLabel, self.common.white, self.common.fontDefault)
-        self.weatherWidgets['countryLabel'] = countryLabel
+        self.weatherWidgets['country'] = countryLabel
 
         weatherVBLayout.addWidget(nameLabel)
         weatherVBLayout.addWidget(countryLabel)
