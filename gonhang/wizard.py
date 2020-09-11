@@ -358,7 +358,7 @@ class StorTempsPage(QtWidgets.QWizardPage):
         self.vLayout.addWidget(self.groupBoxEnabled)
 
         self.questionLabel = QtWidgets.QLabel(
-            'Please select the Storage Temperature you want to monitor. Press <shift> to multiples selections.')
+            'Please select the Storage Temperature you want to monitor. Press <shift> or <ctrl> to multiples selections.')
         self.vLayout.addWidget(self.questionLabel)
 
         self.optionsList = QtWidgets.QListWidget()
@@ -492,7 +492,7 @@ class PartitionsPage(QtWidgets.QWizardPage):
         self.vLayout.addWidget(self.groupBoxEnabled)
 
         self.questionLabel = QtWidgets.QLabel(
-            'Please select the partitions you want to monitor. Press <shift> to multiples selections.')
+            'Please select the partitions you want to monitor. Press <shift> or <ctrl> to multiples selections.')
         self.vLayout.addWidget(self.questionLabel)
 
         self.optionsList = QtWidgets.QListWidget()
@@ -613,7 +613,6 @@ class WeatherPage(QtWidgets.QWizardPage):
         self.vLayout.addWidget(self.questionLabel)
 
         # -----------------------------------------------------------------
-        # city
         gridLayout = QtWidgets.QGridLayout()
         latitudeLabel = QtWidgets.QLabel('Latitude:')
         latitudeLabel.setFixedWidth(100)
@@ -631,20 +630,38 @@ class WeatherPage(QtWidgets.QWizardPage):
         self.longitudeEdit.setFixedWidth(200)
         gridLayout.addWidget(self.longitudeEdit, 1, 1)
 
+        updateTimeLabel = QtWidgets.QLabel('Update time:')
+        updateTimeLabel.setFixedWidth(100)
+        gridLayout.addWidget(updateTimeLabel, 2, 0)
+
+        updateTimeLayout = QtWidgets.QHBoxLayout()
+        self.updateTimeSpinner = QtWidgets.QSlider()
+        self.updateTimeSpinner.setOrientation(QtCore.Qt.Horizontal)
+        self.updateTimeSpinner.setMinimum(10)
+        self.updateTimeSpinner.setMaximum(60)
+        self.updateTimeSpinner.setValue(30)
+        self.updateTimeSpinner.valueChanged.connect(self.updateTimeChanged)
+        updateTimeLayout.addWidget(self.updateTimeSpinner)
+
+        self.updateTimeValue = QtWidgets.QLabel('30 minutes')
+        updateTimeLayout.addWidget(self.updateTimeValue)
+
+        gridLayout.addLayout(updateTimeLayout, 2, 1)
+
         apiKeyLabel = QtWidgets.QLabel('Api Key:')
-        gridLayout.addWidget(apiKeyLabel, 2, 0)
+        gridLayout.addWidget(apiKeyLabel, 3, 0)
 
         self.apiKeyEdit = QtWidgets.QLineEdit()
-        gridLayout.addWidget(self.apiKeyEdit, 2, 1)
+        gridLayout.addWidget(self.apiKeyEdit, 3, 1)
 
         self.validateButton = QtWidgets.QPushButton('Validate')
         self.validateButton.setFixedWidth(100)
-        gridLayout.addWidget(self.validateButton, 3, 1)
+        gridLayout.addWidget(self.validateButton, 4, 1)
         self.validateButton.clicked.connect(self.validateButtonClicked)
         self.threadValidateWeather.signal.connect(self.threadValidaWeatherFinish)
 
         statusLabel = QtWidgets.QLabel('Status: ')
-        gridLayout.addWidget(statusLabel, 4, 0)
+        gridLayout.addWidget(statusLabel, 5, 0)
 
         hLayout = QtWidgets.QHBoxLayout()
 
@@ -656,11 +673,14 @@ class WeatherPage(QtWidgets.QWizardPage):
         self.statusValueLabel = QtWidgets.QLabel()
         hLayout.addWidget(self.statusValueLabel)
 
-        gridLayout.addLayout(hLayout, 4, 1)
+        gridLayout.addLayout(hLayout, 5, 1)
 
         self.vLayout.addLayout(gridLayout)
         self.setLayout(self.vLayout)
         self.displayUi()
+
+    def updateTimeChanged(self):
+        self.updateTimeValue.setText('{} minutes'.format(self.updateTimeSpinner.value()))
 
     def displayUi(self):
         weatherOptionConfig = self.config.getKey('weatherOption')
@@ -669,14 +689,15 @@ class WeatherPage(QtWidgets.QWizardPage):
         apiKey = self.apiKeyEdit.text()
         enabled = False
         validated = False
+        updateTime = 30
         self.rbEnable.setChecked(False)
-        self.disableAll()
-        # print(weatherOptionConfig)
         if not (weatherOptionConfig is None):
             lat = weatherOptionConfig['lat']
             self.latitudeEdit.setText(lat)
             lon = weatherOptionConfig['lon']
             self.longitudeEdit.setText(lon)
+            updateTime = weatherOptionConfig['updateTime']
+            self.updateTimeSpinner.setValue(updateTime)
             apiKey = weatherOptionConfig['apiKey']
             self.apiKeyEdit.setText(apiKey)
             enabled = weatherOptionConfig['enabled']
@@ -684,13 +705,13 @@ class WeatherPage(QtWidgets.QWizardPage):
             if validated:
                 self.statusIcon.setPixmap(QtGui.QPixmap(f'{FileUtil.getResourcePath()}/images/validated.png'))
                 self.statusValueLabel.setText('Validated!')
-            if weatherOptionConfig['enabled']:
-                self.enableAll()
-                self.rbEnable.setChecked(True)
 
+        self.updateAll(enabled)
+        self.rbEnable.setChecked(enabled)
         self.updateWeatherOption(
             lat,
             lon,
+            updateTime,
             apiKey,
             validated,
             enabled
@@ -704,6 +725,7 @@ class WeatherPage(QtWidgets.QWizardPage):
             self.updateWeatherOption(
                 self.latitudeEdit.text(),
                 self.longitudeEdit.text(),
+                self.updateTimeSpinner.value(),
                 self.apiKeyEdit.text(),
                 True,
                 self.keysSkeleton.weatherOption['weatherOption']['enabled']
@@ -720,13 +742,14 @@ class WeatherPage(QtWidgets.QWizardPage):
                 self.apiKeyEdit.text()
             )
 
-    def updateWeatherOption(self, lat, lon, apiKey, validated, enabled):
+    def updateWeatherOption(self, lat, lon, updateTime, apiKey, validated, enabled):
         self.keysSkeleton.weatherOption.clear()
         self.keysSkeleton.weatherOption.update(
             {
                 'weatherOption': {
                     'lat': lat,
                     'lon': lon,
+                    'updateTime': updateTime,
                     'apiKey': apiKey,
                     'validated': validated,
                     'enabled': enabled
@@ -736,32 +759,27 @@ class WeatherPage(QtWidgets.QWizardPage):
         )
         self.config.updateConfig(self.keysSkeleton.weatherOption)
 
-    def disableAll(self):
-        enabled = False
+    def updateAll(self, enabled):
         self.latitudeEdit.setEnabled(enabled)
         self.longitudeEdit.setEnabled(enabled)
-        self.apiKeyEdit.setEnabled(enabled)
-        self.validateButton.setEnabled(enabled)
-
-    def enableAll(self):
-        enabled = True
-        self.latitudeEdit.setEnabled(enabled)
-        self.longitudeEdit.setEnabled(enabled)
+        self.updateTimeSpinner.setEnabled(enabled)
+        self.updateTimeValue.setEnabled(enabled)
         self.apiKeyEdit.setEnabled(enabled)
         self.validateButton.setEnabled(enabled)
 
     def groupBoxClicked(self):
         enabled = False
         if self.rbEnable.isChecked():
-            self.enableAll()
             enabled = True
+            self.updateAll(enabled)
         else:
-            self.disableAll()
+            self.updateAll(enabled)
 
         self.keysSkeleton.weatherOption['weatherOption']['enabled'] = enabled
         self.updateWeatherOption(
             self.latitudeEdit.text(),
             self.longitudeEdit.text(),
+            self.updateTimeSpinner.value(),
             self.apiKeyEdit.text(),
             self.keysSkeleton.weatherOption['weatherOption']['validated'],
             enabled

@@ -120,6 +120,7 @@ class KeysSkeleton:
                 'lat':          '',
                 'lon':          '',
                 'apiKey':       '',
+                'updateTime':   30,
                 'validated':    False,
                 'enabled':      False
 
