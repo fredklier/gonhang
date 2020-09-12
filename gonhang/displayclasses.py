@@ -526,7 +526,7 @@ class DisplayNvidia:
 
         nvidiaLogoLabel = QtWidgets.QLabel()
         nvidiaLogoLabel.setPixmap(QtGui.QPixmap(f"{FileUtil.getResourcePath()}/images/nvidia.png"))
-        nvidiaLogoLabel.setFixedSize(64, 57)
+        nvidiaLogoLabel.setFixedSize(64, 90)
         nvidiaLogoLabel.setAlignment(QtCore.Qt.AlignTop)
 
         gridLayout.addWidget(nvidiaLogoLabel, 0, 0, -1, 1)
