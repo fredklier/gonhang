@@ -1,3 +1,12 @@
+[![Copr build status](https://copr.fedorainfracloud.org/coprs/fredcox/gonhang/package/gonhang/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/fredcox/gonhang/package/gonhang/)
+[![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
+[![GitHub version](https://badge.fury.io/gh/fredcox%2Fgonhang.svg)](https://badge.fury.io/gh/fredcox%2Fgonhang)
+[![PyPI version](https://badge.fury.io/py/gonhang.svg)](https://badge.fury.io/py/gonhang)
+[![GitHub issues](https://img.shields.io/github/issues/fredcox/gonhang)](https://github.com/fredcox/gonhang/issues)
+[![GitHub forks](https://img.shields.io/github/forks/fredcox/gonhang)](https://github.com/fredcox/gonhang/network)
+[![GitHub stars](https://img.shields.io/github/stars/fredcox/gonhang)](https://github.com/fredcox/gonhang/stargazers)
+[![GitHub license](https://img.shields.io/github/license/fredcox/gonhang)](https://github.com/fredcox/gonhang/blob/master/LICENSE)
+
 # GonhaNG - The Next Generation Light-Weight System Monitor for Linux
 
 
