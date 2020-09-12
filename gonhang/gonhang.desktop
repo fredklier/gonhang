@@ -3,6 +3,6 @@ Type=Application
 Exec=/usr/bin/gonhang
 Path=/usr/bin
 Comment=GonhaNG is a System Monitor for several at important hardware variables
-Icon=/usr/share/icons/hicolor/48x48/apps/icon.png
+Icon=/usr/share/icons/hicolor/48x48/apps/gonhang_icon.png
 Categories=System;
 Name=GonhaNG

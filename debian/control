@@ -1,0 +1,39 @@
+Source: gonhang
+Section: devel
+Priority: optional
+Maintainer: Fred Lins <fredcox@gmail.com>
+Build-Depends: debhelper (>=9),
+	dh-python,
+	python3,
+	python3-all,
+	python3-setuptools,
+	python3-humanfriendly,
+	python3-pyqt5,
+	python3-psutil,
+	python3-requests,
+	pyqt5-dev,
+	pyqt5-dev-tools,
+	curl,
+	wmctrl,
+	hddtemp
+
+Standards-Version: 4.5.0
+X-Python3-Version: >= 3.8
+Homepage: https://github.com/fredcox/gonhang
+Package: gonhang
+Architecture: all
+Depends:${python3:Depends},
+	python3,
+	python3-all,
+	python3-setuptools,
+	python3-humanfriendly,
+	python3-pyqt5,
+	python3-psutil,
+	python3-requests,
+	pyqt5-dev,
+	pyqt5-dev-tools,
+	curl,
+	wmctrl,
+	hddtemp
+
+Description: GonhaNG - The Next Generation Light-Weight System Monitor for Linux

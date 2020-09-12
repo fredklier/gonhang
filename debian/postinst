@@ -1,0 +1,6 @@
+#!/bin/bash
+
+
+curl -s https://raw.githubusercontent.com/fredcox/gonhang/master/gonhang/images/icon.png --output /usr/share/icons/hicolor/48x48/apps/gonhang_icon.png
+
+curl -s https://raw.githubusercontent.com/fredcox/gonhang/master/gonhang/gonhang.desktop --output /usr/share/applications/gonhang.desktop
