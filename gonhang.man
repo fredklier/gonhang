@@ -1,0 +1,15 @@
+.TH crazydiskmark 1 "Sep 04, 2020" 
+.SH NAME
+Crazy DiskMark - benchmark SSD disks on linux 
+.SH SYNOPSIS
+\fBcrazydiskmark\fR 
+
+.SH DESCRIPTION
+.B Crazy DiskMark\fR  is a utility to benchmark SSD disks on linux and produce results like CrystalDiskMark.
+
+
+.SH ERRORS
+Errors must be reported in github : (https://github.com/fredcox/crazydiskmark).
+
+.SH AUTHOR
+Fred Lins  (https://fredcox.github.io)

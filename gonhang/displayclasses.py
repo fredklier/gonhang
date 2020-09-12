@@ -961,7 +961,7 @@ class DisplayStorages(QtCore.QThread):
 
             self.storTempsWidgets[line][1].setText(device[0]['device'])
             self.storTempsWidgets[line][2].setText(device[0]['label'])
-            self.storTempsWidgets[line][4].setText("<strong>{:.1f} °C</strong>".format(float(device[0]['temperature'])))
+            self.storTempsWidgets[line][4].setText("{:.1f} °C".format(float(device[0]['temperature'])))
             self.common.analizeTemp(self.storTempsWidgets[line][4], float(device[0]['temperature']), 50, 70)
 
     def hidePartTempsWidgets(self):
