@@ -337,9 +337,9 @@ class Nvidia:
             return 0
 
     def getGPUsInfo(self):
-        numGPUS = int(self.getOutputCommand('count')[0])
+
         message = dict()
-        if numGPUS > 0:
+        if self.getNumberGPUs() > 0:
             gpu_uuid, gpu_name, display_mode, driver_version, vbios_version, fan_speed, pstate, memory_total, memory_used, memory_free, temperature_gpu, power_management, power_draw, clocks_current_graphics, clocks_current_sm, clocks_current_memory, clocks_current_video, utilization_gpu = self.getOutputCommand(
                 'gpu_uuid,gpu_name,display_mode,driver_version,vbios_version,fan.speed,pstate,memory.total,memory.used,memory.free,temperature.gpu,power.management,power.draw,clocks.current.graphics,clocks.current.sm,clocks.current.memory,clocks.current.video,utilization.gpu'
             )
