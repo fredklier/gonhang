@@ -706,6 +706,7 @@ class DisplayNet:
         # -------------------------------------------------
         # interface ValueLabel
         ifaceValueLabel = QtWidgets.QLabel('')
+        ifaceValueLabel.setTextFormat(QtCore.Qt.RichText)
         self.common.setLabel(ifaceValueLabel, self.common.white, self.common.fontDefault)
         self.netWidgets['ifaceValueLabel'] = ifaceValueLabel
         ifaceValueLabel.setFixedWidth(80)
@@ -764,6 +765,7 @@ class DisplayNet:
         bytesLayout.addWidget(bytesRcvLabel, 0, 0)
 
         bytesRcvValueLabel = QtWidgets.QLabel('')
+        bytesRcvValueLabel.setTextFormat(QtCore.Qt.RichText)
         self.common.setLabel(bytesRcvValueLabel, self.common.white, self.common.fontDefault)
         self.netWidgets['bytesRcvValueLabel'] = bytesRcvValueLabel
 
@@ -776,6 +778,7 @@ class DisplayNet:
         bytesLayout.addWidget(bytesSentLabel, 0, 2)
 
         bytesSentValueLabel = QtWidgets.QLabel('')
+        bytesSentValueLabel.setTextFormat(QtCore.Qt.RichText)
         self.common.setLabel(bytesSentValueLabel, self.common.white, self.common.fontDefault)
         self.netWidgets['bytesSentValueLabel'] = bytesSentValueLabel
 
@@ -854,6 +857,7 @@ class DisplayStorages(QtCore.QThread):
             colList.append(tempIcon)
 
             deviceTempLabel = QtWidgets.QLabel('temp oC')
+            deviceTempLabel.setTextFormat(QtCore.Qt.RichText)
             self.common.setLabel(deviceTempLabel, self.common.white, self.common.fontDefault)
             deviceTempLabel.setAlignment(QtCore.Qt.AlignRight)
             gridLayout.addWidget(deviceTempLabel, line, 4)
@@ -957,7 +961,7 @@ class DisplayStorages(QtCore.QThread):
 
             self.storTempsWidgets[line][1].setText(device[0]['device'])
             self.storTempsWidgets[line][2].setText(device[0]['label'])
-            self.storTempsWidgets[line][4].setText("{:.1f} °C".format(float(device[0]['temperature'])))
+            self.storTempsWidgets[line][4].setText("<strong>{:.1f} °C</strong>".format(float(device[0]['temperature'])))
             self.common.analizeTemp(self.storTempsWidgets[line][4], float(device[0]['temperature']), 50, 70)
 
     def hidePartTempsWidgets(self):

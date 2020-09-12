@@ -276,15 +276,15 @@ class WatchDog(QtCore.QThread):
             self.displayNet.netWidgets['netGroupBox'].show()
             self.displayNet.netWidgets['intipLabel'].setText(message['intipLabel'])
             self.displayNet.netWidgets['extipLabel'].setText(message['extipLabel'])
-            self.displayNet.netWidgets['ifaceValueLabel'].setText(message['ifaceValueLabel'])
+            self.displayNet.netWidgets['ifaceValueLabel'].setText(f"<strong>{message['ifaceValueLabel']}</strong>")
             self.displayNet.netWidgets['ifaceDownRateLabel'].setText(
                 '{}/s'.format(humanfriendly.format_size(message['ifaceDownRateLabel'], binary=True)))
             self.displayNet.netWidgets['ifaceUpRateLabel'].setText(
                 '{}/s'.format(humanfriendly.format_size(message['ifaceUpRateLabel'], binary=True)))
             self.displayNet.netWidgets['bytesRcvValueLabel'].setText(
-                humanfriendly.format_size(message['bytesRcvValueLabel'], binary=True))
+                f"<strong>{humanfriendly.format_size(message['bytesRcvValueLabel'], binary=True)}</strong>")
             self.displayNet.netWidgets['bytesSentValueLabel'].setText(
-                humanfriendly.format_size(message['bytesSentValueLabel'], binary=True))
+                f"<strong>{humanfriendly.format_size(message['bytesSentValueLabel'], binary=True)}</strong>")
         else:
             self.displayNet.netWidgets['netGroupBox'].hide()
 
