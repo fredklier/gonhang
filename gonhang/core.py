@@ -5,12 +5,13 @@ import humanfriendly
 import time
 import subprocess
 from gonhang import api
+from gonhang import version
 from pathlib import Path
 import json
-import requests
 import distro
 import socket
 from telnetlib import Telnet
+import requests
 import urllib.request
 
 
@@ -163,6 +164,7 @@ class DistroUtil:
 
 class Config:
     globalJson = dict()
+    version = version.Version()
     # Config file
     cfgFile = f'{Path.home()}/.config/gonhang/config.json'
 
@@ -209,9 +211,8 @@ class Config:
             # print(f'Key not found in {self.cfgFile}: key ====> {key}')
             return None
 
-    @staticmethod
-    def getVersion():
-        return '0.0.1'
+    def getVersion(self):
+        return self.version.getVersion()
 
 
 class System:
@@ -434,7 +435,6 @@ class StorTemps:
     def getMessage(self):
         self.message.clear()
         storTempsConfig = self.config.getKey('storTempsOption')
-        sensors = psutil.sensors_temperatures()
         for device in storTempsConfig['devices']:
             self.message.append(self.findDataFromDevice(device['device'], device['label']))
 
@@ -628,7 +628,8 @@ class Weather:
 
     def isToDisplay(self):
         self.loadConfig()
-        if self.keysSkeleton.weatherOption['weatherOption']['enabled'] and self.keysSkeleton.weatherOption['weatherOption']['validated']:
+        if self.keysSkeleton.weatherOption['weatherOption']['enabled'] and \
+                self.keysSkeleton.weatherOption['weatherOption']['validated']:
             return True
         else:
             return False
