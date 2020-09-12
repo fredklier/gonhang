@@ -1,17 +1,20 @@
-pkgbase = crazydiskmark
-	pkgdesc = Linux disk benchmark tool like CrystalDiskMark
-	pkgver = 0.6.5
+pkgbase = gonhang
+	pkgdesc = GonhaNG is a System Monitor for several important hardware variables.
+	pkgver = 0.0.9
 	pkgrel = 1
-	url = https://github.com/fredcox/crazydiskmark
+	url = https://github.com/fredcox/gonhang
 	arch = any
 	license = MIT
 	makedepends = python-setuptools
 	depends = python-pyqt5
-	depends = python-coloredlogs
+	depends = python-psutil
 	depends = python-humanfriendly
-	depends = fio
-	source = crazydiskmark-0.6.5.tar.gz::https://files.pythonhosted.org/packages/d2/e7/20b965ecb2b0e29c69f08106c8258d86324f7332ef8b1a2efb2ba7e52ffd/crazydiskmark-0.6.5.tar.gz
-	sha256sums = ac81e3b1e7848ca3caff27bb3d0b7c2f22537332fb9216a4bfadd3d46a06e5cb
+	depends = curl
+	depends = wmctrl
+	depends = hddtemp
+	depends = python-requests
+	source = gonhang-0.0.9.tar.gz::https://files.pythonhosted.org/packages/55/66/6cae70069f1a75ed03c904b3c919763dbb9a0b2ca3548ef5db8b6bb695c8/gonhang-0.0.9.tar.gz
+	sha256sums = 62a74812a1b2202f2b30697ed8ff17dd0eab7a99e7b1524389be72061cc6f116
 
-pkgname = crazydiskmark
+pkgname = gonhang
 

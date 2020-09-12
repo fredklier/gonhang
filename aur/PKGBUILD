@@ -15,8 +15,8 @@ depends=('python-pyqt5'
          'hddtemp'
          'python-requests')
 makedepends=('python-setuptools')
-source=("gonhang-0.0.9.tar.gz::https://files.pythonhosted.org/packages/d2/e7/20.0.9ecb0.0.99c60.0.900.0.90.0.920.0.92ef0.0.9efb2ba7e52ffd/gonhang-0.0.9.tar.gz")
-sha256sums=(ac80.0.9e7848ca3caff27bb0.0.9c0.0.90.0.9fb90.0.9bfadd3d46a06e5cb)
+source=("gonhang-0.0.9.tar.gz::https://files.pythonhosted.org/packages/55/66/6cae70069f1a75ed03c904b3c919763dbb9a0b2ca3548ef5db8b6bb695c8/gonhang-0.0.9.tar.gz")
+sha256sums=(62a74812a1b2202f2b30697ed8ff17dd0eab7a99e7b1524389be72061cc6f116)
 build() {
   cd "${pkgname}-${pkgver}"
   python setup.py build
