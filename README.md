@@ -11,6 +11,8 @@
 
 ## About
 
+![GonhaNG - shot](https://raw.githubusercontent.com/fredcox/gonhang/master/gonhang/images/shot.png)
+
 ***GonhaNG*** is a System Monitor for several at important **hardware** variables.
 
 ## Features
@@ -44,9 +46,11 @@ $ sudo dnf update
 $ sudo dnf install gonhang
 ```
 
-## Screenshot
+## Screenshots
 
-![Screenshot](https://raw.githubusercontent.com/fredcox/gonhang/master/gonhang/images/screenshot.png)
+![Screenshot wizard](https://raw.githubusercontent.com/fredcox/gonhang/master/gonhang/images/screenshot_wizard.png)
+
+![Screenshot General](https://raw.githubusercontent.com/fredcox/gonhang/master/gonhang/images/screenshot.png)
 
 ## Buy me a Coffee
 
@@ -55,4 +59,4 @@ $ sudo dnf install gonhang
 
 ## License 
 
-This project use MIT License
+This project use **MIT License**
