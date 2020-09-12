@@ -377,7 +377,7 @@ class Nvidia:
             ',')
 
     def getSmiStatus(self):
-        self.smiStatus = self.runCommand(self.smiCommand)[0]
+        self.smiStatus = self.runCommand(f'which {self.smiCommand}')[0]
         if self.smiStatus == 0:
             return True
         else:
