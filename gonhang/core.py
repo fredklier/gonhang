@@ -13,6 +13,7 @@ import socket
 from telnetlib import Telnet
 import requests
 import urllib.request
+import subprocess
 
 
 class Temperature:
@@ -315,7 +316,7 @@ class Nvidia:
     smiCommand = 'nvidia-smi'
     # , nounits
     smiSuffixCommand = '--format=csv,noheader'
-    smiStatus = subprocess.getstatusoutput(smiCommand)[0]
+    smiStatus = 1
     nvidiaEntity = dict()
 
     def __init__(self):
@@ -376,6 +377,7 @@ class Nvidia:
             ',')
 
     def getSmiStatus(self):
+        self.smiStatus = self.runCommand(self.smiCommand)[0]
         if self.smiStatus == 0:
             return True
         else:
@@ -390,6 +392,12 @@ class Nvidia:
                 return True
             else:
                 return False
+
+    @staticmethod
+    def runCommand(cmd):
+        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, universal_newlines=True)
+        std_out, std_err = proc.communicate()
+        return proc.returncode, std_out, std_err
 
 
 class Net:
