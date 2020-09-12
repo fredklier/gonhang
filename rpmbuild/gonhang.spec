@@ -24,6 +24,7 @@ Requires:       python3-requests
 Requires:       curl
 Requires:       wmctrl
 Requires:       hddtemp
+Requires:       fira-code-fonts
 
 %description
  GonhaNG is a System Monitor for several important hardware variables.
