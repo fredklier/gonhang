@@ -35,5 +35,4 @@ Depends:${python3:Depends},
 	curl,
 	wmctrl,
 	hddtemp
-
 Description: GonhaNG - The Next Generation Light-Weight System Monitor for Linux

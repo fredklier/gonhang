@@ -1,3 +1,4 @@
 tar-ignore = ".git/*"
 tar-ignore = "aur/*"
 tar-ignore = ".idea/*"
+tar-ignore = "venv/*"
