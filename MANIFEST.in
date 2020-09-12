@@ -1,0 +1,10 @@
+include README.md
+include README.me
+include LICENSE
+include gonhang.1
+include gonhang.1.gz
+include gonhang/*
+include gonhang/gonhang.desktop
+include gonhang/images/*
+include gonhang/images/distros/*
+include gonhang/scripts/*
