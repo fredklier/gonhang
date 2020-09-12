@@ -4,39 +4,44 @@
 ![GonhaNG - Logo](https://raw.githubusercontent.com/fredcox/gonhang/master/gonhang/images/logo_readme.png)
 
 * [About](#about)
+* [Features](#features)
 * [Install](#install)
 * [Buy me a Coffee](#buy-me-a-coffee)
 * [License](#license)
 
-## Please, this program is made to run in SSD´s only. Don´t try to run this app in mechanical disks. Thank you. 
-
 ## About
 
-***Crazy DiskMark*** is a utility to benchmark ***SSD*** disks on linux and produce results like ***CrystalDiskMark***.
+***GonhaNG*** is a System Monitor for several at important **hardware** variables.
+
+## Features
+
+- System **tray icon**
+- Lightweight and takes up **few resources** on your system
+- **Easily** configurable through a **wizard** graphical interface
 
 ## Install
 
 ### Ubuntu, Debian and derivatives (Linux Mint, MX Linux)
 
 ```bash
-$ sudo add-apt-repository ppa:fredcox-p/crazydiskmark
+$ sudo add-apt-repository ppa:fredcox-p/gonhang
 $ sudo apt update
-$ sudo apt install crazydiskmark
+$ sudo apt install gonhang
 ```
 
 ### Arch Linux and derivatives (Manjaro)
 
 ```bash
-$ yay -S crazydiskmark
-$ crazydiskmark
+$ yay -S gonhang
+$ gonhang
 ```
 
 ### Fedora32
 
 ```bash
-$ sudo dnf copr enable fredcox/crazydiskmark
+$ sudo dnf copr enable fredcox/gonhang
 $ sudo dnf update
-$ sudo dnf install crazydiskmark
+$ sudo dnf install gonhang
 ```
 
 ## Screenshot
