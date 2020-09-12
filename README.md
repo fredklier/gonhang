@@ -6,6 +6,8 @@
 * [About](#about)
 * [Features](#features)
 * [Install](#install)
+* [Contributos](#contributos)
+* [Screenshots](#screenshots)
 * [Buy me a Coffee](#buy-me-a-coffee)
 * [License](#license)
 
@@ -45,6 +47,13 @@ $ sudo dnf copr enable fredcox/gonhang
 $ sudo dnf update
 $ sudo dnf install gonhang
 ```
+
+## Contributos
+
+1. [Fred Lins](https://github.com/fredcox) :hammer_and_wrench: 
+2. [Carlos Fagiani Junior](https://github.com/fagianijunior) :hammer_and_wrench: 
+3. [Geraldo S. Simião Kutz](https://t.me/@GeraldoSSK) :hammer_and_wrench:
+ 
 
 ## Screenshots
 

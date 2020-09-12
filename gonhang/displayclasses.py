@@ -37,6 +37,20 @@ class AboutBox(QtWidgets.QDialog):
         versionLabel.setTextFormat(QtCore.Qt.RichText)
         versionLabel.setAlignment(alignCenter)
         self.layout.addWidget(versionLabel)
+        # contributors text
+        contHeader = QtWidgets.QLabel('Contributors')
+        contHeader.setAlignment(QtCore.Qt.AlignHCenter)
+        cont1 = QtWidgets.QLabel('<a href="https://github.com/fredcox">Fred Lins</a>')
+        cont1.setAlignment(QtCore.Qt.AlignHCenter)
+        cont2 = QtWidgets.QLabel('<a href="https://github.com/fagianijunior">Carlos Fagiani Junior</a>')
+        cont2.setAlignment(QtCore.Qt.AlignHCenter)
+        cont3 = QtWidgets.QLabel('<a href="https://t.me/@GeraldoSSK">Geraldo S. Simião Kutz</a>')
+        cont3.setAlignment(QtCore.Qt.AlignHCenter)
+        self.layout.addWidget(contHeader)
+        self.layout.addWidget(cont1)
+        self.layout.addWidget(cont2)
+        self.layout.addWidget(cont3)
+
         # warrantyText
         textAboutLabel = QtWidgets.QLabel('This program comes with absolutely <strong>no warranty</strong>')
         textAboutLabel.setTextFormat(QtCore.Qt.RichText)
