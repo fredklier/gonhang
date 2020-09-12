@@ -7,8 +7,6 @@ from bs4 import BeautifulSoup
 import requests
 import shutil
 
-url = 'https://pypi.org/project/gonhang/#files'
-
 
 def updateFile(fileToUpdate, regPattern, newString):
     newContent = []
@@ -63,23 +61,6 @@ print('Hash 256 is =====> {}'.format(hash256))
 print('Updating hash256 in PKGBUILD')
 os.system('sed -i s/sha256sums=.*/sha256sums=\({}\)/ PKGBUILD'.format(hash256))
 os.remove(fileName)
-
-print('Getting tarball url...')
-req = requests.get(url)
-soup = BeautifulSoup(req.content, 'html.parser')
-links = soup.findAll('a')
-tarBallURL = ''
-for link in links:
-    if f'gonhang-{version}.tar.gz' in link.text:
-        tarBallURL = link['href']
-        break
-
-print(f'Tarball URL is ===========> {tarBallURL}')
-print('Updating tarball URL in PKGBUILD...')
-
-newValue = f"source=(\"{fileName}::{tarBallURL}\")"
-
-updateFile('PKGBUILD', 'source=', newValue)
 
 if os.path.isfile('.SRCINFO'):
     os.remove('.SRCINFO')

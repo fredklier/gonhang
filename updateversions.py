@@ -17,7 +17,7 @@ def updateFile(fileToUpdate, regPattern, newString):
             f.write(line)
 
 
-newVersion = '0.2.0'
+newVersion = '0.2.1'
 pattern = "([0-9].[0-9].[0-9])"
 
 files = ['setup.py', 'gonhang/version.py', 'aur/PKGBUILD']
