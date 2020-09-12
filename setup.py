@@ -1,5 +1,4 @@
 import setuptools
-import gonhang.api as api
 
 # ---------------------------------------------------
 # system dependencies
@@ -7,13 +6,17 @@ import gonhang.api as api
 # wmctrl
 # hddtemp
 
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+
+
 setuptools.setup(
     name='gonhang',
-    version='0.1.0',
+    version='0.1.1',
     author="Fred Cox",
     author_email="fredcox@gmail.com",
     description='gonhang - The Next Generation Light-Weight System Monitor for Linux',
-    long_description=api.FileUtil.getContents('README.md'),
+    long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/fredcox/gonhang",
     packages=setuptools.find_packages(),
