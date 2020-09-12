@@ -20,7 +20,7 @@ def updateFile(fileToUpdate, regPattern, newString):
 newVersion = '0.0.9'
 pattern = "([0-9].[0-9].[0-9])"
 
-files = ['setup.py', 'gonhang/version.py', 'aur/PKGBUILD']
+files = ['setup.py', 'gonhang/version.py', 'aur/PKGBUILD', 'debian/changelog']
 
 for file in files:
     print(f'Update version in file [{file}]')

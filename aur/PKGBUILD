@@ -28,7 +28,7 @@ package() {
   install -Dm644 "${pkgname}"/"${pkgname}".desktop "$pkgdir/usr/share/applications/"
 
   mkdir -p "$pkgdir/usr/share/icons/hicolor/48x48/apps/"
-  install -Dm644 "${pkgname}"/images/icon.png "$pkgdir/usr/share/icons/hicolor/48x48/apps/"
+  install -Dm644 "${pkgname}"/images/gonhang_icon.png "$pkgdir/usr/share/icons/hicolor/48x48/apps/"
 
 
 }
