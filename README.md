@@ -59,8 +59,6 @@ $ sudo dnf install gonhang
 
 ![Screenshot wizard](https://raw.githubusercontent.com/fredcox/gonhang/master/gonhang/images/screenshot_wizard.png)
 
-![Screenshot General](https://raw.githubusercontent.com/fredcox/gonhang/master/gonhang/images/screenshot.png)
-
 ## Buy me a Coffee
 
 <a href="https://www.buymeacoffee.com/fredcox" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
