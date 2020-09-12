@@ -1,15 +1,15 @@
-.TH crazydiskmark 1 "Sep 04, 2020" 
+.TH gonhang "Sep 12, 2020"
 .SH NAME
-Crazy DiskMark - benchmark SSD disks on linux 
+GonhaNG - The Next Generation Light-Weight System Monitor for Linux
 .SH SYNOPSIS
-\fBcrazydiskmark\fR 
+\fBgonhang\fR
 
 .SH DESCRIPTION
-.B Crazy DiskMark\fR  is a utility to benchmark SSD disks on linux and produce results like CrystalDiskMark.
+.B GonhaNG\fR is a System Monitor for several at important hardware variables.
 
 
 .SH ERRORS
-Errors must be reported in github : (https://github.com/fredcox/crazydiskmark).
+Errors must be reported in github : (https://github.com/fredcox/gonhang).
 
 .SH AUTHOR
 Fred Lins  (https://fredcox.github.io)
