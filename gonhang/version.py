@@ -1,4 +1,4 @@
 class Version:
     @staticmethod
     def getVersion():
-        return '0.0.8'
+        return '0.0.9'

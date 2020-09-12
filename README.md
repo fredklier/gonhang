@@ -13,7 +13,7 @@
 
 ![GonhaNG - shot](https://raw.githubusercontent.com/fredcox/gonhang/master/gonhang/images/shot.png)
 
-***GonhaNG*** is a System Monitor for several at important **hardware** variables.
+***GonhaNG*** is a System Monitor for several important **hardware** variables.
 
 ## Features
 

@@ -1,20 +1,22 @@
-# Maintainer: Dimitris Kiziridis <ragouel at outlook dot com>
 # Maintainer: Fred Lins <fredcox at gmail dot com>
 # install -Dm644 LICENSE -t "${pkgdir}/usr/share/licenses/${pkgname}"
-pkgname=crazydiskmark
-pkgver=0.6.5
+pkgname=gonhang
+pkgver=0.0.9
 pkgrel=1
-pkgdesc='Linux disk benchmark tool like CrystalDiskMark'
+pkgdesc='GonhaNG is a System Monitor for several important hardware variables.'
 arch=('any')
-url='https://github.com/fredcox/crazydiskmark'
+url='https://github.com/fredcox/gonhang'
 license=('MIT')
 depends=('python-pyqt5'
-         'python-coloredlogs'
+         'python-psutil'
          'python-humanfriendly'
-         'fio')
+         'curl'
+         'wmctrl'
+         'hddtemp'
+         'python-requests')
 makedepends=('python-setuptools')
-source=("crazydiskmark-0.6.5.tar.gz::https://files.pythonhosted.org/packages/d2/e7/20b965ecb2b0e29c69f08106c8258d86324f7332ef8b1a2efb2ba7e52ffd/crazydiskmark-0.6.5.tar.gz")
-sha256sums=(ac81e3b1e7848ca3caff27bb3d0b7c2f22537332fb9216a4bfadd3d46a06e5cb)
+source=("gonhang-0.0.9.tar.gz::https://files.pythonhosted.org/packages/d2/e7/20.0.9ecb0.0.99c60.0.900.0.90.0.920.0.92ef0.0.9efb2ba7e52ffd/gonhang-0.0.9.tar.gz")
+sha256sums=(ac80.0.9e7848ca3caff27bb0.0.9c0.0.90.0.9fb90.0.9bfadd3d46a06e5cb)
 build() {
   cd "${pkgname}-${pkgver}"
   python setup.py build
@@ -26,7 +28,7 @@ package() {
   install -Dm644 "${pkgname}"/"${pkgname}".desktop "$pkgdir/usr/share/applications/"
 
   mkdir -p "$pkgdir/usr/share/icons/hicolor/48x48/apps/"
-  install -Dm644 "${pkgname}"/images/crazydiskmark_icon.png "$pkgdir/usr/share/icons/hicolor/48x48/apps/"
+  install -Dm644 "${pkgname}"/images/icon.png "$pkgdir/usr/share/icons/hicolor/48x48/apps/"
 
 
 }

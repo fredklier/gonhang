@@ -5,7 +5,7 @@ GonhaNG - The Next Generation Light-Weight System Monitor for Linux
 \fBgonhang\fR
 
 .SH DESCRIPTION
-.B GonhaNG\fR is a System Monitor for several at important hardware variables.
+.B GonhaNG\fR is a System Monitor for several important hardware variables.
 
 
 .SH ERRORS

@@ -1,7 +1,5 @@
 #!/usr/bin/python3
 
-import coloredlogs
-import logging
 import os
 import re
 import hashlib
