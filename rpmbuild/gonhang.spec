@@ -13,8 +13,11 @@ BuildRequires:  python3-devel
 BuildRequires:  desktop-file-utils
 BuildRequires:  python3-setuptools
 
-Requires:       python3-pyqt5-sip
 Requires:       python3-qt5-base
+Requires:       python3-pyqt5-sip
+Requires:       python3-qt5-devel
+Requires:       python3-qt5-webengine
+Requires:       python3-qt5-webkit
 Requires:       python3-psutil
 Requires:       python3-humanfriendly
 Requires:       python3-requests
