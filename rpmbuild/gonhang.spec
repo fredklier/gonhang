@@ -64,6 +64,6 @@ install -m0644 $RPM_BUILD_DIR/%{pypi_name}-%{version}/%{pypi_name}.1.gz \
 %{_mandir}/man1/gonhang.1.gz
 
 %changelog
-* Fri Sep 10.1.00 Fred Lins <fredcox@gmail.com>
+* Fri Sep 12 2020 Fred Lins <fredcox@gmail.com>
 - 0.1.0-1
 - release
