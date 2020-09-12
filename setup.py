@@ -12,7 +12,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name='gonhang',
-    version='0.1.9',
+    version='0.2.0',
     author="Fred Cox",
     author_email="fredcox@gmail.com",
     description='gonhang - The Next Generation Light-Weight System Monitor for Linux',
