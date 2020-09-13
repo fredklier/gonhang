@@ -5,6 +5,7 @@ from gonhang.core import KeysSkeleton
 from gonhang.core import Nvidia
 from gonhang.core import StorTemps
 from gonhang.core import Net
+from gonhang.core import StorTemps
 from gonhang.displayclasses import CommomAttributes
 from gonhang.threads import ThreadValidateWeather
 import psutil
@@ -13,6 +14,7 @@ from telnetlib import Telnet
 
 class GonhaNgWizard(QtWidgets.QWizard):
     nvidia = Nvidia()
+    storTemps = StorTemps()
 
     def __init__(self, parent=None):
         super(GonhaNgWizard, self).__init__(parent)
@@ -22,7 +24,8 @@ class GonhaNgWizard(QtWidgets.QWizard):
         if self.nvidia.getNumberGPUs() > 0:
             self.addPage(NvidiaPage(self))
 
-        self.addPage(StorTempsPage(self))
+        if self.storTemps.hddtempIsOk():
+            self.addPage(StorTempsPage(self))
 
         self.addPage(PartitionsPage(self))
 
