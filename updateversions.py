@@ -1,6 +1,15 @@
 #!/usr/bin/python3
 
 import re
+import sys
+
+package = 'gonhang'
+
+if len(sys.argv) == 1:
+    print('Please, specify the version from command line!')
+    sys.exit(0)
+
+version = sys.argv[1]
 
 
 def updateFile(fileToUpdate, regPattern, newString):
@@ -17,10 +26,10 @@ def updateFile(fileToUpdate, regPattern, newString):
             f.write(line)
 
 
-newVersion = '0.2.2'
+newVersion = version
 pattern = "([0-9].[0-9].[0-9])"
 
-files = ['setup.py', 'gonhang/version.py', 'aur/PKGBUILD']
+files = ['setup.py', f'{package}/version.py', 'aur/PKGBUILD']
 
 for file in files:
     print(f'Update version in file [{file}]')
