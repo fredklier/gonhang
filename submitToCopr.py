@@ -19,14 +19,14 @@ print('Remove unnecessary files....')
 removeFiles()
 
 print(f'Download package {package} version: {version}')
-os.system('pyp2rpm -srpm gonhang')
+os.system(f'pyp2rpm -srpm {package}')
 
 print('Build RPM....')
 cmdToBuild = f'rpmbuild -ba --sign rpmbuild/{package}.spec'
 os.system(cmdToBuild)
 
 print('Upload to Copr....')
-cmd = f'copr-cli build gonhang /root/rpmbuild/SRPMS/{package}-{version}-1.fc32.src.rpm'
+cmd = f'copr-cli build {package} /root/rpmbuild/SRPMS/{package}-{version}-1.fc32.src.rpm'
 os.system(cmd)
 
 removeFiles()
