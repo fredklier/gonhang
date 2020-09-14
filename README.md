@@ -16,7 +16,8 @@
 * [About](#about)
 * [Features](#features)
 * [Install](#install)
-* [Showing Weather Forecasts](#show-weather-forecasts)
+* [Enable Weather Forecasts](#enable-weather-forecasts)
+* [Enable hddtemp](#enable-hddtemp)
 * [Contributos](#contributos)
 * [Screenshots](#screenshots)
 * [Buy me a Coffee](#buy-me-a-coffee)
@@ -54,8 +55,8 @@ for example:
 
 ## Install
 
-Choose your distro in the following sections and after installing and running GonhaNG , 
-right-click on the **GonhaNG Icon System Tray** and the **main menu** will be shown. 
+Choose your distro in the following sections and after installing and running GonhaNG, 
+**right-click** on the **GonhaNG Icon System Tray** and the **main menu** will be shown. 
 Now, you can modify several characteristics of configurations, such as:
 
 - The position on the screen
@@ -93,7 +94,7 @@ $ sudo dnf update
 $ sudo dnf install gonhang
 ```
 
-# Showing Weather Forecasts
+# Enable Weather Forecasts
 
 As previously mentioned, to show the weather forecasts, it is necessary to register (free) [Open Weather](https://openweathermap.org/) 
 and obtain an **api key** , for this, go to the website [https://openweathermap.org/](https://openweathermap.org/, 
@@ -104,11 +105,10 @@ complete the registration and log in.
 >put wrong api key, wrong geolocalization (latitude and longitude), no magic. 
 
 
-# Show SSD/HDD Nvme Temperatures 
+# Enable hddtemp 
 
-You need **hddtemp** running as daemon and listen on port **7634** . Please see in your distro how to 
-**enable and start hddtemp as service**. If you not have **hddtemp** running as daemon and listen on port **7634**, 
-**no magic**. 
+I you want **GonhaNG** display SSD´s/HHD´s and nvme´ temperatures, so you need **hddtemp** running as daemon and 
+listening on port **7634** . Please see in your distro how to **enable and start hddtemp as service**.   
 
 
 ## Contributos
