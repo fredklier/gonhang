@@ -13,11 +13,13 @@
 ![GonhaNG - Logo](https://raw.githubusercontent.com/fredcox/gonhang/master/gonhang/images/logo_readme.png)
 
 
-* [About](#about)
-* [Features](#features)
-* [Install](#install)
-* [Enable Weather Forecasts](#enable-weather-forecasts)
-* [Enable hddtemp](#enable-hddtemp)
+1. [About](#about)
+2. [Features](#features)
+3. [Install](#install)
+4. [Enable Weather Forecasts](#enable-weather-forecasts)
+5. [Enable hddtemp](#enable-hddtemp)
+    5. [Enable hddtemp on Ubuntu Based Distros](#enable-hddtemp-on-ubuntu-based-distros)
+    5. [Enable hddtemp on Fedora32 or Arch Linux based Distros](#enable-hddtemp-on-fedora32-or-arch-linux-based-distros)    
 * [Contributos](#contributos)
 * [Screenshots](#screenshots)
 * [Buy me a Coffee](#buy-me-a-coffee)
@@ -96,9 +98,19 @@ $ sudo dnf install gonhang
 
 # Enable Weather Forecasts
 
-As previously mentioned, to show the weather forecasts, it is necessary to register (free) [Open Weather](https://openweathermap.org/) 
+As previously mentioned, to show the weather forecasts, it is necessary register (free) [Open Weather](https://openweathermap.org/) 
 and obtain an **api key** , for this, go to the website [https://openweathermap.org/](https://openweathermap.org/, 
 complete the registration and log in.
+
+You can obtain your geographical coordinates through the following website: [https://www.latlong.net/](https://www.latlong.net/).
+
+After you have all the geolocation information and your api key, please fill in the GonhaNG Weather form 
+(right click on the system tray and navigate to the config option), as image bellow:
+
+![weatherform.png](gonhang/images/weatherform.png)
+
+
+
 
 >You need fill the Weather form in GonhaNG config Wizard with your api key, latitude and longitude. After this, press
 >the button validate, because the weather only will display if you put correct information and GonhaNG validate. If you
@@ -108,8 +120,23 @@ complete the registration and log in.
 # Enable hddtemp 
 
 I you want **GonhaNG** display SSD´s/HHD´s and nvme´ temperatures, so you need **hddtemp** running as daemon and 
-listening on port **7634** . Please see in your distro how to **enable and start hddtemp as service**.   
+listening on port **7634** . Please see in your distro how to **enable and start hddtemp as service**.
 
+## Enable hddtemp on Ubuntu Based Distros
+
+Edit the file **_/etc/default/hddtemp_** and change the line **RUN_DAEMON=”false”** to  **RUN_DAEMON=”true”**, as shown below
+
+![config](gonhang/images/hddtempdefault.png)
+
+
+## Enable hddtemp on Fedora32, Arch Linux e derivatives
+
+It is easy, you need the commands bellow to enable and start hddtemp in yout distro:
+
+```shell script
+$ sudo systemctl enable hddtemp
+$ sudo systemctl start hddtemp
+```
 
 ## Contributos
 
