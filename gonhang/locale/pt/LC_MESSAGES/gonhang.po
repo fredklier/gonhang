@@ -8,320 +8,334 @@ msgstr ""
 "Project-Id-Version: gonhang\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-09-14 20:26-0300\n"
-"PO-Revision-Date: 2020-09-14 20:30-0300\n"
-"Last-Translator:  <fredcox@gmail.com>\n"
+"PO-Revision-Date: 2020-09-14 20:50-0300\n"
+"Last-Translator: fredcox@gmail.com\n"
 "Language-Team: Portuguese <translation-team-pt@lists.sourceforge.net>\n"
 "Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.4.1\n"
 
 #: systemtray.py:31
 msgid "About"
-msgstr ""
+msgstr "Sobre"
 
 #: wizard.py:662
 msgid "Api Key:"
-msgstr ""
+msgstr "Chave Api:"
 
 #: wizard.py:57
 msgid "CPU Temperature"
-msgstr ""
+msgstr "Temperatura da CPU"
 
 #: systemtray.py:21
 msgid "Center"
-msgstr ""
+msgstr "Centro"
 
 #: systemtray.py:25
 msgid "Config"
-msgstr ""
+msgstr "Configuração"
 
 #: displayclasses.py:966
 msgid "Config File Changed. New Time Stamp:"
-msgstr ""
+msgstr "Arquivo de configuração mudou. Novo identificador:"
 
 #: core.py:178
 msgid "Config file not found, creating...."
-msgstr ""
+msgstr "Arquivo de configuração não encontrado, criando...."
 
 #. contributors text
 #: displayclasses.py:46
 msgid "Contributors"
-msgstr ""
+msgstr "Desenvolvedores"
 
 #: wizard.py:72 wizard.py:180 wizard.py:266 wizard.py:361 wizard.py:496
 #: wizard.py:613
 msgid "Disabled"
-msgstr ""
+msgstr "Disabilitado"
 
 #. self.sub
 #: wizard.py:608
 msgid "Do you want to enable date, time and weather conditions? "
-msgstr ""
+msgstr "Deseja habilitar data, hora e condições climáticas? "
 
 #: wizard.py:65
 msgid "Enable or Disable CPU Temperature? "
-msgstr ""
+msgstr "Habilitar Temperatura da CPU? "
 
 #: wizard.py:261
 msgid "Enable or Disable Network Interface Monitor? "
-msgstr ""
+msgstr "Habilitar ou Desabilitar o Monitor de Interface de rede? "
 
 #: wizard.py:175
 msgid "Enable or Disable Nvidia GPU Monitor? "
-msgstr ""
+msgstr "Habilitar ou Desabilitar o Monitor de GPU Nvidia? "
 
 #: wizard.py:491
 msgid "Enable or Disable Partitions Space Monitor? "
 msgstr ""
+"Habilitar ou Desabilitar o Monitoramento de Espaço Disponível em Partições? "
 
 #: wizard.py:68 wizard.py:177 wizard.py:263 wizard.py:358 wizard.py:493
 #: wizard.py:610
 msgid "Enabled"
-msgstr ""
+msgstr "Habilitado"
 
 #: mainwindow.py:121
 msgid "Enter in wizard..."
-msgstr ""
+msgstr "Entrando no wizard..."
 
 #: systemtray.py:34
 msgid "Exit"
-msgstr ""
+msgstr "Sair"
 
 #: displayclasses.py:24
 msgid "GonhaNG - Next Generation"
-msgstr ""
+msgstr "GonhaNG - Next Generation"
 
 #: wizard.py:37
 msgid "GonhaNG Wizard Welcome"
-msgstr ""
+msgstr "GonhaNG Wizard Bem Vindo"
 
 #: wizard.py:60
 msgid ""
 "GonhaNG measures the average temperature of all cpu cores installed in your "
 "system. In general this value corresponds to Tdie"
 msgstr ""
+"GonhaNG calcula e mostra a média das temperaturas de todos os cores "
+"disponíveis da sua CPU. Em geral o label corresponde a Tdie"
 
 #: systemtray.py:28
 msgid "Help"
-msgstr ""
+msgstr "Ajuda"
 
 #: systemtray.py:19
 msgid "Left"
-msgstr ""
+msgstr "Esquerda"
 
 #: wizard.py:259
 msgid "Network Interface"
-msgstr ""
+msgstr "Interface de Rede"
 
 #: mainwindow.py:75
 msgid "No position, default is [Left]..."
-msgstr ""
+msgstr "Nenhuma posição, mostrando o padrão [Esquerda]..."
 
 #: wizard.py:489
 msgid "Partitions"
-msgstr ""
+msgstr "Partições"
 
 #: wizard.py:623
 msgid ""
 "Please fill in the fields below correctly and click on the validate button."
 msgstr ""
+"Por favor preencha os campos abaixo corretamente e clique no botão validar."
 
 #: wizard.py:372
 msgid ""
 "Please select the Storage Temperature you want to monitor. Press <shift> or "
 "<ctrl> to multiples selections."
 msgstr ""
+"Por favor, selecione a temperatura que você deseja monitorar. Pressione "
+"<shift> ou <ctrl> para selecões múltiplas."
 
 #: wizard.py:275
 msgid "Please select the network interface you want to monitor."
-msgstr ""
+msgstr "Por favor, selecione a interface de rede que você deseja mostrar."
 
 #: wizard.py:189
 msgid "Please select the nvidia gpu you want to monitor."
-msgstr ""
+msgstr "Por favor, selecione A GPU Nvidia que você deseja monitorar."
 
 #: wizard.py:506
 msgid ""
 "Please select the partitions you want to monitor. Press <shift> or <ctrl> to "
 "multiples selections."
 msgstr ""
+"Por favor, selecione as partições que você deseja monitorar. Pressione "
+"<shift> ou <ctrl> para multiplas selecões."
 
 #: systemtray.py:18
 msgid "Position"
-msgstr ""
+msgstr "Posição"
 
 #: mainwindow.py:78
 msgid "Position in config is:"
-msgstr ""
+msgstr "Posição no arquivo de configuração é:"
 
 #: wizard.py:354
 msgid ""
 "Remember, to monitor SSD/HDD Sata temperatures you need hddtemp running as "
 "daemon."
 msgstr ""
+"Lembre-se, para monitorar temperatura de SSD/HDD Sata você necessita do "
+"hddtemp rodando como daemon no seu sistema."
 
 #: systemtray.py:23
 msgid "Right"
-msgstr ""
+msgstr "Direita"
 
 #. ----------------------------------------------------------------------------
 #. WatchDog the king off all Threads
 #: mainwindow.py:64
 msgid "Running WatchDog...."
-msgstr ""
+msgstr "Rodando o WatchDog..."
 
 #: mainwindow.py:33
 msgid "Start MainWindow"
-msgstr ""
+msgstr "Inicializando MainWindow"
 
 #: threads.py:247
 msgid "Starting Thread DisplayStorages"
-msgstr ""
+msgstr "Inicializando Thread DisplayStorages"
 
 #: threads.py:239
 msgid "Starting threadDateTime"
-msgstr ""
+msgstr "Inicializando threadDateTime"
 
 #: threads.py:245
 msgid "Starting threadNet"
-msgstr ""
+msgstr "Inicializando threadNet"
 
 #: threads.py:243
 msgid "Starting threadNvidia"
-msgstr ""
+msgstr "Inicializando threadNvidia"
 
 #: threads.py:241
 msgid "Starting threadSystem"
-msgstr ""
+msgstr "Inicializando threadSystem"
 
 #. ------------------------------------------------------------------
 #. Start another threads
 #: threads.py:237
 msgid "Starting threadWeather"
-msgstr ""
+msgstr "Inicializando threadWeather"
 
 #: wizard.py:674
 msgid "Status: "
-msgstr ""
+msgstr "Status: "
 
 #: wizard.py:347
 msgid "Storages Temperatures"
-msgstr ""
+msgstr "Temperatura de dispositivos de armazenamento"
 
 #. warrantyText
 #: displayclasses.py:60
 msgid "This program comes with absolutely no warranty"
-msgstr ""
+msgstr "Esse programa não fornece nenhuma garantia"
 
 #: wizard.py:604
 msgid ""
 "To view weather information you need an account at <a href=\"https://"
 "openweathermap.org/\">https://openweathermap.org/</a> and place your api key."
 msgstr ""
+"Para visualizar informações de climea você precisa de uma conta  em  <a href="
+"\"https://openweathermap.org/\">https://openweathermap.org/</a>  e colocar a "
+"sua chave Api."
 
 #: wizard.py:644
 msgid "Update time:"
-msgstr ""
+msgstr "Tempo de atualização:"
 
 #: wizard.py:668
 msgid "Validate"
-msgstr ""
+msgstr "Validar"
 
 #: wizard.py:726
 msgid "Validated!"
-msgstr ""
+msgstr "Validado!"
 
 #: displayclasses.py:41
 msgid "Version"
-msgstr ""
+msgstr "Versão"
 
 #: wizard.py:350
 msgid "Warning: [Your computer is not running hddtemp as daemon! ]"
-msgstr ""
+msgstr "Aviso: [Seu computador não está rodando hddtemp como daemon!]"
 
 #: wizard.py:601
 msgid "Weather"
-msgstr ""
+msgstr "Clima"
 
 #: wizard.py:81
 msgid "What is the temperature label of your CPU?"
-msgstr ""
+msgstr "Qual é a temperatura da sua CPU?"
 
 #: displayclasses.py:302
 msgid "days, "
-msgstr ""
+msgstr "dias, "
 
 #: displayclasses.py:850
 msgid "disks"
-msgstr ""
+msgstr "armazenamento"
 
 #. ----------------------------------------------------------
 #. free stats
 #: displayclasses.py:933
 msgid "free:"
-msgstr ""
+msgstr "livre:"
 
 #: displayclasses.py:311
 msgid "hours "
-msgstr ""
+msgstr "horas "
 
 #: displayclasses.py:582
 msgid "memory:"
-msgstr ""
+msgstr "memória:"
 
 #: wizard.py:657 wizard.py:694
 msgid "minutes"
-msgstr ""
+msgstr "minutos"
 
 #: displayclasses.py:320
 msgid "minutes "
-msgstr ""
+msgstr "minutos "
 
 #: displayclasses.py:553
 msgid "model:"
-msgstr ""
+msgstr "modelo:"
 
 #: wizard.py:532
 msgid "mountpoint:"
-msgstr ""
+msgstr "ponto de montagem:"
 
 #: displayclasses.py:683
 msgid "net"
-msgstr ""
+msgstr "rede"
 
 #: displayclasses.py:329
 msgid "seconds"
-msgstr ""
+msgstr "segundos"
 
 #: threads.py:75
 msgid "seconds..."
-msgstr ""
+msgstr "segundos..."
 
 #: displayclasses.py:245
 msgid "system"
-msgstr ""
+msgstr "sistema"
 
 #: threads.py:75
 msgid "threadWeather sleep now for"
-msgstr ""
+msgstr "threadWeather agora em latência por enquanto"
 
 #: displayclasses.py:781
 msgid "total in:"
-msgstr ""
+msgstr "total :"
 
 #. Total out
 #: displayclasses.py:794
 msgid "total out:"
-msgstr ""
+msgstr "total:"
 
 #. ----------------------------------------------------------
 #. used stats
 #: displayclasses.py:912
 msgid "used:"
-msgstr ""
+msgstr "usado:"
 
 #: displayclasses.py:1021
 msgid "weather"
-msgstr ""
+msgstr "clima"

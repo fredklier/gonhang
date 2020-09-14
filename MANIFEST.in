@@ -4,6 +4,10 @@ include LICENSE
 include gonhang.1
 include gonhang.1.gz
 include gonhang/*
+include gonhang/locale/*
+include gonhang/locale/pt/*
+include gonhang/locale/pt/LC_MESSAGES/*
+
 include gonhang/gonhang.desktop
 include gonhang/images/*
 include gonhang/images/distros/*
