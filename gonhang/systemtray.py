@@ -1,6 +1,6 @@
 from PyQt5 import QtCore, QtWidgets, QtGui
 from gonhang.api import FileUtil
-from gonhang.displayclasses import AboutBox
+from PyQt5.Qt import QUrl, QDesktopServices
 
 
 class SystemTrayIcon(QtWidgets.QSystemTrayIcon):
@@ -18,10 +18,20 @@ class SystemTrayIcon(QtWidgets.QSystemTrayIcon):
         positionRightAction.triggered.connect(self.moveMeToRight)
         configAction = menu.addAction(QtGui.QIcon(f'{FileUtil.getResourcePath()}/images/gear.png'), 'Config')
         configAction.triggered.connect(self.wizardAction)
+
+        helpAction = menu.addAction(QtGui.QIcon(f'{FileUtil.getResourcePath()}/images/help.png'), 'Help')
+        helpAction.triggered.connect(self.openHelp)
+
         aboutAction = menu.addAction(QtGui.QIcon(f'{FileUtil.getResourcePath()}/images/about.png'), 'About')
         aboutAction.triggered.connect(self.aboutAction)
+
         exitAction = menu.addAction(QtGui.QIcon(f'{FileUtil.getResourcePath()}/images/exit.png'), 'Exit')
         exitAction.triggered.connect(self.exit)
+
+    @staticmethod
+    def openHelp():
+        url = QUrl('https://github.com/fredcox/gonhang/blob/master/README.md')
+        QDesktopServices.openUrl(url)
 
     def aboutAction(self):
         self.parent().showAboutBox()
