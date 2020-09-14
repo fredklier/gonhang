@@ -7,6 +7,11 @@ from gonhang.api import FileUtil
 from gonhang.core import StorTemps
 from gonhang.core import Partitions
 import os
+import gettext
+
+localedir = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'locale')
+translate = gettext.translation('gonhang', localedir, fallback=True)
+_ = translate.gettext
 
 
 class AboutBox(QtWidgets.QDialog):
@@ -16,7 +21,7 @@ class AboutBox(QtWidgets.QDialog):
         super(AboutBox, self).__init__(parent)
         self.setFixedWidth(480)
         self.centerMe()
-        self.setWindowTitle(f'GonhaNG - Next Generation - {self.config.getVersion()}')
+        self.setWindowTitle(_('GonhaNG - Next Generation') + f' - {self.config.getVersion()}')
         alignCenter = QtCore.Qt.AlignHCenter
         self.okButton = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok)
         self.okButton.accepted.connect(self.hideMe)
@@ -33,12 +38,12 @@ class AboutBox(QtWidgets.QDialog):
         gonhaNgLabel.setTextFormat(QtCore.Qt.RichText)
         gonhaNgLabel.setAlignment(alignCenter)
         self.layout.addWidget(gonhaNgLabel)
-        versionLabel = QtWidgets.QLabel(f'Version <strong>{self.config.getVersion()}</strong>')
+        versionLabel = QtWidgets.QLabel(_('Version') + f' <strong>{self.config.getVersion()}</strong>')
         versionLabel.setTextFormat(QtCore.Qt.RichText)
         versionLabel.setAlignment(alignCenter)
         self.layout.addWidget(versionLabel)
         # contributors text
-        contHeader = QtWidgets.QLabel('Contributors')
+        contHeader = QtWidgets.QLabel(_('Contributors'))
         contHeader.setAlignment(QtCore.Qt.AlignHCenter)
         cont1 = QtWidgets.QLabel('<a href="https://github.com/fredcox">Fred Lins</a>')
         cont1.setAlignment(QtCore.Qt.AlignHCenter)
@@ -52,7 +57,7 @@ class AboutBox(QtWidgets.QDialog):
         self.layout.addWidget(cont3)
 
         # warrantyText
-        textAboutLabel = QtWidgets.QLabel('This program comes with absolutely <strong>no warranty</strong>')
+        textAboutLabel = QtWidgets.QLabel(_('This program comes with absolutely no warranty'))
         textAboutLabel.setTextFormat(QtCore.Qt.RichText)
         textAboutLabel.setAlignment(alignCenter)
         self.layout.addWidget(textAboutLabel)
@@ -237,7 +242,7 @@ class DisplaySystem:
         pbDefaultWidth = 180
         iconDefaultWidth = 80
         message = self.system.getMessage()
-        systemGroupBox = self.commom.getDefaultGb('system')
+        systemGroupBox = self.commom.getDefaultGb(_('system'))
 
         localVLayout = QtWidgets.QVBoxLayout()
         localVLayout.setSpacing(0)
@@ -294,7 +299,7 @@ class DisplaySystem:
         btHLayout.addWidget(btDaysLabel)
         self.systemWidgets['btDays'] = btDaysLabel
 
-        daysLabel = QtWidgets.QLabel('days, ')
+        daysLabel = QtWidgets.QLabel(_('days, '))
         self.commom.setLabel(daysLabel, self.commom.white, self.commom.fontDefault)
         btHLayout.addWidget(daysLabel)
 
@@ -303,7 +308,7 @@ class DisplaySystem:
         btHLayout.addWidget(btHoursLabel)
         self.systemWidgets['btHours'] = btHoursLabel
 
-        hoursLabel = QtWidgets.QLabel('hours ')
+        hoursLabel = QtWidgets.QLabel(_('hours '))
         self.commom.setLabel(hoursLabel, self.commom.white, self.commom.fontDefault)
         btHLayout.addWidget(hoursLabel)
 
@@ -312,7 +317,7 @@ class DisplaySystem:
         btHLayout.addWidget(btMinutesLabel)
         self.systemWidgets['btMinutes'] = btMinutesLabel
 
-        minutesLabel = QtWidgets.QLabel('minutes ')
+        minutesLabel = QtWidgets.QLabel(_('minutes '))
         self.commom.setLabel(minutesLabel, self.commom.white, self.commom.fontDefault)
         btHLayout.addWidget(minutesLabel)
 
@@ -321,7 +326,7 @@ class DisplaySystem:
         btHLayout.addWidget(btSecondsLabel)
         self.systemWidgets['btSeconds'] = btSecondsLabel
 
-        secondsLabel = QtWidgets.QLabel('seconds')
+        secondsLabel = QtWidgets.QLabel(_('seconds'))
         self.commom.setLabel(secondsLabel, self.commom.white, self.commom.fontDefault)
         btHLayout.addWidget(secondsLabel)
 
@@ -545,7 +550,7 @@ class DisplayNvidia:
 
         gridLayout.addWidget(nvidiaLogoLabel, 0, 0, -1, 1)
 
-        modelLabel = QtWidgets.QLabel('model:')
+        modelLabel = QtWidgets.QLabel(_('model:'))
         self.common.setLabel(modelLabel, self.common.orange, self.common.fontDefault)
         # noinspection PyTypeChecker
         modelLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
@@ -574,7 +579,7 @@ class DisplayNvidia:
 
         gridLayout.addWidget(loadValueLabel, 0, 4)
 
-        memoryLabel = QtWidgets.QLabel('memory:')
+        memoryLabel = QtWidgets.QLabel(_('memory:'))
         memoryLabel.setFixedWidth(70)
         self.common.setLabel(memoryLabel, self.common.orange, self.common.fontDefault)
         memoryLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
@@ -675,7 +680,7 @@ class DisplayNet:
 
     def initUi(self, vLayout):
         verticalLayout = QtWidgets.QVBoxLayout()
-        netGroupBox = self.common.getDefaultGb('net')
+        netGroupBox = self.common.getDefaultGb(_('net'))
         self.netWidgets['netGroupBox'] = netGroupBox
         rateLabelWidth = 120
         # ---------------------------------------------------
@@ -773,7 +778,7 @@ class DisplayNet:
 
         bytesLayout = QtWidgets.QGridLayout()
 
-        bytesRcvLabel = QtWidgets.QLabel('total in:')
+        bytesRcvLabel = QtWidgets.QLabel(_('total in:'))
         self.common.setLabel(bytesRcvLabel, self.common.orange, self.common.fontDefault)
 
         bytesLayout.addWidget(bytesRcvLabel, 0, 0)
@@ -786,7 +791,7 @@ class DisplayNet:
         bytesLayout.addWidget(bytesRcvValueLabel, 0, 1)
 
         # Total out
-        bytesSentLabel = QtWidgets.QLabel('total out:')
+        bytesSentLabel = QtWidgets.QLabel(_('total out:'))
         self.common.setLabel(bytesSentLabel, self.common.orange, self.common.fontDefault)
 
         bytesLayout.addWidget(bytesSentLabel, 0, 2)
@@ -842,7 +847,7 @@ class DisplayStorages(QtCore.QThread):
 
     def initUi(self, vLayout):
         localVLayout = QtWidgets.QVBoxLayout()
-        self.storageGroupBox = self.common.getDefaultGb('disks')
+        self.storageGroupBox = self.common.getDefaultGb(_('disks'))
         gridLayout = QtWidgets.QGridLayout()
         for line in range(10):
             colList = list()
@@ -904,7 +909,7 @@ class DisplayStorages(QtCore.QThread):
 
             # ----------------------------------------------------------
             # used stats
-            usedLabel = QtWidgets.QLabel('used:')
+            usedLabel = QtWidgets.QLabel(_('used:'))
             self.common.setLabel(usedLabel, self.common.red, self.common.fontDefault)
             usedLabel.setFixedWidth(60)
             partGridLayout.addWidget(usedLabel, i + 1, 0)
@@ -925,7 +930,7 @@ class DisplayStorages(QtCore.QThread):
 
             # ----------------------------------------------------------
             # free stats
-            freeLabel = QtWidgets.QLabel('free:')
+            freeLabel = QtWidgets.QLabel(_('free:'))
             self.common.setLabel(freeLabel, self.common.green, self.common.fontDefault)
             freeLabel.setFixedWidth(60)
             partGridLayout.addWidget(freeLabel, i + 2, 0)
@@ -958,7 +963,7 @@ class DisplayStorages(QtCore.QThread):
         cfgCacheStamp = os.stat(self.config.cfgFile).st_mtime
         if cfgCacheStamp != self.configCacheStamp:
             self.configCacheStamp = cfgCacheStamp
-            print(f'Config File Changed. New Time Stamp: {self.configCacheStamp}')
+            print(_('Config File Changed. New Time Stamp:') + f' {self.configCacheStamp}')
         # -----------------------------------------------------------------------------
         self.msleep(500)
         self.signal.emit(True)
@@ -1013,7 +1018,7 @@ class DisplayWeather:
     weatherWidgets = dict()
 
     def initUi(self, verticalLayout):
-        weatherGroupBox = self.common.getDefaultGb('weather')
+        weatherGroupBox = self.common.getDefaultGb(_('weather'))
         vLayout = QtWidgets.QVBoxLayout()
         vLayout.addSpacing(10)
         self.weatherWidgets['weatherGroupBox'] = weatherGroupBox

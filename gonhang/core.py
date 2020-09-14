@@ -3,7 +3,6 @@ import os
 import psutil
 import humanfriendly
 import time
-import subprocess
 from gonhang import api
 from gonhang import version
 from pathlib import Path
@@ -14,6 +13,11 @@ from telnetlib import Telnet
 import requests
 import urllib.request
 import subprocess
+import gettext
+
+localedir = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'locale')
+translate = gettext.translation('gonhang', localedir, fallback=True)
+_ = translate.gettext
 
 
 class Temperature:
@@ -171,7 +175,7 @@ class Config:
 
     def __init__(self):
         if not self.cfgFileExists():
-            print('Config file not found, creating....')
+            print(_('Config file not found, creating....'))
             self.createConfigFile()
 
         self.loadGlobalConfig()

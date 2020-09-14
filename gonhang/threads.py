@@ -16,6 +16,12 @@ import psutil
 import subprocess
 import humanfriendly
 from datetime import datetime
+import gettext
+import os
+
+localedir = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'locale')
+translate = gettext.translation('gonhang', localedir, fallback=True)
+_ = translate.gettext
 
 
 class ThreadDateTime(QtCore.QThread):
@@ -66,7 +72,7 @@ class ThreadWeather(QtCore.QThread):
 
     def run(self):
         self.signal.emit(self.weather.getMessage())
-        print(f'threadWeather sleep now for {self.myTime} seconds...')
+        print(_('threadWeather sleep now for') + f' {self.myTime} ' + _('seconds...'))
         self.sleep(self.myTime)
 
 
@@ -228,17 +234,17 @@ class WatchDog(QtCore.QThread):
         self.displayStorages.initUi(self.verticalLayout)
         # ------------------------------------------------------------------
         # Start another threads
-        print('Starting threadWeather')
+        print(_('Starting threadWeather'))
         self.threadWeather.start()
-        print('Starting threadDateTime')
+        print(_('Starting threadDateTime'))
         self.threadDateTime.start()
-        print('Starting threadSystem')
+        print(_('Starting threadSystem'))
         self.threadSystem.start()
-        print('Starting threadNvidia')
+        print(_('Starting threadNvidia'))
         self.threadNvidia.start()
-        print('Starting threadNet')
+        print(_('Starting threadNet'))
         self.threadNet.start()
-        print('Starting Thread DisplayStorages')
+        print(_('Starting Thread DisplayStorages'))
         self.displayStorages.start()
 
         self.start()

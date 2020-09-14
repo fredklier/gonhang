@@ -1,0 +1,9 @@
+./__init__.py
+./api.py
+./mainwindow.py
+./wizard.py
+./threads.py
+./core.py
+./displayclasses.py
+./systemtray.py
+./version.py

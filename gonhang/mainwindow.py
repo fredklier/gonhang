@@ -10,6 +10,12 @@ from gonhang.core import KeysSkeleton
 from gonhang.displayclasses import AboutBox
 import sys
 import time
+import gettext
+import os
+
+localedir = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'locale')
+translate = gettext.translation('gonhang', localedir, fallback=True)
+_ = translate.gettext
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -24,7 +30,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def __init__(self):
         super(MainWindow, self).__init__()
-        print('Start MainWindow')
+        print(_('Start MainWindow'))
         self.setWindowTitle(StringUtil.getRandomString(30))
         # -------------------------------------------------------------
         # Window Flags
@@ -55,7 +61,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # ----------------------------------------------------------------------------
         # WatchDog the king off all Threads
-        print('Running WatchDog....')
+        print(_('Running WatchDog....'))
         self.watchDog = WatchDog(self.verticalLayout, self)
         self.loadPositionalParams()
 
@@ -66,10 +72,10 @@ class MainWindow(QtWidgets.QMainWindow):
     def loadPositionalParams(self):
         position = self.config.getKey('positionOption')
         if position is None:
-            print('No position, default is [Left]...')
+            print(_('No position, default is [Left]...'))
             self.refreshPosition(0)
         else:
-            print(f"Position in config is: [{position['value']}]")
+            print(_('Position in config is:') + f" [{position['value']}]")
             self.refreshPosition(position['index'])
 
     def getWindowCurrentId(self, windowTitle):
@@ -112,6 +118,6 @@ class MainWindow(QtWidgets.QMainWindow):
         # --------------------------------------------------------------------------------------------
 
     def wizardAction(self):
-        print('Enter in wizard...')
+        print(_('Enter in wizard...'))
         self.myWizard = GonhaNgWizard(self)
         self.myWizard.show()

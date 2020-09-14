@@ -3,13 +3,18 @@ from gonhang.api import FileUtil
 from gonhang.core import Config
 from gonhang.core import KeysSkeleton
 from gonhang.core import Nvidia
-from gonhang.core import StorTemps
 from gonhang.core import Net
 from gonhang.core import StorTemps
 from gonhang.displayclasses import CommomAttributes
 from gonhang.threads import ThreadValidateWeather
 import psutil
 from telnetlib import Telnet
+import gettext
+import os
+
+localedir = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'locale')
+translate = gettext.translation('gonhang', localedir, fallback=True)
+_ = translate.gettext
 
 
 class GonhaNgWizard(QtWidgets.QWizard):
@@ -29,7 +34,7 @@ class GonhaNgWizard(QtWidgets.QWizard):
 
         self.addPage(PartitionsPage(self))
 
-        self.setWindowTitle('GonhaNG Wizard Welcome')
+        self.setWindowTitle(_('GonhaNG Wizard Welcome'))
         self.resize(640, 480)
         self.setWizardStyle(QtWidgets.QWizard.MacStyle)
         self.setPixmap(QtWidgets.QWizard.BackgroundPixmap,
@@ -49,21 +54,22 @@ class CpuTempPage(QtWidgets.QWizardPage):
 
     def __init__(self, parent=None):
         super(CpuTempPage, self).__init__(parent)
-        self.setTitle('CPU Temperature')
+        self.setTitle(_('CPU Temperature'))
         self.vLayout = QtWidgets.QVBoxLayout()
-        self.hint = 'GonhaNG measures the <strong>average</strong> temperature of <strong>all cpu cores</strong> installed in your system.\nIn general this value corresponds to <strong>Tdie</strong>'
+        self.hint = _(
+            'GonhaNG measures the average temperature of all cpu cores installed in your system. In general this value corresponds to Tdie')
         self.hintLabel = QtWidgets.QLabel(self.hint)
         self.hintLabel.setTextFormat(QtCore.Qt.RichText)
         self.vLayout.addWidget(self.hintLabel)
 
-        self.groupBoxEnabled = QtWidgets.QGroupBox('Enable or Disable CPU Temperature? ')
+        self.groupBoxEnabled = QtWidgets.QGroupBox(_('Enable or Disable CPU Temperature? '))
         self.gbLayout = QtWidgets.QVBoxLayout()
 
-        self.rbEnable = QtWidgets.QRadioButton('Enabled')
+        self.rbEnable = QtWidgets.QRadioButton(_('Enabled'))
         self.rbEnable.clicked.connect(self.groupBoxClicked)
         self.gbLayout.addWidget(self.rbEnable)
 
-        self.rbDisable = QtWidgets.QRadioButton('Disabled')
+        self.rbDisable = QtWidgets.QRadioButton(_('Disabled'))
         self.rbDisable.clicked.connect(self.groupBoxClicked)
         self.rbDisable.setChecked(True)
         self.gbLayout.addWidget(self.rbDisable)
@@ -72,7 +78,7 @@ class CpuTempPage(QtWidgets.QWizardPage):
 
         self.vLayout.addWidget(self.groupBoxEnabled)
 
-        self.questionLabel = QtWidgets.QLabel('What is the temperature label of your CPU?')
+        self.questionLabel = QtWidgets.QLabel(_('What is the temperature label of your CPU?'))
         self.vLayout.addWidget(self.questionLabel)
 
         self.optionsList = QtWidgets.QListWidget()
@@ -122,7 +128,7 @@ class CpuTempPage(QtWidgets.QWizardPage):
             for subIndex, shwtemp in enumerate(cpuSensors[sensor]):
                 self.optionsList.insertItem(
                     subIndex,
-                    '{}|{}| label: [{}] - current temp. {} °C'.format(index, subIndex, shwtemp.label, shwtemp.current)
+                    '{}|{}| label: [{}] - temp. {} °C'.format(index, subIndex, shwtemp.label, shwtemp.current)
                 )
 
         # Verify if exists key in config
@@ -166,12 +172,12 @@ class NvidiaPage(QtWidgets.QWizardPage):
         super(NvidiaPage, self).__init__(parent)
         self.setTitle('Nvidia GPU')
         self.vLayout = QtWidgets.QVBoxLayout()
-        self.groupBoxEnabled = QtWidgets.QGroupBox('Enable or Disable Nvidia GPU Monitor? ')
+        self.groupBoxEnabled = QtWidgets.QGroupBox(_('Enable or Disable Nvidia GPU Monitor? '))
         self.gbLayout = QtWidgets.QVBoxLayout()
-        self.rbEnable = QtWidgets.QRadioButton('Enabled')
+        self.rbEnable = QtWidgets.QRadioButton(_('Enabled'))
         self.rbEnable.clicked.connect(self.groupBoxClicked)
         self.gbLayout.addWidget(self.rbEnable)
-        self.rbDisable = QtWidgets.QRadioButton('Disabled')
+        self.rbDisable = QtWidgets.QRadioButton(_('Disabled'))
         self.rbDisable.clicked.connect(self.groupBoxClicked)
         self.rbDisable.setChecked(True)
         self.gbLayout.addWidget(self.rbDisable)
@@ -180,7 +186,7 @@ class NvidiaPage(QtWidgets.QWizardPage):
 
         self.vLayout.addWidget(self.groupBoxEnabled)
 
-        self.questionLabel = QtWidgets.QLabel('Please select the nvidia gpu you want to monitor.')
+        self.questionLabel = QtWidgets.QLabel(_('Please select the nvidia gpu you want to monitor.'))
         self.vLayout.addWidget(self.questionLabel)
 
         self.optionsList = QtWidgets.QListWidget()
@@ -250,14 +256,14 @@ class NetPage(QtWidgets.QWizardPage):
 
     def __init__(self, parent=None):
         super(NetPage, self).__init__(parent)
-        self.setTitle('Network Interface')
+        self.setTitle(_('Network Interface'))
         self.vLayout = QtWidgets.QVBoxLayout()
-        self.groupBoxEnabled = QtWidgets.QGroupBox('Enable or Disable Network Interface Monitor? ')
+        self.groupBoxEnabled = QtWidgets.QGroupBox(_('Enable or Disable Network Interface Monitor? '))
         self.gbLayout = QtWidgets.QVBoxLayout()
-        self.rbEnable = QtWidgets.QRadioButton('Enabled')
+        self.rbEnable = QtWidgets.QRadioButton(_('Enabled'))
         self.rbEnable.clicked.connect(self.groupBoxClicked)
         self.gbLayout.addWidget(self.rbEnable)
-        self.rbDisable = QtWidgets.QRadioButton('Disabled')
+        self.rbDisable = QtWidgets.QRadioButton(_('Disabled'))
         self.rbDisable.clicked.connect(self.groupBoxClicked)
         self.rbDisable.setChecked(True)
         self.gbLayout.addWidget(self.rbDisable)
@@ -266,7 +272,7 @@ class NetPage(QtWidgets.QWizardPage):
 
         self.vLayout.addWidget(self.groupBoxEnabled)
 
-        self.questionLabel = QtWidgets.QLabel('Please select the network interface you want to monitor.')
+        self.questionLabel = QtWidgets.QLabel(_('Please select the network interface you want to monitor.'))
         self.vLayout.addWidget(self.questionLabel)
 
         self.optionsList = QtWidgets.QListWidget()
@@ -294,7 +300,7 @@ class NetPage(QtWidgets.QWizardPage):
         # print(f"{type(network['enp6s0'][0])}")
         for interface in psutil.net_if_addrs():
             if interface != 'lo':
-                self.optionsList.addItem('{}|\tIP Address: [{}]'.format(interface, network[interface][0].address))
+                self.optionsList.addItem('{}|\t[{}]'.format(interface, network[interface][0].address))
 
         # Verify if exists key in config
         netOptionConfig = self.config.getKey('netOption')
@@ -338,20 +344,21 @@ class StorTempsPage(QtWidgets.QWizardPage):
 
     def __init__(self, parent=None):
         super(StorTempsPage, self).__init__(parent)
-        self.setTitle('Storages Temperatures')
+        self.setTitle(_('Storages Temperatures'))
         subTitleComplement = ''
         if not self.storTemps.hddtempIsOk():
-            subTitleComplement = 'Warning: [Your computer is not running hddtemp as daemon! ]'
+            subTitleComplement = _('Warning: [Your computer is not running hddtemp as daemon! ]')
 
         self.setSubTitle(
-            f'Remember, to monitor SSD/HDD Sata temperatures you need hddtemp running as daemon. {subTitleComplement}')
+            _(
+                'Remember, to monitor SSD/HDD Sata temperatures you need hddtemp running as daemon.') + f' {subTitleComplement}')
         self.vLayout = QtWidgets.QVBoxLayout()
         self.groupBoxEnabled = QtWidgets.QGroupBox('Enable or Disable Storages Temperature Monitor? ')
         self.gbLayout = QtWidgets.QVBoxLayout()
-        self.rbEnable = QtWidgets.QRadioButton('Enabled')
+        self.rbEnable = QtWidgets.QRadioButton(_('Enabled'))
         self.rbEnable.clicked.connect(self.groupBoxClicked)
         self.gbLayout.addWidget(self.rbEnable)
-        self.rbDisable = QtWidgets.QRadioButton('Disabled')
+        self.rbDisable = QtWidgets.QRadioButton(_('Disabled'))
         self.rbDisable.clicked.connect(self.groupBoxClicked)
         self.rbDisable.setChecked(True)
         self.gbLayout.addWidget(self.rbDisable)
@@ -361,7 +368,8 @@ class StorTempsPage(QtWidgets.QWizardPage):
         self.vLayout.addWidget(self.groupBoxEnabled)
 
         self.questionLabel = QtWidgets.QLabel(
-            'Please select the Storage Temperature you want to monitor. Press <shift> or <ctrl> to multiples selections.')
+            _(
+                'Please select the Storage Temperature you want to monitor. Press <shift> or <ctrl> to multiples selections.'))
         self.vLayout.addWidget(self.questionLabel)
 
         self.optionsList = QtWidgets.QListWidget()
@@ -391,7 +399,7 @@ class StorTempsPage(QtWidgets.QWizardPage):
         for sensor in sensors:
             if 'nvme' in sensor:
                 for nvme in sensors[sensor]:
-                    self.optionsList.addItem(f'{sensor}|{nvme.label}| temperature {nvme.current} °C')
+                    self.optionsList.addItem(f'{sensor}|{nvme.label}| temp. {nvme.current} °C')
 
         # hddtemp section
         if self.storTemps.hddtempIsOk():
@@ -414,7 +422,7 @@ class StorTempsPage(QtWidgets.QWizardPage):
                 newarray = self.storTemps.chunkIt(data, forLenght)
 
                 for na in newarray:
-                    self.optionsList.addItem(f'{na[0]}|{na[1]}| temperature {na[2]} °C')
+                    self.optionsList.addItem(f'{na[0]}|{na[1]}| temp. {na[2]} °C')
 
         # Verify if exists key in config
         storTempsConfig = self.config.getKey('storTempsOption')
@@ -478,14 +486,14 @@ class PartitionsPage(QtWidgets.QWizardPage):
 
     def __init__(self, parent=None):
         super(PartitionsPage, self).__init__(parent)
-        self.setTitle('Partitions')
+        self.setTitle(_('Partitions'))
         self.vLayout = QtWidgets.QVBoxLayout()
-        self.groupBoxEnabled = QtWidgets.QGroupBox('Enable or Disable Partitions Space Monitor? ')
+        self.groupBoxEnabled = QtWidgets.QGroupBox(_('Enable or Disable Partitions Space Monitor? '))
         self.gbLayout = QtWidgets.QVBoxLayout()
-        self.rbEnable = QtWidgets.QRadioButton('Enabled')
+        self.rbEnable = QtWidgets.QRadioButton(_('Enabled'))
         self.rbEnable.clicked.connect(self.groupBoxClicked)
         self.gbLayout.addWidget(self.rbEnable)
-        self.rbDisable = QtWidgets.QRadioButton('Disabled')
+        self.rbDisable = QtWidgets.QRadioButton(_('Disabled'))
         self.rbDisable.clicked.connect(self.groupBoxClicked)
         self.rbDisable.setChecked(True)
         self.gbLayout.addWidget(self.rbDisable)
@@ -495,7 +503,7 @@ class PartitionsPage(QtWidgets.QWizardPage):
         self.vLayout.addWidget(self.groupBoxEnabled)
 
         self.questionLabel = QtWidgets.QLabel(
-            'Please select the partitions you want to monitor. Press <shift> or <ctrl> to multiples selections.')
+            _('Please select the partitions you want to monitor. Press <shift> or <ctrl> to multiples selections.'))
         self.vLayout.addWidget(self.questionLabel)
 
         self.optionsList = QtWidgets.QListWidget()
@@ -521,7 +529,7 @@ class PartitionsPage(QtWidgets.QWizardPage):
         for partition in psutil.disk_partitions():
             # print(partition)
             self.optionsList.addItem(
-                f'{partition.device}| mountpoint: |{partition.mountpoint}|{partition.fstype}')
+                f'{partition.device}|' + _('mountpoint:') + f'|{partition.mountpoint}|{partition.fstype}')
 
         # Verify if exists key in config
         partitionOptionConfig = self.config.getKey('partitionsOption')
@@ -590,19 +598,19 @@ class WeatherPage(QtWidgets.QWizardPage):
 
     def __init__(self, parent=None):
         super(WeatherPage, self).__init__(parent)
-        self.setTitle('Weather')
+        self.setTitle(_('Weather'))
         self.vLayout = QtWidgets.QVBoxLayout()
         messageLabel = QtWidgets.QLabel(
-            'To view weather information you need an account at <a href="https://openweathermap.org/">https://openweathermap.org/</a> and place your api key.')
+            _('To view weather information you need an account at <a href="https://openweathermap.org/">https://openweathermap.org/</a> and place your api key.'))
         self.vLayout.addWidget(messageLabel)
         messageLabel.setTextFormat(QtCore.Qt.RichText)
         # self.sub
-        self.groupBoxEnabled = QtWidgets.QGroupBox('Do you want to enable date, time and weather conditions? ')
+        self.groupBoxEnabled = QtWidgets.QGroupBox(_('Do you want to enable date, time and weather conditions? '))
         self.gbLayout = QtWidgets.QVBoxLayout()
-        self.rbEnable = QtWidgets.QRadioButton('Enabled')
+        self.rbEnable = QtWidgets.QRadioButton(_('Enabled'))
         self.rbEnable.clicked.connect(self.groupBoxClicked)
         self.gbLayout.addWidget(self.rbEnable)
-        self.rbDisable = QtWidgets.QRadioButton('Disabled')
+        self.rbDisable = QtWidgets.QRadioButton(_('Disabled'))
         self.rbDisable.clicked.connect(self.groupBoxClicked)
         self.rbDisable.setChecked(True)
         self.gbLayout.addWidget(self.rbDisable)
@@ -612,7 +620,7 @@ class WeatherPage(QtWidgets.QWizardPage):
         self.vLayout.addWidget(self.groupBoxEnabled)
 
         self.questionLabel = QtWidgets.QLabel(
-            'Please fill in the fields below correctly and click on the validate button.')
+            _('Please fill in the fields below correctly and click on the validate button.'))
         self.vLayout.addWidget(self.questionLabel)
 
         # -----------------------------------------------------------------
@@ -633,7 +641,7 @@ class WeatherPage(QtWidgets.QWizardPage):
         self.longitudeEdit.setFixedWidth(200)
         gridLayout.addWidget(self.longitudeEdit, 1, 1)
 
-        updateTimeLabel = QtWidgets.QLabel('Update time:')
+        updateTimeLabel = QtWidgets.QLabel(_('Update time:'))
         updateTimeLabel.setFixedWidth(100)
         gridLayout.addWidget(updateTimeLabel, 2, 0)
 
@@ -646,24 +654,24 @@ class WeatherPage(QtWidgets.QWizardPage):
         self.updateTimeSpinner.valueChanged.connect(self.updateTimeChanged)
         updateTimeLayout.addWidget(self.updateTimeSpinner)
 
-        self.updateTimeValue = QtWidgets.QLabel('30 minutes')
+        self.updateTimeValue = QtWidgets.QLabel('30 ' + _('minutes'))
         updateTimeLayout.addWidget(self.updateTimeValue)
 
         gridLayout.addLayout(updateTimeLayout, 2, 1)
 
-        apiKeyLabel = QtWidgets.QLabel('Api Key:')
+        apiKeyLabel = QtWidgets.QLabel(_('Api Key:'))
         gridLayout.addWidget(apiKeyLabel, 3, 0)
 
         self.apiKeyEdit = QtWidgets.QLineEdit()
         gridLayout.addWidget(self.apiKeyEdit, 3, 1)
 
-        self.validateButton = QtWidgets.QPushButton('Validate')
+        self.validateButton = QtWidgets.QPushButton(_('Validate'))
         self.validateButton.setFixedWidth(100)
         gridLayout.addWidget(self.validateButton, 4, 1)
         self.validateButton.clicked.connect(self.validateButtonClicked)
         self.threadValidateWeather.signal.connect(self.threadValidaWeatherFinish)
 
-        statusLabel = QtWidgets.QLabel('Status: ')
+        statusLabel = QtWidgets.QLabel(_('Status: '))
         gridLayout.addWidget(statusLabel, 5, 0)
 
         hLayout = QtWidgets.QHBoxLayout()
@@ -683,7 +691,7 @@ class WeatherPage(QtWidgets.QWizardPage):
         self.displayUi()
 
     def updateTimeChanged(self):
-        self.updateTimeValue.setText('{} minutes'.format(self.updateTimeSpinner.value()))
+        self.updateTimeValue.setText('{} {}'.format(self.updateTimeSpinner.value(), _('minutes')))
         self.updateWeatherOption(
             self.latitudeEdit.text(),
             self.longitudeEdit.text(),
@@ -715,7 +723,7 @@ class WeatherPage(QtWidgets.QWizardPage):
             validated = weatherOptionConfig['validated']
             if validated:
                 self.statusIcon.setPixmap(QtGui.QPixmap(f'{FileUtil.getResourcePath()}/images/validated.png'))
-                self.statusValueLabel.setText('Validated!')
+                self.statusValueLabel.setText(_('Validated!'))
 
         self.updateAll(enabled)
         self.rbEnable.setChecked(enabled)
