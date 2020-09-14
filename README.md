@@ -104,7 +104,11 @@ complete the registration and log in.
 >put wrong api key, wrong geolocalization (latitude and longitude), no magic. 
 
 
-# Show 
+# Show SSD/HDD Nvme Temperatures 
+
+You need **hddtemp** running as daemon and listen on port **7634** . Please see in your distro how to 
+**enable and start hddtemp as service**. If you not have **hddtemp** running as daemon and listen on port **7634**, 
+**no magic**. 
 
 
 ## Contributos
