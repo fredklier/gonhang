@@ -12,17 +12,37 @@
 
 ![GonhaNG - Logo](https://raw.githubusercontent.com/fredcox/gonhang/master/gonhang/images/logo_readme.png)
 
+
 * [About](#about)
 * [Features](#features)
 * [Install](#install)
+* [Showing Weather Forecasts](#show-weather-forecasts)
 * [Contributos](#contributos)
 * [Screenshots](#screenshots)
 * [Buy me a Coffee](#buy-me-a-coffee)
 * [License](#license)
 
+
 ## About
 
 ![GonhaNG - shot](https://raw.githubusercontent.com/fredcox/gonhang/master/gonhang/images/shot.png)
+
+
+**GonhaNG** is a lightweight, practical, easy to configure and intuitive system monitor for Linux . Was developed in 
+**Python 3** with **PyQt 5**, **GonhaNG** was motivated to provide a system monitor for Linux that is 
+quick to install and does not need to write parameters in extra configuration files and endless visual adaptations . 
+It is easy to install and the configuration is performed through a **graphical wizard-** type interface , 
+where everything is done **on the fly** , that is, the user does not need to restart the application to view 
+the changes, the choices are updated and shown by the application in real time.
+
+However, there are some applications that work together with **GonhaNG** , which need to be configured separately, 
+for example:
+
+1. To show the **weather** forecasts, it is necessary to register on [Open Weather](https://openweathermap.org/) 
+(it is free) and obtain an **api key**. 
+2. To display temperatures of the **SSD** and **HDD** devices, you need configure **hddtemp** as a **daemon** .
+
+
 
 ***GonhaNG*** is a System Monitor for several important **hardware** variables.
 
@@ -33,6 +53,22 @@
 - **Easily** configurable through a **wizard** graphical interface
 
 ## Install
+
+Choose your distro in the following sections and after installing and running GonhaNG , 
+right-click on the **GonhaNG Icon System Tray** and the **main menu** will be shown. 
+Now, you can modify several characteristics of configurations, such as:
+
+- The position on the screen
+- CPU Temperature
+- Network conditions
+- Weather Forecasts
+- Partitions
+- HDD/SSD/Nvme Temperatures
+
+Access the **wizard**, through the config option:
+
+![config](gonhang/images/mainmenu.png)
+
 
 ### Ubuntu, Debian and derivatives (Linux Mint, MX Linux)
 
@@ -56,6 +92,20 @@ $ sudo dnf copr enable fredcox/gonhang
 $ sudo dnf update
 $ sudo dnf install gonhang
 ```
+
+# Showing Weather Forecasts
+
+As previously mentioned, to show the weather forecasts, it is necessary to register (free) [Open Weather](https://openweathermap.org/) 
+and obtain an **api key** , for this, go to the website [https://openweathermap.org/](https://openweathermap.org/, 
+complete the registration and log in.
+
+>You need fill the Weather form in GonhaNG config Wizard with your api key, latitude and longitude. After this, press
+>the button validate, because the weather only will display if you put correct information and GonhaNG validate. If you
+>put wrong api key, wrong geolocalization (latitude and longitude), no magic. 
+
+
+# Show 
+
 
 ## Contributos
 
