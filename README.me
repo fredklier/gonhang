@@ -5,9 +5,14 @@ GonhaNG - The Next Generation Light-Weight System Monitor for Linux
 
 [GonhaNG - Logo]
 
--   About
--   Features
--   Install
+1.  About
+2.  Features
+3.  Install
+4.  Enable Weather Forecasts
+5.  Enable hddtemp
+    5.  Enable hddtemp on Ubuntu Based Distros
+    6.  Enable hddtemp on Fedora32 or Arch Linux based Distros
+
 -   Contributos
 -   Screenshots
 -   Buy me a Coffee
@@ -16,6 +21,24 @@ GonhaNG - The Next Generation Light-Weight System Monitor for Linux
 About
 
 [GonhaNG - shot]
+
+GonhaNG is a lightweight, practical, easy to configure and intuitive
+system monitor for Linux . Was developed in Python 3 with PyQt 5,
+GonhaNG was motivated to provide a system monitor for Linux that is
+quick to install and does not need to write parameters in extra
+configuration files and endless visual adaptations . It is easy to
+install and the configuration is performed through a graphical wizard-
+type interface , where everything is done on the fly , that is, the user
+does not need to restart the application to view the changes, the
+choices are updated and shown by the application in real time.
+
+However, there are some applications that work together with GonhaNG ,
+which need to be configured separately, for example:
+
+1.  To show the weather forecasts, it is necessary to register on Open
+    Weather (it is free) and obtain an api key.
+2.  To display temperatures of the SSD and HDD devices, you need
+    configure hddtemp as a daemon .
 
 GonhaNG is a System Monitor for several important hardware variables.
 
@@ -26,6 +49,22 @@ Features
 -   Easily configurable through a wizard graphical interface
 
 Install
+
+Choose your distro in the following sections and after installing and
+running GonhaNG, right-click on the GonhaNG Icon System Tray and the
+main menu will be shown. Now, you can modify several characteristics of
+configurations, such as:
+
+-   The position on the screen
+-   CPU Temperature
+-   Network conditions
+-   Weather Forecasts
+-   Partitions
+-   HDD/SSD/Nvme Temperatures
+
+Access the wizard, through the config option:
+
+[config]
 
 Ubuntu, Debian and derivatives (Linux Mint, MX Linux)
 
@@ -43,6 +82,48 @@ Fedora32
     $ sudo dnf copr enable fredcox/gonhang
     $ sudo dnf update
     $ sudo dnf install gonhang
+
+Enable Weather Forecasts
+
+As previously mentioned, to show the weather forecasts, it is necessary
+register (free) Open Weather and obtain an api key , for this, go to the
+website [https://openweathermap.org/](https://openweathermap.org/,
+complete the registration and log in.
+
+You can obtain your geographical coordinates through the following
+website: https://www.latlong.net/.
+
+After you have all the geolocation information and your api key, please
+fill in the GonhaNG Weather form (right click on the system tray and
+navigate to the config option), as image bellow:
+
+[weatherform.png]
+
+  You need fill the Weather form in GonhaNG config Wizard with your api
+  key, latitude and longitude. After this, press the button validate,
+  because the weather only will display if you put correct information
+  and GonhaNG validate. If you put wrong api key, wrong geolocalization
+  (latitude and longitude), no magic.
+
+Enable hddtemp
+
+I you want GonhaNG display SSD´s/HHD´s and nvme´ temperatures, so you
+need hddtemp running as daemon and listening on port 7634 . Please see
+in your distro how to enable and start hddtemp as service.
+
+Enable hddtemp on Ubuntu Based Distros
+
+Edit the file /etc/default/hddtemp and change the line
+RUN_DAEMON=”false” to RUN_DAEMON=”true”, as shown below
+
+[config]
+
+Enable hddtemp on Fedora32, Arch Linux e derivatives
+
+It is easy, you need the commands bellow to enable and start hddtemp in
+yout distro:
+
+shell script $ sudo systemctl enable hddtemp $ sudo systemctl start hddtemp
 
 Contributos
 
