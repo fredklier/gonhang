@@ -15,6 +15,7 @@ os.system('debuild -k97F85643068753880DAA9FAD404BF2FE939FCCE3 -S')
 
 print('Upload to Launchpad....')
 dputCmd = f'dput ppa:fredcox-p/{package} ../{package}_{version}_source.changes'
+os.system(dputCmd)
 
 print('Clearing unnecessary files....')
 os.system(f'rm -rfv ../{package}_{version}*')
