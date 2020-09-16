@@ -172,13 +172,17 @@ class CommomAttributes:
         label.setFont(font)
         label.setStyleSheet(labelcolor)
 
-    def analizeProgressBar(self, pb, value):
-        if value < 50:
-            pb.setStyleSheet(self.greenPBStyle)
-        elif (value >= 50) and (value < 80):
-            pb.setStyleSheet(self.yellowPBStyle)
+    @staticmethod
+    def analizeProgressBar(pb, value):
+        if value < 40:
+            # pb.setStyleSheet(self.greenPBStyle)
+            pb.setBarColor('green')
+        elif (value >= 40) and (value < 80):
+            # pb.setStyleSheet(self.yellowPBStyle)
+            pb.setBarColor('yellow')
         elif value >= 80:
-            pb.setStyleSheet(self.redPBStyle)
+            # pb.setStyleSheet(self.redPBStyle)
+            pb.setBarColor('red')
 
     def analizeFreq(self, lbl, current, maximun):
         currentValue = float(current)
@@ -241,7 +245,7 @@ class DisplaySystem:
 
     def initUi(self, vLayout):
         pbDefaultWidth = 200
-        iconDefaultWidth = 80
+        iconDefaultWidth = 48
         message = self.system.getMessage()
         systemGroupBox = self.commom.getDefaultGb(_('system'))
 
@@ -850,7 +854,7 @@ class DisplayStorages(QtCore.QThread):
             self.storageGroupBox.hide()
 
     def initUi(self, vLayout):
-        pbDefaultwith = 280
+        pbDefaultwith = 220
         localVLayout = QtWidgets.QVBoxLayout()
         self.storageGroupBox = self.common.getDefaultGb(_('disks'))
         gridLayout = QtWidgets.QGridLayout()
@@ -923,8 +927,9 @@ class DisplayStorages(QtCore.QThread):
             # ProgressBar
             # usedPB = self.common.makePartitionPB()
             usedPB = QCProgressBar()
+            usedPB.setBarColor('red')
             usedPB.setFixedWidth(pbDefaultwith)
-            usedPB.setStyleSheet(self.common.redPBStyle)
+            # usedPB.setStyleSheet(self.common.redPBStyle)
             partGridLayout.addWidget(usedPB, i + 1, 1)
             partColList.append(usedPB)
 
@@ -945,6 +950,7 @@ class DisplayStorages(QtCore.QThread):
 
             # freePB = self.common.makePartitionPB()
             freePB = QCProgressBar()
+            freePB.setBarColor('green')
             freePB.setFixedWidth(pbDefaultwith)
             partGridLayout.addWidget(freePB, i + 2, 1)
             partColList.append(freePB)

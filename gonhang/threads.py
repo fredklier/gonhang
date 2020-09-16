@@ -308,8 +308,7 @@ class WatchDog(QtCore.QThread):
         self.displaySystem.systemWidgets['btSeconds'].setText(f"{message['btSeconds']} ")
         # -----------------------------------------------------------------------------------------------------
         # Cpu Load workout
-        # self.displaySystem.systemWidgets['cpuProgressBar'].setValue(message['cpuProgressBar'])
-        self.displaySystem.systemWidgets['cpuProgressBar'].setValue(100)
+        self.displaySystem.systemWidgets['cpuProgressBar'].setValue(message['cpuProgressBar'])
         self.common.analizeProgressBar(self.displaySystem.systemWidgets['cpuProgressBar'], message['cpuProgressBar'])
         self.displaySystem.systemWidgets['cpuFreqCurrent'].setText(f"{message['cpuFreqCurrent']} MHz")
         self.common.analizeValue(self.displaySystem.systemWidgets['cpuFreqCurrent'], message['cpuFreqCurrent'],
