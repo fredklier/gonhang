@@ -153,6 +153,9 @@ class CommomAttributes:
         self.green = 'color: rgb(34, 255, 19);'
         self.red = 'color: rgb(255, 51, 0);'
         self.yellow = 'color: rgb(255, 153, 0);'
+        self.rgbColorYellow = QtGui.QColor(255, 153, 0)
+        self.rgbColorGreen = QtGui.QColor(34, 255, 19)
+        self.rgbColorRed = QtGui.QColor(255, 51, 0)
 
         # ---------------------------------------------------------------------
         # Default font
@@ -172,17 +175,16 @@ class CommomAttributes:
         label.setFont(font)
         label.setStyleSheet(labelcolor)
 
-    @staticmethod
-    def analizeProgressBar(pb, value):
+    def analizeProgressBar(self, pb, value):
         if value < 40:
             # pb.setStyleSheet(self.greenPBStyle)
-            pb.setBarColor('green')
+            pb.setBarColor(self.rgbColorGreen)
         elif (value >= 40) and (value < 80):
             # pb.setStyleSheet(self.yellowPBStyle)
-            pb.setBarColor('yellow')
+            pb.setBarColor(self.rgbColorYellow)
         elif value >= 80:
             # pb.setStyleSheet(self.redPBStyle)
-            pb.setBarColor('red')
+            pb.setBarColor(self.rgbColorRed)
 
     def analizeFreq(self, lbl, current, maximun):
         currentValue = float(current)
@@ -927,7 +929,7 @@ class DisplayStorages(QtCore.QThread):
             # ProgressBar
             # usedPB = self.common.makePartitionPB()
             usedPB = QCProgressBar()
-            usedPB.setBarColor('red')
+            usedPB.setBarColor(self.common.rgbColorRed)
             usedPB.setFixedWidth(pbDefaultwith)
             # usedPB.setStyleSheet(self.common.redPBStyle)
             partGridLayout.addWidget(usedPB, i + 1, 1)
@@ -950,7 +952,7 @@ class DisplayStorages(QtCore.QThread):
 
             # freePB = self.common.makePartitionPB()
             freePB = QCProgressBar()
-            freePB.setBarColor('green')
+            freePB.setBarColor(self.common.rgbColorGreen)
             freePB.setFixedWidth(pbDefaultwith)
             partGridLayout.addWidget(freePB, i + 2, 1)
             partColList.append(freePB)

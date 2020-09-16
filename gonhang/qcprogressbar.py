@@ -3,8 +3,8 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 
 class QCProgressBar(QtWidgets.QWidget):
     _value = 95
-    _bgcolor = 'gray'
-    _barcolor = 'red'
+    _bgcolor = QtGui.QColor('grey')
+    _barcolor = QtGui.QColor('red')
 
     def __init__(self):
         super(QCProgressBar, self).__init__()
