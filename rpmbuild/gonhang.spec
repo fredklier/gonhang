@@ -1,7 +1,7 @@
 %global pypi_name gonhang
 %global debug_package %{nil}
 Name:           %{pypi_name}
-Version:        0.2.4
+Version:        0.2.5
 Release:        1%{?dist}
 Summary:        The Next Generation Light-Weight System Monitor for Linux
 License:        MIT
@@ -66,5 +66,5 @@ install -m0644 $RPM_BUILD_DIR/%{pypi_name}-%{version}/%{pypi_name}.1.gz \
 
 %changelog
 * Fri Sep 12 2020 Fred Lins <fredcox@gmail.com>
-- 0.2.4-1
+- 0.2.5-1
 - release
