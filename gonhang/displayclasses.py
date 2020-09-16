@@ -6,6 +6,7 @@ from gonhang.core import Config
 from gonhang.api import FileUtil
 from gonhang.core import StorTemps
 from gonhang.core import Partitions
+from gonhang.qcprogressbar import QCProgressBar
 import os
 import gettext
 
@@ -239,7 +240,7 @@ class DisplaySystem:
     system = core.System()
 
     def initUi(self, vLayout):
-        pbDefaultWidth = 180
+        pbDefaultWidth = 200
         iconDefaultWidth = 80
         message = self.system.getMessage()
         systemGroupBox = self.commom.getDefaultGb(_('system'))
@@ -352,10 +353,12 @@ class DisplaySystem:
 
         gridLayout.addWidget(cpuIcon, 0, 0)
 
-        cpuProgressBar = QtWidgets.QProgressBar()
+        # cpuProgressBar = QtWidgets.QProgressBar()
+        cpuProgressBar = QCProgressBar()
         cpuProgressBar.setFixedHeight(self.commom.pbDefaultHeight)
-        cpuProgressBar.setFont(self.commom.fontDefault)
-        cpuProgressBar.setStyleSheet(self.commom.greenPBStyle)
+        cpuProgressBar.setFixedWidth(pbDefaultWidth)
+        # cpuProgressBar.setFont(self.commom.fontDefault)
+        # cpuProgressBar.setStyleSheet(self.commom.greenPBStyle)
         cpuProgressBar.setValue(message['cpuProgressBar'])
         self.systemWidgets['cpuProgressBar'] = cpuProgressBar
 
@@ -389,7 +392,8 @@ class DisplaySystem:
 
         gridLayout.addWidget(ramIcon, 1, 0)
 
-        ramProgressBar = QtWidgets.QProgressBar()
+        # ramProgressBar = QtWidgets.QProgressBar()
+        ramProgressBar = QCProgressBar()
         ramProgressBar.setFixedHeight(self.commom.pbDefaultHeight)
         ramProgressBar.setFixedWidth(pbDefaultWidth)
         ramProgressBar.setFont(self.commom.fontDefault)
@@ -427,7 +431,7 @@ class DisplaySystem:
 
         gridLayout.addWidget(swapIcon, 2, 0)
 
-        swapProgressBar = QtWidgets.QProgressBar()
+        swapProgressBar = QCProgressBar()
         swapProgressBar.setFixedHeight(self.commom.pbDefaultHeight)
         swapProgressBar.setFixedWidth(pbDefaultWidth)
         swapProgressBar.setFont(self.commom.fontDefault)
@@ -467,7 +471,7 @@ class DisplaySystem:
 
         gridLayout.addWidget(cpuTempIcon, 3, 0)
 
-        tempProgressBar = QtWidgets.QProgressBar()
+        tempProgressBar = QCProgressBar()
         tempProgressBar.setFixedHeight(self.commom.pbDefaultHeight)
         tempProgressBar.setFixedWidth(pbDefaultWidth)
         tempProgressBar.setFont(self.commom.fontDefault)
@@ -846,6 +850,7 @@ class DisplayStorages(QtCore.QThread):
             self.storageGroupBox.hide()
 
     def initUi(self, vLayout):
+        pbDefaultwith = 280
         localVLayout = QtWidgets.QVBoxLayout()
         self.storageGroupBox = self.common.getDefaultGb(_('disks'))
         gridLayout = QtWidgets.QGridLayout()
@@ -916,7 +921,9 @@ class DisplayStorages(QtCore.QThread):
             partColList.append(usedLabel)
 
             # ProgressBar
-            usedPB = self.common.makePartitionPB()
+            # usedPB = self.common.makePartitionPB()
+            usedPB = QCProgressBar()
+            usedPB.setFixedWidth(pbDefaultwith)
             usedPB.setStyleSheet(self.common.redPBStyle)
             partGridLayout.addWidget(usedPB, i + 1, 1)
             partColList.append(usedPB)
@@ -936,7 +943,9 @@ class DisplayStorages(QtCore.QThread):
             partGridLayout.addWidget(freeLabel, i + 2, 0)
             partColList.append(freeLabel)
 
-            freePB = self.common.makePartitionPB()
+            # freePB = self.common.makePartitionPB()
+            freePB = QCProgressBar()
+            freePB.setFixedWidth(pbDefaultwith)
             partGridLayout.addWidget(freePB, i + 2, 1)
             partColList.append(freePB)
 
