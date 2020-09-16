@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gonhang\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-09-14 20:26-0300\n"
-"PO-Revision-Date: 2020-09-14 20:50-0300\n"
+"PO-Revision-Date: 2020-09-16 16:38-0300\n"
 "Last-Translator: fredcox@gmail.com\n"
 "Language-Team: Portuguese <translation-team-pt@lists.sourceforge.net>\n"
 "Language: pt\n"
@@ -323,12 +323,12 @@ msgstr "threadWeather agora em latência por enquanto"
 
 #: displayclasses.py:781
 msgid "total in:"
-msgstr "total :"
+msgstr "entrada:"
 
 #. Total out
 #: displayclasses.py:794
 msgid "total out:"
-msgstr "total:"
+msgstr "saída:"
 
 #. ----------------------------------------------------------
 #. used stats
