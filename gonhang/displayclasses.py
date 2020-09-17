@@ -177,9 +177,9 @@ class CommomAttributes:
     def analizeProgressBar(self, pb, value):
         if value < 40:
             pb.setStyleSheet(self.greenPBStyle)
-        elif (value >= 40) and (value < 80):
+        elif (value >= 40) and (value < 70):
             pb.setStyleSheet(self.yellowPBStyle)
-        elif value >= 80:
+        elif value >= 70:
             pb.setStyleSheet(self.redPBStyle)
 
     def analizeFreq(self, lbl, current, maximun):
@@ -908,12 +908,14 @@ class DisplayStorages(QtCore.QThread):
             fsTypeLabel = QtWidgets.QLabel('fsType')
             self.common.setLabel(fsTypeLabel, self.common.white, self.common.fontDefault)
             fsTypeLabel.setAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignLeft)
+            fsTypeLabel.setFixedWidth(60)
             partGridLayout.addWidget(fsTypeLabel, i, 0)
             partColList.append(fsTypeLabel)
 
             mountpointValueLabel = QtWidgets.QLabel('mountpoint')
             mountpointValueLabel.setAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignHCenter)
             self.common.setLabel(mountpointValueLabel, self.common.white, self.common.fontDefault)
+            mountpointValueLabel.setFixedWidth(pbDefaultwith)
             partGridLayout.addWidget(mountpointValueLabel, i, 1)
             partColList.append(mountpointValueLabel)
 

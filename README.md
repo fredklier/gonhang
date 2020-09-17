@@ -12,19 +12,21 @@
 
 ![GonhaNG - Logo](https://raw.githubusercontent.com/fredcox/gonhang/master/gonhang/images/logo_readme.png)
 
+1. [News](#news)
+2. [About](#about)
+3. [Features](#features)
+4. [Install](#install)
+5. [Enable Weather Forecasts](#enable-weather-forecasts)
+6. [Enable hddtemp](#enable-hddtemp)
+..6. [Enable hddtemp on Ubuntu Based Distros](#enable-hddtemp-on-ubuntu-based-distros)
+..6. [Enable hddtemp on Fedora32 or Arch Linux based Distros](#enable-hddtemp-on-fedora32-or-arch-linux-based-distros)    
+7. [Contributos](#contributos)
+8. [Screenshots](#screenshots)
+9. [Buy me a Coffee](#buy-me-a-coffee)
+10. [License](#license)
 
-1. [About](#about)
-2. [Features](#features)
-3. [Install](#install)
-4. [Enable Weather Forecasts](#enable-weather-forecasts)
-5. [Enable hddtemp](#enable-hddtemp)
-    * [Enable hddtemp on Ubuntu Based Distros](#enable-hddtemp-on-ubuntu-based-distros)
-    * [Enable hddtemp on Fedora32 or Arch Linux based Distros](#enable-hddtemp-on-fedora32-or-arch-linux-based-distros)    
-* [Contributos](#contributos)
-* [Screenshots](#screenshots)
-* [Buy me a Coffee](#buy-me-a-coffee)
-* [License](#license)
 
+## News
 
 ## About
 
