@@ -137,7 +137,7 @@ Edit the file **_/etc/default/hddtemp_** and change the line **RUN_DAEMON=”fal
 
 ## Enable hddtemp on Fedora32, Arch Linux and derivatives
 
-It is easy, you need the commands bellow to enable and start hddtemp in yout distro:
+It is easy, you need the commands bellow to enable and start hddtemp in your distro:
 
 ```shell script
 $ sudo systemctl enable hddtemp
