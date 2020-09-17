@@ -19,7 +19,7 @@
 5. [Enable Weather Forecasts](#enable-weather-forecasts)
 6. [Enable hddtemp](#enable-hddtemp)
     * [Enable hddtemp on Ubuntu Based Distros](#enable-hddtemp-on-ubuntu-based-distros)
-    * [Enable hddtemp on Fedora32 or Arch Linux based Distros](#enable-hddtemp-on-fedora32-or-arch-linux-based-distros)    
+    * [Enable hddtemp on Fedora32, Arch Linux and derivatives](#enable-hddtemp-on-fedora32-arch-linux-and-derivatives)    
 7. [Contributos](#contributos)
 8. [Screenshots](#screenshots)
 9. [Buy me a Coffee](#buy-me-a-coffee)
@@ -27,6 +27,10 @@
 
 
 ## News
+
+* Support to Brazilian Portuguese Language :brazil: 
+* Better Performance 
+* New visual and icons 
 
 ## About
 
@@ -131,7 +135,7 @@ Edit the file **_/etc/default/hddtemp_** and change the line **RUN_DAEMON=”fal
 ![config](gonhang/images/hddtempdefault.png)
 
 
-## Enable hddtemp on Fedora32, Arch Linux e derivatives
+## Enable hddtemp on Fedora32, Arch Linux and derivatives
 
 It is easy, you need the commands bellow to enable and start hddtemp in yout distro:
 
