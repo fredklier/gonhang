@@ -147,7 +147,7 @@ $ sudo systemctl start hddtemp
 
 ## Screenshots
 
-![Screenshot wizard](https://raw.githubusercontent.com/fredcox/gonhang/master/gonhang/images/screenshot_wizard.png)
+![Screenshot wizard](https://raw.githubusercontent.com/fredcox/gonhang/master/gonhang/images/screenshot.png)
 
 ## Buy me a Coffee
 
