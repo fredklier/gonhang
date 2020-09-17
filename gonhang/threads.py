@@ -222,7 +222,7 @@ class WatchDog(QtCore.QThread):
 
         # ------------------------------------------------------------------
         # display system (default section)
-        self.displaySystem.initUi(self.verticalLayout)
+        self.systemGroupBox = self.displaySystem.initUi(self.verticalLayout)
         # ------------------------------------------------------------------
         # display nvidia if have nvidia gpu
         self.displayNvidia.initUi(self.verticalLayout)
@@ -347,8 +347,11 @@ class WatchDog(QtCore.QThread):
                 85.0
             )
             self.displaySystem.systemWidgets['cpuTempLabel'].setText(message['cpuTempLabel'])
+            self.systemGroupBox.setFixedHeight(230)
         else:
             self.displaySystem.hideWidgetByDefault()
+            self.systemGroupBox.setFixedHeight(200)
+
         # ------------------------------------------------------------------------------------------------------
 
     def updateWorkOut(self, pb, pbValue, labelUsed, labelUsedValue, labelTotal):

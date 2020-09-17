@@ -680,6 +680,7 @@ class DisplayNvidia:
 
         nvidiaGroupBox.setLayout(gridLayout)
         nvidiaGroupBox.hide()
+        self.nvidiaWidgets['nvidiaGroupBox'].setFixedHeight(130)
 
         verticalLayout.addWidget(nvidiaGroupBox)
 
@@ -852,6 +853,7 @@ class DisplayStorages(QtCore.QThread):
 
             if self.partitions.isToDisplay():
                 self.updatePartitionsUi()
+
         else:
             self.storageGroupBox.hide()
 
@@ -931,6 +933,7 @@ class DisplayStorages(QtCore.QThread):
             usedPB = QCProgressBar()
             usedPB.setBarColor(self.common.rgbColorRed)
             usedPB.setFixedWidth(pbDefaultwith)
+            usedPB.setFixedHeight(self.common.pbDefaultHeight)
             # usedPB.setStyleSheet(self.common.redPBStyle)
             partGridLayout.addWidget(usedPB, i + 1, 1)
             partColList.append(usedPB)
@@ -953,6 +956,7 @@ class DisplayStorages(QtCore.QThread):
             # freePB = self.common.makePartitionPB()
             freePB = QCProgressBar()
             freePB.setBarColor(self.common.rgbColorGreen)
+            freePB.setFixedHeight(self.common.pbDefaultHeight)
             freePB.setFixedWidth(pbDefaultwith)
             partGridLayout.addWidget(freePB, i + 2, 1)
             partColList.append(freePB)
