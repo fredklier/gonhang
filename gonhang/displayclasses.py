@@ -831,7 +831,8 @@ class DisplayStorages(QtCore.QThread):
     configCacheStamp = 0
     signal = QtCore.pyqtSignal(bool, name='DisplayStorageFinish')
     groupBoxHeight = 0
-    gpHeightStep = 30
+    storTempsHeightStep = 40
+    partitionsHeightStep = 25
 
     def __init__(self, parent=None):
         super(DisplayStorages, self).__init__(parent)
@@ -1005,7 +1006,7 @@ class DisplayStorages(QtCore.QThread):
             self.storTempsWidgets[line][2].setText(device[0]['label'])
             self.storTempsWidgets[line][4].setText("{:.1f} °C".format(float(device[0]['temperature'])))
             self.common.analizeTemp(self.storTempsWidgets[line][4], float(device[0]['temperature']), 50, 70)
-            self.groupBoxHeight = self.groupBoxHeight + self.gpHeightStep
+            self.groupBoxHeight = self.groupBoxHeight + self.storTempsHeightStep
 
     def hidePartTempsWidgets(self):
         for line in range(len(self.partitionsWidgets)):
@@ -1040,7 +1041,7 @@ class DisplayStorages(QtCore.QThread):
             self.partitionsWidgets[line][7].setValue(pFree)
             # self.partitionsWidgets[line][8].setText(humanfriendly.format_size(message['free'], binary=True))
             self.partitionsWidgets[line][8].setText(humanfriendly.format_size(free, binary=True))
-            self.groupBoxHeight = self.groupBoxHeight + (self.gpHeightStep * 3)
+            self.groupBoxHeight = self.groupBoxHeight + (self.partitionsHeightStep * 3)
 
     @staticmethod
     def getPercents(percent):
