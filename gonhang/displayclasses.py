@@ -6,7 +6,6 @@ from gonhang.core import Config
 from gonhang.api import FileUtil
 from gonhang.core import StorTemps
 from gonhang.core import Partitions
-from gonhang.qcprogressbar import QCProgressBar
 import os
 import gettext
 
@@ -177,14 +176,11 @@ class CommomAttributes:
 
     def analizeProgressBar(self, pb, value):
         if value < 40:
-            # pb.setStyleSheet(self.greenPBStyle)
-            pb.setBarColor(self.rgbColorGreen)
+            pb.setStyleSheet(self.greenPBStyle)
         elif (value >= 40) and (value < 80):
-            # pb.setStyleSheet(self.yellowPBStyle)
-            pb.setBarColor(self.rgbColorYellow)
+            pb.setStyleSheet(self.yellowPBStyle)
         elif value >= 80:
-            # pb.setStyleSheet(self.redPBStyle)
-            pb.setBarColor(self.rgbColorRed)
+            pb.setStyleSheet(self.redPBStyle)
 
     def analizeFreq(self, lbl, current, maximun):
         currentValue = float(current)
@@ -360,7 +356,7 @@ class DisplaySystem:
         gridLayout.addWidget(cpuIcon, 0, 0)
 
         # cpuProgressBar = QtWidgets.QProgressBar()
-        cpuProgressBar = QCProgressBar()
+        cpuProgressBar = QtWidgets.QProgressBar()
         cpuProgressBar.setFixedHeight(self.commom.pbDefaultHeight)
         cpuProgressBar.setFixedWidth(pbDefaultWidth)
         # cpuProgressBar.setFont(self.commom.fontDefault)
@@ -399,7 +395,7 @@ class DisplaySystem:
         gridLayout.addWidget(ramIcon, 1, 0)
 
         # ramProgressBar = QtWidgets.QProgressBar()
-        ramProgressBar = QCProgressBar()
+        ramProgressBar = QtWidgets.QProgressBar()
         ramProgressBar.setFixedHeight(self.commom.pbDefaultHeight)
         ramProgressBar.setFixedWidth(pbDefaultWidth)
         ramProgressBar.setFont(self.commom.fontDefault)
@@ -437,7 +433,7 @@ class DisplaySystem:
 
         gridLayout.addWidget(swapIcon, 2, 0)
 
-        swapProgressBar = QCProgressBar()
+        swapProgressBar = QtWidgets.QProgressBar()
         swapProgressBar.setFixedHeight(self.commom.pbDefaultHeight)
         swapProgressBar.setFixedWidth(pbDefaultWidth)
         swapProgressBar.setFont(self.commom.fontDefault)
@@ -477,7 +473,7 @@ class DisplaySystem:
 
         gridLayout.addWidget(cpuTempIcon, 3, 0)
 
-        tempProgressBar = QCProgressBar()
+        tempProgressBar = QtWidgets.QProgressBar()
         tempProgressBar.setFixedHeight(self.commom.pbDefaultHeight)
         tempProgressBar.setFixedWidth(pbDefaultWidth)
         tempProgressBar.setFont(self.commom.fontDefault)
@@ -816,6 +812,7 @@ class DisplayNet:
 
         verticalLayout.addLayout(bytesLayout)
 
+        netGroupBox.setFixedHeight(120)
         netGroupBox.setLayout(verticalLayout)
         netGroupBox.hide()
 
@@ -833,6 +830,8 @@ class DisplayStorages(QtCore.QThread):
     storageGroupBox = None
     configCacheStamp = 0
     signal = QtCore.pyqtSignal(bool, name='DisplayStorageFinish')
+    groupBoxHeight = 0
+    gpHeightStep = 30
 
     def __init__(self, parent=None):
         super(DisplayStorages, self).__init__(parent)
@@ -845,7 +844,7 @@ class DisplayStorages(QtCore.QThread):
     def storTempsReceive(self):
         self.hideStorTempsWidgets()
         self.hidePartTempsWidgets()
-
+        self.groupBoxHeight = 0
         if self.storTemps.isToDisplay() or self.partitions.isToDisplay():
             self.storageGroupBox.show()
             if self.storTemps.isToDisplay():
@@ -854,11 +853,12 @@ class DisplayStorages(QtCore.QThread):
             if self.partitions.isToDisplay():
                 self.updatePartitionsUi()
 
+            self.storageGroupBox.setFixedHeight(self.groupBoxHeight)
         else:
             self.storageGroupBox.hide()
 
     def initUi(self, vLayout):
-        pbDefaultwith = 220
+        pbDefaultwith = 250
         localVLayout = QtWidgets.QVBoxLayout()
         self.storageGroupBox = self.common.getDefaultGb(_('disks'))
         gridLayout = QtWidgets.QGridLayout()
@@ -903,16 +903,18 @@ class DisplayStorages(QtCore.QThread):
         partGridLayout = QtWidgets.QGridLayout()
         for i in range(0, 20, 3):
             partColList = list()
-            mountpointValueLabel = QtWidgets.QLabel('mountpoint')
-            self.common.setLabel(mountpointValueLabel, self.common.white, self.common.fontDefault)
-            partGridLayout.addWidget(mountpointValueLabel, i, 0)
-            partColList.append(mountpointValueLabel)
 
             fsTypeLabel = QtWidgets.QLabel('fsType')
             self.common.setLabel(fsTypeLabel, self.common.white, self.common.fontDefault)
-            fsTypeLabel.setAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignHCenter)
-            partGridLayout.addWidget(fsTypeLabel, i, 1)
+            fsTypeLabel.setAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignLeft)
+            partGridLayout.addWidget(fsTypeLabel, i, 0)
             partColList.append(fsTypeLabel)
+
+            mountpointValueLabel = QtWidgets.QLabel('mountpoint')
+            mountpointValueLabel.setAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignHCenter)
+            self.common.setLabel(mountpointValueLabel, self.common.white, self.common.fontDefault)
+            partGridLayout.addWidget(mountpointValueLabel, i, 1)
+            partColList.append(mountpointValueLabel)
 
             totalValueLabel = QtWidgets.QLabel('total')
             self.common.setLabel(totalValueLabel, self.common.white, self.common.fontDefault)
@@ -930,8 +932,8 @@ class DisplayStorages(QtCore.QThread):
 
             # ProgressBar
             # usedPB = self.common.makePartitionPB()
-            usedPB = QCProgressBar()
-            usedPB.setBarColor(self.common.rgbColorRed)
+            usedPB = QtWidgets.QProgressBar()
+            usedPB.setStyleSheet(self.common.redPBStyle)
             usedPB.setFixedWidth(pbDefaultwith)
             usedPB.setFixedHeight(self.common.pbDefaultHeight)
             # usedPB.setStyleSheet(self.common.redPBStyle)
@@ -954,8 +956,8 @@ class DisplayStorages(QtCore.QThread):
             partColList.append(freeLabel)
 
             # freePB = self.common.makePartitionPB()
-            freePB = QCProgressBar()
-            freePB.setBarColor(self.common.rgbColorGreen)
+            freePB = QtWidgets.QProgressBar()
+            freePB.setStyleSheet(self.common.greenPBStyle)
             freePB.setFixedHeight(self.common.pbDefaultHeight)
             freePB.setFixedWidth(pbDefaultwith)
             partGridLayout.addWidget(freePB, i + 2, 1)
@@ -1003,6 +1005,7 @@ class DisplayStorages(QtCore.QThread):
             self.storTempsWidgets[line][2].setText(device[0]['label'])
             self.storTempsWidgets[line][4].setText("{:.1f} °C".format(float(device[0]['temperature'])))
             self.common.analizeTemp(self.storTempsWidgets[line][4], float(device[0]['temperature']), 50, 70)
+            self.groupBoxHeight = self.groupBoxHeight + self.gpHeightStep
 
     def hidePartTempsWidgets(self):
         for line in range(len(self.partitionsWidgets)):
@@ -1016,14 +1019,28 @@ class DisplayStorages(QtCore.QThread):
             for col in range(9):
                 self.partitionsWidgets[line][col].show()
 
-            self.partitionsWidgets[line][0].setText(message['mountpoint'])
-            self.partitionsWidgets[line][1].setText(message['fstype'])
-            self.partitionsWidgets[line][2].setText(humanfriendly.format_size(message['total'], binary=True))
-            pUsed, pFree = self.getPercents(message['percent'])
+            self.partitionsWidgets[line][1].setText(message['mountpoint'])
+            self.partitionsWidgets[line][0].setText(message['fstype'])
+
+            total = message['total']
+            used = message['used']
+            free = total - used
+            pUsed = int((used * 100) / total)
+
+            pFree = 100 - pUsed
+
+            # print(f'{pUsed} {pFree}')
+
+            # self.partitionsWidgets[line][2].setText(humanfriendly.format_size(message['total'], binary=True))
+            self.partitionsWidgets[line][2].setText(humanfriendly.format_size(total, binary=True))
+            # pUsed, pFree = self.getPercents(message['percent'])
             self.partitionsWidgets[line][4].setValue(pUsed)
-            self.partitionsWidgets[line][5].setText(humanfriendly.format_size(message['used'], binary=True))
+            # self.partitionsWidgets[line][5].setText(humanfriendly.format_size(message['used'], binary=True))
+            self.partitionsWidgets[line][5].setText(humanfriendly.format_size(used, binary=True))
             self.partitionsWidgets[line][7].setValue(pFree)
-            self.partitionsWidgets[line][8].setText(humanfriendly.format_size(message['free'], binary=True))
+            # self.partitionsWidgets[line][8].setText(humanfriendly.format_size(message['free'], binary=True))
+            self.partitionsWidgets[line][8].setText(humanfriendly.format_size(free, binary=True))
+            self.groupBoxHeight = self.groupBoxHeight + (self.gpHeightStep * 3)
 
     @staticmethod
     def getPercents(percent):
