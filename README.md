@@ -28,9 +28,11 @@
 
 ## News
 
-* Support to Brazilian Portuguese Language :brazil: 
-* Better Performance 
-* New visual and icons 
+1. Garuda Linux Distro Icon Support
+2. Brazilian Portuguese Language :brazil: 
+3. Better Performance 
+4. New visual and icons 
+
 
 ## About
 
