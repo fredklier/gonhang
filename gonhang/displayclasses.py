@@ -477,6 +477,7 @@ class DisplaySystem:
         tempProgressBar.setFixedHeight(self.commom.pbDefaultHeight)
         tempProgressBar.setFixedWidth(pbDefaultWidth)
         tempProgressBar.setFont(self.commom.fontDefault)
+        tempProgressBar.setFormat('%p°C')
         tempProgressBar.setStyleSheet(self.commom.greenPBStyle)
         self.systemWidgets['cpuTempProgressBar'] = tempProgressBar
         tempProgressBar.setValue(30)
