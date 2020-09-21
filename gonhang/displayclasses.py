@@ -833,7 +833,7 @@ class DisplayStorages(QtCore.QThread):
     signal = QtCore.pyqtSignal(bool, name='DisplayStorageFinish')
     groupBoxHeight = 0
     storTempsHeightStep = 40
-    partitionsHeightStep = 25
+    partitionsHeightStep = 30
 
     def __init__(self, parent=None):
         super(DisplayStorages, self).__init__(parent)
