@@ -147,8 +147,8 @@ class ThreadNet(QtCore.QThread):
             self.message['ifaceValueLabel'] = interface
             self.message['ifaceDownRateLabel'] = downSpeed
             self.message['ifaceUpRateLabel'] = upSpeed
-            self.message['bytesRcvValueLabel'] = net_io[interface].bytes_sent
-            self.message['bytesSentValueLabel'] = net_io[interface].bytes_recv
+            self.message['bytesRcvValueLabel'] = net_io[interface].bytes_recv
+            self.message['bytesSentValueLabel'] = net_io[interface].bytes_sent
 
         self.signal.emit(self.message)
         self.start()
